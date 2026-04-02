@@ -1,74 +1,59 @@
 'use client';
-
-import AsciiArt from '@/components/AsciiArt';
-import Hero from '@/components/Hero';
-import Header from '@/components/header/header';
-import Section1 from '@/components/section1/page';
-import Section2 from '@/components/section2/page';
-import Section3 from '@/components/section3/page';
-import Section4 from '@/components/section4/page';
-import Section5 from '@/components/section5/page';
-import Footer from '@/components/footer/footer';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { useEffect, useState } from 'react';
+import Nav from '@/components/nav/Nav';
+import Hero from '@/components/hero/Hero';
+import Ticker from '@/components/ui/Ticker';
+import Arsenal from '@/components/arsenal/Arsenal';
+import Interlude from '@/components/ui/Interlude';
+import FeaturedProjects from '@/components/featuredProjects/FeaturedProjects';
+import About from '@/components/about/About';
+import Testimonials from '@/components/testimonials/Testimonials';
+import WhyChooseMe from '@/components/whyChooseMe/WhyChooseMe';
+import Footer from '@/components/footer/Footer';
+import Cursor from '@/components/ui/Cursor';
 
 export default function Home() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
-  const heroOffset = useTransform(scrollYProgress, [0, 0.5], ["0%", "-20%"]);
+  const toggleTheme = (e: React.MouseEvent) => {
+    // Only toggle if clicking the actual background/container, not a child link/button
+    const target = e.target as HTMLElement;
+    const isInteractive = target.closest('a, button, .hover-trigger, .proj-row, .tc, .ac, .wc, .btn-y, input, textarea');
+
+    if (!isInteractive) {
+      setTheme(prev => {
+        const next = prev === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        return next;
+      });
+    }
+  };
 
   return (
-    <main id="home" ref={containerRef} className="relative bg-background">
-      <Header />
-
-      {/* Hero Section Container - Sticky */}
-      <motion.div
-        id="hero"
-        style={{ y: heroOffset }}
-        className="sticky top-0 h-screen w-full flex overflow-hidden z-0"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 w-full h-full">
-          <div className="flex items-center justify-center p-4">
-            <Hero />
-          </div>
-          <div className="flex items-center justify-center p-4">
-            <AsciiArt />
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Section 1 - Pulls Up */}
-      <div className="relative z-10 shadow-[0_-50px_100px_rgba(0,0,0,0.1)]">
-        <Section1 />
-      </div>
-
-      {/* Section 2 - Featured Projects */}
-      <div className="relative z-10">
-        <Section2 />
-      </div>
-
-      {/* Section 3 - About */}
-      <div className="relative z-10">
-        <Section3 />
-      </div>
-
-      {/* Section 4 - Testimonials */}
-      <div className="relative z-10">
-        <Section4 />
-      </div>
-
-      {/* Section 5 - Why Choose Me */}
-      <div className="relative z-10">
-        <Section5 />
-      </div>
-
-      <div className="relative z-10">
-        <Footer />
-      </div>
+    <main
+      onClick={toggleTheme}
+      className={`min-h-screen transition-colors duration-700 bg-[var(--bg)] text-[var(--fg)]`}
+    >
+      <Cursor />
+      <Nav />
+      <Hero />
+      <Ticker
+        items={['FLUTTER', 'LARAVEL', 'NEXT.JS', 'NODE.JS', 'MYSQL', 'REACT.JS', 'DOCKER', 'VERCEL', 'TAILWIND', 'EXPO', 'TYPESCRIPT']}
+        theme="red"
+        emIcon="★"
+      />
+      <Arsenal />
+      <Interlude />
+      <FeaturedProjects />
+      <About />
+      <Testimonials />
+      <WhyChooseMe />
+      <Ticker
+        items={['AVAILABLE FOR FREELANCE', 'OPEN TO CONTRACTS', 'BASED IN THE PHILIPPINES', 'WEB DEV', 'MOBILE DEV', 'SAAS BUILDER']}
+        theme={theme === 'dark' ? 'dark' : 'red'}
+        emIcon="★"
+      />
+      <Footer />
     </main>
   );
 }

@@ -1,35 +1,35 @@
 import type { Metadata } from "next";
-
+import { Space_Mono, Permanent_Marker, Anton } from "next/font/google";
+import localFont from 'next/font/local';
 import "./globals.css";
 import "./additional-styles.css";
+
+const bebasNeue = localFont({
+  src: '../font/Bebas_Neue/BebasNeue-Regular.ttf',
+  variable: "--font-bebas",
+});
+
+const spaceMono = Space_Mono({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-space-mono",
+});
+
+const permanentMarker = Permanent_Marker({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-permanent",
+});
+
+const anton = Anton({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-anton",
+});
+
 export const metadata: Metadata = {
-  title: {
-    default: "jmfolio",
-    template: "%s | Portfolio",
-  },
-  description: "Welcome to my portfolio. showcasing my work and projects.",
-  keywords: ["portfolio", "projects", "work", "showcase"],
-  openGraph: {
-    title: "Portfolio",
-    description: "Welcome to my portfolio.",
-    url: "https://yourdomain.com",
-    siteName: "Portfolio",
-    images: [
-      {
-        url: "/images/og-cover.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Portfolio Preview",
-      },
-    ],
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Portfolio",
-    description: "Welcome to my portfolio.",
-    images: ["/images/og-cover.jpg"],
-  },
+  title: "JM — Full-Stack & Mobile Developer",
+  description: "I build SaaS platforms, mobile apps, and web systems.",
 };
 
 export default function RootLayout({
@@ -38,8 +38,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className="font-sans antialiased">
+    <html lang="en" className={`dark ${bebasNeue.variable} ${spaceMono.variable} ${permanentMarker.variable} ${anton.variable}`}>
+      <body className="font-mono antialiased overflow-x-hidden cursor-none bg-[var(--bg)] text-[var(--fg)]">
         {children}
       </body>
     </html>

@@ -1,0 +1,1 @@
+This section will contain the Testimonials component. It highlights social proof, feedback, and reviews from previous clients or colleagues. This can be beautifully structured as a smoothly draggable carousel or a dynamic masonry grid containing elegant quote cards.

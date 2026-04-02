@@ -1,0 +1,1 @@
+This section will contain the Arsenal component. It serves as the 'skills' area showcasing the technologies, coding languages, tools, and frameworks you use (e.g., React, Next.js, Framer Motion, TypeScript). Consider using a continuous scrolling marquee, glowing tool icons, or interactive grid layouts.

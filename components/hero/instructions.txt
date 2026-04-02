@@ -1,0 +1,1 @@
+This section will contain the Hero component. This is the first thing users see. It should have a highly premium, dynamic visual design, potentially with `framer-motion` entry animations, glowing backgrounds or 3D elements, a strong headline, and clear Call To Action (CTA) buttons to immediately grab attention.

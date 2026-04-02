@@ -1,0 +1,1 @@
+This section will contain the Footer component. The bottom anchor of the site containing copyright text, stylized social media links (GitHub, LinkedIn, Twitter, Email), and perhaps an overarching final Call to Action to "Get in touch".

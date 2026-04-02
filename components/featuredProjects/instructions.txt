@@ -1,0 +1,1 @@
+This section will contain the Featured Projects component. It will display your top portfolio pieces using beautiful, interactive project cards. Expect glassmorphism hover effects, subtle image zoom previews, tag badges for the stack utilized, and direct links to live demos or GitHub code.
