@@ -32,33 +32,33 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <nav className="flex items-center justify-between gap-4 mb-16 reveal animate-[terminal-slide_0.6s_ease-out_forwards]">
           <Link
             href="/#projects"
-            className="group text-[0.65rem] tracking-[0.3em] uppercase text-[var(--fg2)] hover:text-[var(--fg)] transition-all flex items-center gap-3"
+            className="group text-[0.6rem] md:text-[0.65rem] tracking-[0.2em] md:tracking-[0.3em] uppercase text-[var(--fg2)] hover:text-[var(--fg)] transition-all flex items-center gap-2 md:gap-3"
           >
-            <span className="text-[1.2rem] group-hover:-translate-x-1 transition-transform">&larr;</span>
-            <span className="font-[family-name:var(--D)] text-[0.8rem]">Index / Projects</span>
+            <span className="text-[1rem] md:text-[1.2rem] group-hover:-translate-x-1 transition-transform">&larr;</span>
+            <span className="font-[family-name:var(--D)] text-[0.7rem] md:text-[0.8rem]">Index / Projects</span>
           </Link>
-          <div className="flex items-center gap-4">
-              <span>STRESS_TEST_MODE: ON</span>
-            <div className="w-2 h-2 rounded-full bg-[var(--red)] animate-pulse" />
+          <div className="flex items-center gap-3 md:gap-4 text-[0.55rem] md:text-[0.65rem] tracking-widest text-[var(--fg3)]">
+              <span className="hidden xs:inline">STRESS_TEST_MODE: ON</span>
+            <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-[var(--red)] animate-pulse" />
           </div>
         </nav>
 
         {/* Hero Section */}
         <header className="mb-20 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-end">
           <div className="reveal animate-[terminal-slide_0.8s_ease-out_forwards]">
-            <div className="flex items-center gap-4 mb-6">
-              <span className="text-[0.65rem] font-bold tracking-[0.4em] uppercase text-[var(--red)] font-[family-name:var(--M)] px-2 py-1 bg-[var(--red)]/5">
+            <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-4 md:mb-6">
+              <span className="text-[0.55rem] md:text-[0.65rem] font-bold tracking-[0.3em] md:tracking-[0.4em] uppercase text-[var(--red)] font-[family-name:var(--M)] px-2 py-1 bg-[var(--red)]/5">
                 SYSTEM_ID: {project.num} // {project.year}
               </span>
-              <div className="h-[1px] w-12 bg-[var(--fg3)]" />
-              <span className="text-[0.65rem] tracking-[0.3em] uppercase text-[var(--fg3)] font-[family-name:var(--M)]">
+              <div className="hidden sm:block h-[1px] w-8 md:w-12 bg-[var(--fg3)]" />
+              <span className="text-[0.55rem] md:text-[0.65rem] tracking-[0.2em] md:tracking-[0.3em] uppercase text-[var(--fg3)] font-[family-name:var(--M)]">
                 {project.techs.slice(0, 3).join(' + ')}
               </span>
             </div>
-            <h1 className="font-[family-name:var(--D)] text-[clamp(2.5rem,8vw,6rem)] leading-[0.9] tracking-tight uppercase mb-8">
+            <h1 className="font-[family-name:var(--D)] text-[clamp(1.75rem,8vw,5.5rem)] leading-[0.95] md:leading-[0.9] tracking-tight uppercase mb-6 md:mb-8">
               {project.name}
             </h1>
-            <p className="max-w-xl text-[0.9rem] md:text-[1rem] text-[var(--fg2)] leading-relaxed italic font-[family-name:var(--M)] border-l-2 border-[var(--red)]/30 pl-6 py-2">
+            <p className="max-w-xl text-[0.8rem] md:text-[1rem] text-[var(--fg2)] leading-relaxed italic font-[family-name:var(--M)] border-l-2 border-[var(--red)]/30 pl-4 md:pl-6 py-2">
               "{project.shortDesc}"
             </p>
           </div>
@@ -100,11 +100,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             </div>
 
             {/* Image Metadata Footer */}
-            <div className="mt-6 flex justify-between items-center font-[family-name:var(--M)] text-[0.55rem] tracking-[0.3em] text-[var(--fg3)] uppercase">
+            <div className="mt-4 md:mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 font-[family-name:var(--M)] text-[0.45rem] md:text-[0.55rem] tracking-[0.2em] md:tracking-[0.3em] text-[var(--fg3)] uppercase">
               <span>SCAN_RESOLUTION: 4K_OPTIMIZED</span>
               <div className="flex gap-4">
                 <span>BITRATE: 64MBPS</span>
-                <span>FROZEN: TRUE</span>
+                <span>STATE: FROZEN</span>
               </div>
             </div>
           </div>
@@ -114,7 +114,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <section className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 mb-24 items-start">
           <div className="space-y-12 py-4">
             <div className="reveal animate-[terminal-slide_0.6s_ease-out_forwards]">
-              <h2 className="text-[1.2rem] font-bold tracking-[0.2em] uppercase text-[var(--fg)] mb-4 flex items-center gap-3 font-[family-name:var(--D)]">
+              <h2 className="text-[1.1rem] md:text-[1.2rem] font-bold tracking-[0.2em] uppercase text-[var(--fg)] mb-4 flex items-center gap-3 font-[family-name:var(--D)]">
                 <span className="w-2 h-2 bg-[var(--red)]" />
                 The Problem
               </h2>
@@ -124,7 +124,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             </div>
 
             <div className="reveal animate-[terminal-slide_0.8s_ease-out_forwards]">
-              <h2 className="text-[1.2rem] font-bold tracking-[0.2em] uppercase text-[var(--fg)] mb-4 flex items-center gap-3 font-[family-name:var(--D)]">
+              <h2 className="text-[1.1rem] md:text-[1.2rem] font-bold tracking-[0.2em] uppercase text-[var(--fg)] mb-4 flex items-center gap-3 font-[family-name:var(--D)]">
                 <span className="w-2 h-2 bg-[var(--red)]" />
                 Architectural Solution
               </h2>

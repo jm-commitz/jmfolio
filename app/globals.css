@@ -37,7 +37,41 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  overflow-y: scroll;
+}
+
+/* Disable custom cursor on mobile/touch */
+@media (pointer: coarse) {
+  .cur, .cur-ring {
+    display: none !important;
+  }
+}
+
+/* Hide default cursor only when a mouse/fine pointer is used */
+@media (pointer: fine) {
+  body, a, button, .btn-y, .btn-o, .proj-row {
+    cursor: none;
+  }
+}
+
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
 ::-moz-selection {
@@ -48,6 +82,26 @@ html {
 ::selection {
   background: var(--red);
   color: white;
+}
+
+/* ── CUSTOM SCROLLBAR ── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--yellow);
+  border-radius: 0;
+  border: 2px solid var(--bg);
+  transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #bfa700;
 }
 
 body::after {
@@ -198,7 +252,7 @@ body::after {
 .hero {
   min-height: 100vh;
   min-height: 100dvh;
-  padding: 8rem 2.5rem 4rem;
+  padding: 8rem 1.5rem 4rem;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -206,8 +260,9 @@ body::after {
   overflow: hidden
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .hero {
+    padding: 8rem 2.5rem 4rem;
     justify-content: space-between;
   }
 }
@@ -541,18 +596,45 @@ body::after {
 
 /* ── TERMINAL ANIMATIONS ── */
 @keyframes flicker {
-  0% { opacity: 0.05; }
-  5% { opacity: 0.02; }
-  10% { opacity: 0.08; }
-  15% { opacity: 0.03; }
-  20% { opacity: 0.1; }
-  25% { opacity: 0.04; }
-  100% { opacity: 0.02; }
+  0% {
+    opacity: 0.05;
+  }
+
+  5% {
+    opacity: 0.02;
+  }
+
+  10% {
+    opacity: 0.08;
+  }
+
+  15% {
+    opacity: 0.03;
+  }
+
+  20% {
+    opacity: 0.1;
+  }
+
+  25% {
+    opacity: 0.04;
+  }
+
+  100% {
+    opacity: 0.02;
+  }
 }
 
 @keyframes terminal-slide {
-  from { opacity: 0; transform: translateX(-10px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .terminal-line {
@@ -563,6 +645,7 @@ body::after {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

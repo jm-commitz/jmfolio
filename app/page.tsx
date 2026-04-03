@@ -10,7 +10,7 @@ import About from '@/components/about/About';
 import Testimonials from '@/components/testimonials/Testimonials';
 import WhyChooseMe from '@/components/whyChooseMe/WhyChooseMe';
 import Footer from '@/components/footer/Footer';
-import Cursor from '@/components/ui/Cursor';
+
 
 export default function Home() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -34,7 +34,6 @@ export default function Home() {
       onClick={toggleTheme}
       className={`min-h-screen transition-colors duration-700 bg-[var(--bg)] text-[var(--fg)]`}
     >
-      <Cursor />
       <Nav />
       <Hero />
       <Ticker

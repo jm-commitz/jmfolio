@@ -28,6 +28,8 @@ const anton = Anton({
 });
 
 import Cursor from "@/components/ui/Cursor";
+import SmoothScroll from "@/components/ui/SmoothScroll";
+
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://jmfolio.vercel.app'),
@@ -69,9 +71,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`dark ${bebasNeue.variable} ${spaceMono.variable} ${permanentMarker.variable} ${anton.variable}`}>
-      <body className="font-mono antialiased overflow-x-hidden cursor-none bg-[var(--bg)] text-[var(--fg)] relative">
-        <Cursor />
-        {children}
+      <body className="font-mono antialiased overflow-x-hidden bg-[var(--bg)] text-[var(--fg)] relative">
+        <SmoothScroll>
+          <Cursor />
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   );
