@@ -39,7 +39,7 @@ export default function Nav() {
         <li><a href="#testimonials" className="hover-trigger text-[0.68rem] text-[#777] uppercase tracking-[0.2em] relative transition-colors duration-200 hover:text-[#f5ff00] pb-1 border-b border-transparent hover:border-[#f5ff00]">Reviews</a></li>
         <li><a href="#contact" className="hover-trigger text-[0.68rem] text-[#777] uppercase tracking-[0.2em] relative transition-colors duration-200 hover:text-[#f5ff00] pb-1 border-b border-transparent hover:border-[#f5ff00]">Contact</a></li>
       </ul>
-      <a href="mailto:anchetajaymark69@gmail.comm" className="hover-trigger text-[0.7rem] font-bold uppercase tracking-[0.1em] bg-[#ff1919] text-[var(--fg)] py-[0.65rem] px-6 border-2 border-[#ff1919] transition-all duration-150 hover:bg-transparent hover:text-[#ff1919] hover:-translate-y-[2px] hover:-translate-x-[2px]">
+      <a href="mailto:anchetajaymark69@gmail.com" className="hover-trigger text-[0.7rem] font-bold uppercase tracking-[0.1em] bg-[#ff1919] text-[var(--fg)] py-[0.65rem] px-6 border-2 border-[#ff1919] transition-all duration-150 hover:bg-transparent hover:text-[#ff1919] hover:-translate-y-[2px] hover:-translate-x-[2px]">
         Hire Me ↗
       </a>
     </nav>

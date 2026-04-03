@@ -93,7 +93,7 @@ export default function Hero() {
         <p className="h-desc reveal" data-d="0.2">Full-stack and mobile developer based in the Philippines. I build SaaS platforms, mobile apps, and web systems for businesses that need real solutions — not cookie-cutter templates.</p>
         <div className="h-btns reveal" data-d="0.25">
           <a href="#projects" className="btn-y hover-trigger">See My Work →</a>
-          <a href="mailto:anchetajaymark69@gmail.comm" className="btn-o hover-trigger">Get In Touch</a>
+          <a href="mailto:anchetajaymark69@gmail.com" className="btn-o hover-trigger">Get In Touch</a>
         </div>
       </div>
     </section>
