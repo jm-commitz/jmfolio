@@ -13,31 +13,14 @@ import Footer from '@/components/footer/Footer';
 
 
 export default function Home() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
-
-  const toggleTheme = (e: React.MouseEvent) => {
-    // Only toggle if clicking the actual background/container, not a child link/button
-    const target = e.target as HTMLElement;
-    const isInteractive = target.closest('a, button, .hover-trigger, .proj-row, .tc, .ac, .wc, .btn-y, input, textarea');
-
-    if (!isInteractive) {
-      setTheme(prev => {
-        const next = prev === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        return next;
-      });
-    }
-  };
-
   return (
     <main
-      onClick={toggleTheme}
       className={`min-h-screen transition-colors duration-700 bg-[var(--bg)] text-[var(--fg)]`}
     >
       <Nav />
       <Hero />
       <Ticker
-        items={['DESIGNT', 'DEVELOPMENT', 'PERFORMANCE', 'SEO', 'CONVERSION', 'STRATEGY', 'DESIGN', 'DEVELOPMENT', 'PERFORMANCE', 'SEO', 'CONVERSION']}
+        items={['DESIGN', 'DEVELOPMENT', 'PERFORMANCE', 'SEO', 'CONVERSION', 'STRATEGY', 'DESIGN', 'DEVELOPMENT', 'PERFORMANCE', 'SEO', 'CONVERSION']}
         theme="red"
         emIcon="★"
       />
@@ -49,7 +32,7 @@ export default function Home() {
       <WhyChooseMe />
       <Ticker
         items={['AVAILABLE FOR FREELANCE', 'OPEN TO CONTRACTS', 'BASED IN THE PHILIPPINES', 'WEB DEV', 'MOBILE DEV', 'SAAS BUILDER']}
-        theme={theme === 'dark' ? 'dark' : 'red'}
+        theme="red"
         emIcon="★"
       />
       <Footer />

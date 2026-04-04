@@ -52,9 +52,9 @@ export default function SplashScreen({ finishLoading }: { finishLoading: () => v
         </div>
 
         {/* Loading Text */}
-        <div className="flex flex-col items-center gap-1 font-[family-name:var(--M)]">
-          <div className="text-[0.8rem] tracking-[0.4em] uppercase font-bold">
-            LOAD - {progress}%
+        <div className="flex flex-col items-center gap-1] font-[family-name:var(--M)]">
+          <div className="text-[0.9rem] tracking-[0.2em] uppercase font-bold">
+            LOADING
           </div>
         </div>
       </div>

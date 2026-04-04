@@ -9,31 +9,17 @@
   --fg: #f0ece0;
   --fg2: #777;
   --fg3: #3a3a3a;
-  --red: #ff1919;
-  --yellow: #f5ff00;
-  --blue: #1a5cff;
-  --pink: #ff00bb;
+  --primary: #FF4500;
+  --red: var(--primary);
+  --yellow: var(--primary);
+  --blue: var(--primary);
+  --pink: var(--primary);
   --green: #00ff77;
+  ;
   --D: var(--font-bebas), sans-serif;
   --M: var(--font-space-mono), monospace;
   --H: var(--font-permanent), cursive;
   transition: background-color 0.4s ease, color 0.4s ease;
-}
-
-:root[data-theme='light'] {
-  --bg: #f8f8f8;
-  --bg2: #ffffff;
-  --bg3: #eeeeee;
-  --fg: #0a0a0a;
-  --fg2: #555;
-  --fg3: #bbb;
-  --red: #d11313;
-}
-
-:root[data-theme='light'] .btn-y:hover {
-  color: #000;
-  border-color: #000;
-  box-shadow: 3px 3px 0 #000;
 }
 
 html {
@@ -42,16 +28,44 @@ html {
 
 /* Disable custom cursor on mobile/touch */
 @media (pointer: coarse) {
-  .cur, .cur-ring {
+
+  .cur,
+  .cur-ring,
+  .cursor-view-project-label {
     display: none !important;
   }
 }
 
 /* Hide default cursor only when a mouse/fine pointer is used */
 @media (pointer: fine) {
-  body, a, button, .btn-y, .btn-o, .proj-row {
+
+  body,
+  a,
+  button,
+  .btn-y,
+  .btn-o,
+  .proj-row {
     cursor: none;
   }
+
+  /* Native pointer on featured images so the hand stays visible with the VIEW PROJECT label */
+  .cursor-view-project {
+    cursor: pointer;
+  }
+}
+
+.cursor-view-project-label {
+  font-family: var(--M);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #000;
+  background: var(--primary);
+  padding: 0.55rem 1rem;
+  border: 2px solid var(--primary);
+  white-space: nowrap;
 }
 
 html.lenis {
@@ -75,12 +89,12 @@ html.lenis {
 }
 
 ::-moz-selection {
-  background: var(--red);
+  background: var(--primary);
   color: white;
 }
 
 ::selection {
-  background: var(--red);
+  background: var(--primary);
   color: white;
 }
 
@@ -130,13 +144,13 @@ body::after {
 .cur.on {
   width: 14px;
   height: 14px;
-  background: var(--yellow);
+  background: var(--primary);
 }
 
 .cur-ring {
   width: 38px;
   height: 38px;
-  border: 1.5px solid rgba(255, 25, 25, .55);
+  border: 1.5px solid rgba(255, 69, 0, .55);
   border-radius: 50%;
   position: fixed;
   pointer-events: none;
@@ -148,7 +162,7 @@ body::after {
 .cur-ring.on {
   width: 56px;
   height: 56px;
-  border-color: var(--yellow);
+  border-color: var(--primary);
 }
 
 @keyframes blink {
@@ -505,20 +519,18 @@ body::after {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .1em;
-  background: var(--yellow);
+  background: var(--primary);
   color: #000;
   padding: .9rem 2.2rem;
   text-decoration: none;
   display: inline-block;
   transition: all .15s;
-  border: 2px solid var(--yellow)
+  border: 2px solid var(--primary)
 }
 
 .btn-y:hover {
-  background: transparent;
-  color: var(--yellow);
   transform: translate(-3px, -3px);
-  box-shadow: 3px 3px 0 var(--yellow)
+  box-shadow: 3px 3px 0 var(--primary);
 }
 
 .btn-o {
@@ -528,20 +540,20 @@ body::after {
   text-transform: uppercase;
   letter-spacing: .1em;
   background: transparent;
-  color: var(--fg);
+  color: var(--primary);
   padding: .9rem 2.2rem;
   text-decoration: none;
   display: inline-block;
-  border: 2px solid rgba(240, 236, 224, .35);
+  border: 2px solid var(--primary);
   transition: all .15s
 }
 
 .btn-o:hover {
   transform: translate(-3px, -3px);
-  box-shadow: 3px 3px 0 var(--fg);
-  background: var(--fg);
-  color: var(--bg);
-  border-color: var(--fg)
+  box-shadow: 3px 3px 0 var(--primary);
+  background: rgba(255, 69, 0, 0.05); /* Very subtle tint */
+  color: var(--primary);
+  border-color: var(--primary)
 }
 
 .h-stats {

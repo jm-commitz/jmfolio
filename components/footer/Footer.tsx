@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Footer() {
   const socials = [
-    { name: "GitHub", url: "https://github.com/jm-commitz", img: "/images/social/github.jpg", id: "GH" },
     { name: "LinkedIn", url: "https://www.linkedin.com/in/jaymark-ancheta-8511b430b?utm_source=share_via&utm_content=profile&utm_medium=member_ios", img: "/images/social/linkedin.jpg", id: "LI" },
     { name: "Facebook", url: "https://www.facebook.com/share/19eJBkWPML/?mibextid=wwXIfr", img: "/images/social/facebook.jpg", id: "FB" },
     { name: "Instagram", url: "https://www.instagram.com/jmancheta404_", img: "/images/social/instagram.jpg", id: "IG" }

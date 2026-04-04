@@ -91,9 +91,22 @@ export default function Hero() {
           <span className="hl3 reveal" data-d="0.15">THAT WORK.</span>
         </h1>
         <p className="h-desc reveal" data-d="0.2">Full-stack and mobile developer based in the Philippines. I build SaaS platforms, mobile apps, and web systems for businesses that need real solutions — not cookie-cutter templates.</p>
-        <div className="h-btns reveal" data-d="0.25">
-          <a href="#projects" className="btn-y hover-trigger">See My Work →</a>
-          <a href="mailto:anchetajaymark69@gmail.com" className="btn-o hover-trigger">Get In Touch</a>
+        <div
+          className="h-btns reveal !gap-2 sm:!gap-3 md:!gap-[0.8rem]"
+          data-d="0.25"
+        >
+          <a
+            href="#projects"
+            className="btn-y hover-trigger !px-4 !py-2 !text-[0.62rem] !tracking-[0.08em] sm:!px-5 sm:!py-2.5 sm:!text-[0.68rem] md:!px-[2.2rem] md:!py-[0.9rem] md:!text-[0.75rem] md:!tracking-[0.1em]"
+          >
+            See My Work →
+          </a>
+          <a
+            href="mailto:anchetajaymark69@gmail.com"
+            className="btn-o hover-trigger !px-4 !py-2 !text-[0.62rem] !tracking-[0.08em] sm:!px-5 sm:!py-2.5 sm:!text-[0.68rem] md:!px-[2.2rem] md:!py-[0.9rem] md:!text-[0.75rem] md:!tracking-[0.1em]"
+          >
+            Get In Touch
+          </a>
         </div>
       </div>
     </section>

@@ -43,7 +43,7 @@ export default function Nav() {
         className={`fixed top-0 left-0 right-0 z-[900] flex md:grid md:grid-cols-3 justify-between items-center px-6 md:px-10 transition-all duration-500 backdrop-blur-md bg-[var(--bg)]/94 ${scrolled ? 'py-3' : 'py-[1.1rem]'} ${isVisible || isOpen ? 'translate-y-0' : '-translate-y-full opacity-0'}`}
       >
         <div className="flex items-center justify-start">
-          <a href="/" className="hover-trigger flex items-center justify-center w-[40px] h-[40px] bg-[#ff1919] transition-all duration-500 hover:bg-[#f5ff00] hover:scale-105 font-[family-name:var(--D)] text-[1.4rem] text-white no-underline tracking-normal group pt-1">
+          <a href="/" className="hover-trigger flex items-center justify-center w-9 h-9 bg-[var(--primary)] transition-all duration-500 hover:scale-105 font-[family-name:var(--D)] text-lg text-white no-underline tracking-normal group pt-1 xl:w-10 xl:h-10 xl:text-[1.4rem]">
             JA
           </a>
         </div>
@@ -59,14 +59,11 @@ export default function Nav() {
               <span className={`w-5 h-[2px] bg-[var(--fg2)] transition-all duration-300 ${isOpen ? 'opacity-0' : ''}`} />
               <span className={`w-8 h-[2px] bg-[var(--fg)] transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-[7px] bg-[var(--red)]' : ''}`} />
             </div>
-            <span className={`hidden md:block text-[0.6rem] tracking-[0.4em] uppercase font-bold transition-all duration-300 font-[family-name:var(--M)] ${isOpen ? 'text-[var(--red)] opacity-100 mt-1' : 'text-[var(--fg3)] opacity-0 group-hover:opacity-100 group-hover:text-[var(--fg)]'}`}>
-              {isOpen ? 'CLOSE_PROTOCOL' : 'SECURE_MENU'}
-            </span>
           </button>
         </div>
 
         <div className="hidden md:flex items-center justify-end">
-          <a href="mailto:anchetajaymark69@gmail.com" className="hover-trigger text-[0.7rem] font-bold uppercase tracking-[0.1em] bg-[#ff1919] text-[var(--fg)] py-[0.65rem] px-6 border-2 border-[#ff1919] transition-all duration-150 hover:bg-transparent hover:text-[#ff1919] hover:-translate-y-[2px] hover:-translate-x-[2px] whitespace-nowrap">
+          <a href="mailto:anchetajaymark69@gmail.com" className="btn-y hover-trigger text-[0.7rem] font-bold uppercase tracking-[0.1em] py-[0.65rem] px-6 whitespace-nowrap">
             Hire Me ↗
           </a>
         </div>

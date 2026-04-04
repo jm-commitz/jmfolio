@@ -31,11 +31,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         {/* Navigation & Breadcrumb */}
         <nav className="flex items-center justify-between gap-4 mb-16 reveal animate-[terminal-slide_0.6s_ease-out_forwards]">
           <Link
-            href="/#projects"
+            href="/projects"
             className="group text-[0.6rem] md:text-[0.65rem] tracking-[0.2em] md:tracking-[0.3em] uppercase text-[var(--fg2)] hover:text-[var(--fg)] transition-all flex items-center gap-2 md:gap-3"
           >
             <span className="text-[1rem] md:text-[1.2rem] group-hover:-translate-x-1 transition-transform">&larr;</span>
-            <span className="font-[family-name:var(--D)] text-[0.7rem] md:text-[0.8rem]">Index / Projects</span>
+            <span className="font-[family-name:var(--D)] text-[0.7rem] md:text-[0.8rem]">All projects</span>
           </Link>
           <div className="flex items-center gap-3 md:gap-4 text-[0.55rem] md:text-[0.65rem] tracking-widest text-[var(--fg3)]">
               <span className="hidden xs:inline">STRESS_TEST_MODE: ON</span>

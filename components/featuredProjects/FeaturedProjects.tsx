@@ -1,159 +1,152 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect, useRef } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { projects } from './projectsData';
 
+const TOP = 3;
+const featured = projects.slice(0, TOP);
+
+const IO_THRESHOLDS = Array.from({ length: 41 }, (_, i) => i / 40);
+
 export default function FeaturedProjects() {
-  const [visibleCount, setVisibleCount] = useState<number>(3);
-  const [hoveredIndex, setHoveredIndex] = useState<number>(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const ratiosRef = useRef<number[]>(featured.map(() => 0));
+  const figureRefs = useRef<(HTMLElement | null)[]>([]);
 
-  const visibleProjects = projects.slice(0, visibleCount);
-  const hasMore = visibleCount < projects.length;
+  useLayoutEffect(() => {
+    const nodes = figureRefs.current.filter(Boolean) as HTMLElement[];
+    if (nodes.length === 0) return;
 
-  const loadMore = () => {
-    setVisibleCount((prev) => Math.min(prev + 2, projects.length));
+    ratiosRef.current = featured.map(() => 0);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const i = Number((entry.target as HTMLElement).dataset.featureIndex);
+          if (Number.isNaN(i)) return;
+          ratiosRef.current[i] = entry.intersectionRatio;
+        });
+        const max = Math.max(...ratiosRef.current);
+        if (max <= 0) return;
+        const next = ratiosRef.current.indexOf(max);
+        setActiveIndex((prev) => (prev === next ? prev : next));
+      },
+      {
+        threshold: IO_THRESHOLDS,
+        root: null,
+        rootMargin: '-14% 0px -22% 0px',
+      }
+    );
+
+    nodes.forEach((node) => observer.observe(node));
+    return () => observer.disconnect();
+  }, [featured.length]);
+
+  const scrollToFigure = (i: number) => {
+    figureRefs.current[i]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
   return (
-    <div id="projects" className="py-24 max-w-[1400px] mx-auto px-6 md:px-10 flex flex-col items-start gap-12 relative overflow-visible">
-
-      {/* Header Section */}
-      <div className="w-full">
-        <div className="text-[0.65rem] text-[var(--red)] uppercase tracking-[0.3em] mb-2 flex items-center gap-2.5">
-          <span className="w-[25px] h-[2px] bg-[var(--red)] inline-block"></span>Selected Work
-        </div>
-        <h2 className="font-[family-name:var(--D)] text-[clamp(4.5rem,10vw,8.5rem)] leading-[0.88] tracking-[-0.01em]">FEATURED<br />PROJECTS</h2>
-      </div>
-
-      <div className="w-full grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-16 lg:gap-20 items-start">
-
-        {/* Left Column: Project List */}
-        <div className="relative border-t border-[var(--fg)]/[0.07]">
-          {visibleProjects.map((p, i) => (
-            <div
-              key={i}
-              onMouseEnter={() => setHoveredIndex(i)}
-              className="proj-group"
-            >
-              {/* DESKTOP ROW VIEW */}
-              <Link href={`/projects/${p.slug}`} className="hidden lg:grid proj-row group grid-cols-[60px_1fr_auto] gap-8 items-start py-12 border-b border-[var(--fg)]/[0.07] relative transition-all duration-300 cursor-pointer hover-trigger no-underline">
-                <div className={`absolute left-0 bottom-0 h-[1.5px] w-full bg-[var(--red)] origin-left transition-transform duration-500 ease-out ${hoveredIndex === i ? 'scale-x-100' : 'scale-x-0'}`}></div>
-
-                <div className={`font-[family-name:var(--D)] text-[1.1rem] tracking-[0.1em] pt-1 transition-colors duration-300 ${hoveredIndex === i ? 'text-[var(--red)]' : 'text-[var(--fg3)]'}`}>
-                  {p.num}
-                </div>
-
-                <div className="flex-1">
-                  <div className={`font-[family-name:var(--D)] text-[5rem] leading-[0.9] mb-4 tracking-[0.01em] transition-all duration-300 ${hoveredIndex === i ? 'text-[var(--fg)] translate-x-2' : 'text-[var(--fg2)] opacity-20'}`}>
-                    {p.name}
-                  </div>
-                </div>
-
-                <div className={`hidden md:block text-right pt-2 transition-all duration-300 ${hoveredIndex === i ? 'opacity-100' : 'opacity-20'}`}>
-                  <div className="text-[0.6rem] text-[var(--fg3)] uppercase tracking-[0.2em] mb-2">{p.year}</div>
-                  <span className="text-[1.8rem] text-[var(--fg2)]">↗</span>
-                </div>
-              </Link>
-
-              {/* MOBILE CARD VIEW (As requested, uses the full card on small screens) */}
-              <div className="lg:hidden block py-8 border-b border-[var(--fg)]/[0.07]">
-                <Link href={`/projects/${p.slug}`} className="block hover-trigger no-underline">
-                  <div className="bg-[var(--bg2)] border-transparent [[data-theme='light']_&]:border-[var(--fg)]/[0.1] border overflow-hidden rounded-sm transition-colors duration-300">
-                    <div className="w-full overflow-hidden relative">
-                      <img src={p.img} alt={p.name} className="w-full h-auto object-contain" />
-                      <div className="absolute top-4 left-4 flex gap-2">
-                        <div className="bg-[var(--red)] px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-widest text-[#fff]">{p.year}</div>
-                        <div className="bg-[var(--fg)]/[0.1] [[data-theme='light']_&]:bg-[var(--fg)]/[0.05] backdrop-blur-md px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-widest text-[var(--fg)] border border-[var(--fg)]/[0.2] transition-colors duration-300">SELECTED</div>
-                      </div>
-                    </div>
-                    <div className="p-8 space-y-6">
-                      <div>
-                        <div className="text-[0.65rem] text-[var(--red)] font-bold mb-1 tracking-widest">{p.num}</div>
-                        <h3 className="font-[family-name:var(--D)] text-[var(--fg)] text-3xl tracking-widest uppercase leading-none mb-4">{p.name}</h3>
-                        <p className="text-[0.75rem] text-[var(--fg2)] leading-relaxed italic font-[family-name:var(--M)]">"{p.shortDesc}"</p>
-                      </div>
-                      <div className="flex flex-wrap gap-2 pt-4 border-t border-[var(--fg)]/[0.08]">
-                        {p.techs.map(t => (
-                          <span key={t} className="text-[0.45rem] text-[var(--fg2)] font-bold uppercase tracking-[0.2em] px-2 py-1 bg-[var(--bg3)] border border-[var(--fg)]/[0.1] transition-colors duration-300">{t}</span>
-                        ))}
-                      </div>
-                      <div className="flex items-center gap-4 pt-2">
-                        <span className="text-[var(--red)] text-[0.6rem] font-bold uppercase tracking-[0.3em]">VIEW CASE STUDY</span>
-                        <span className="w-1 h-1 rounded-full bg-[var(--fg3)]"></span>
-                        <span className="text-[var(--fg3)] text-[0.5rem] uppercase tracking-[0.2em]">Tap to open</span>
-                      </div>
-                    </div>
-                    <div className="h-1.5 w-full bg-[var(--red)]"></div>
-                  </div>
-                </Link>
-              </div>
+    <div id="projects" className="max-w-full mx-auto overflow-visible px-6 md:px-10 py-24 md:py-32">
+      <div className="grid min-w-0 grid-cols-1 items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,3fr)] lg:gap-x-12 xl:gap-x-20 2xl:gap-x-24">
+        <div className="max-lg:contents flex min-w-0 flex-col gap-10 overflow-x-hidden lg:sticky lg:top-28 lg:z-10 lg:h-fit lg:max-h-[calc(100dvh-7.5rem)] lg:overflow-y-auto lg:self-start lg:pr-1 lg:[scrollbar-gutter:stable]">
+          <div className="order-1 min-w-0 space-y-4 [container-type:inline-size]">
+            <div className="text-[0.62rem] text-[var(--primary)] uppercase tracking-[0.4em] font-bold -mb-4 flex items-center gap-3">
+              <span className="w-8 h-[2px] bg-[var(--primary)]"></span> SELECTED WORK
             </div>
-          ))}
+            <h2 className="max-w-full break-words font-[family-name:var(--D)] text-4xl leading-[0.92] uppercase tracking-tighter text-[var(--fg)] sm:text-5xl md:text-6xl lg:text-[clamp(2.15rem,4.2cqi,3.35rem)] lg:leading-[0.92] xl:text-6xl xl:leading-none 2xl:text-7xl min-[1800px]:text-8xl">
+              Featured <br /> Work
+            </h2>
+            <p className="max-w-full text-[0.75rem] text-[var(--fg2)] font-[family-name:var(--M)] leading-relaxed uppercase tracking-[0.1em] sm:max-w-sm lg:max-w-[min(100%,18rem)] xl:max-w-xs">
+              We build websites where every scroll, every transition, and every interaction feels intentional. The details most teams skip are the details we care about most.
+            </p>
+          </div>
 
-          {/* Load More Button Container */}
-          {hasMore && (
-            <div className="py-12 flex justify-center md:justify-start">
-              <button
-                onClick={loadMore}
-                className="btn-y hover-trigger transition-all duration-300"
+          <div className="order-3 hidden flex-col gap-2 lg:order-2 lg:flex lg:gap-2">
+            {featured.map((p, i) => (
+              <div
+                key={p.slug}
+                role="button"
+                tabIndex={0}
+                aria-label={p.name}
+                onMouseEnter={() => setActiveIndex(i)}
+                onFocus={() => setActiveIndex(i)}
+                onClick={() => scrollToFigure(i)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    scrollToFigure(i);
+                  }
+                }}
+                className="group cursor-pointer flex items-center gap-4 text-left sm:gap-5"
               >
-                View More Projects &rarr;
-              </button>
-            </div>
-          )}
-        </div>
+                <div className="flex h-2.5 w-2.5 shrink-0 items-center justify-center">
+                  {activeIndex === i && (
+                    <motion.div
+                      layoutId="indicator"
+                      className="h-full w-full bg-[var(--primary)]"
+                      transition={{ type: 'spring', stiffness: 400, damping: 25, mass: 1 }}
+                    />
+                  )}
+                </div>
+                <div
+                  className={`relative h-11 w-[4.25rem] shrink-0 overflow-hidden bg-[var(--fg2)]/15 ring-1 ring-transparent transition-all duration-500 sm:h-12 sm:w-[4.75rem] ${
+                    activeIndex === i
+                      ? 'translate-x-2 ring-[var(--primary)] ring-offset-2 ring-offset-[var(--bg)] sm:translate-x-4'
+                      : 'opacity-60 group-hover:opacity-100'
+                  }`}
+                >
+                  <img
+                    src={p.img}
+                    alt=""
+                    className="h-full w-full object-cover object-center"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
 
-        {/* Right Column: Sticky Preview Card */}
-        <div className="hidden lg:block sticky top-24 w-full h-auto">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={hoveredIndex}
-              initial={{ opacity: 0, x: 20, scale: 0.98 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: -10, scale: 0.98 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="bg-[var(--bg2)] border-transparent [[data-theme='light']_&]:border-[var(--fg)]/[0.1] border overflow-hidden rounded-sm transition-colors duration-300"
+          <div className="order-4 pt-0 lg:order-3 lg:pt-4">
+            <Link
+              href="/projects"
+              className="btn-y hover:!shadow-none px-5 py-2.5 text-[0.62rem] tracking-[0.08em] sm:px-7 sm:py-3 sm:text-[0.7rem] lg:px-5 lg:py-2.5 lg:text-[0.6rem] xl:px-9 xl:py-[0.85rem] xl:text-[0.75rem] xl:tracking-[0.1em] 2xl:px-11 2xl:py-[0.9rem]"
             >
-              {/* Card Image */}
-              <div className="w-full overflow-hidden relative group">
-                <img
-                  src={projects[hoveredIndex].img}
-                  alt={projects[hoveredIndex].name}
-                  className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute top-6 left-6 flex gap-3">
-                  <div className="bg-[var(--red)] px-3 py-1 text-[0.6rem] font-bold uppercase tracking-widest text-[#fff]">{projects[hoveredIndex].year}</div>
-                  <div className="bg-[var(--fg)]/[0.1] [[data-theme='light']_&]:bg-[var(--fg)]/[0.05] backdrop-blur-md px-3 py-1 text-[0.6rem] font-bold uppercase tracking-widest text-[var(--fg)] border border-[var(--fg)]/[0.2] transition-colors duration-300 font-[family-name:var(--M)]">SELECTED</div>
-                </div>
-              </div>
-
-              {/* Card Meta Content */}
-              <div className="p-10 space-y-8">
-                <div>
-                  <h3 className="font-[family-name:var(--D)] text-[var(--fg)] text-4xl tracking-widest uppercase leading-none mb-6">{projects[hoveredIndex].name}</h3>
-                  <p className="text-[0.8rem] text-[var(--fg2)] leading-relaxed opacity-80 font-[family-name:var(--M)] italic">"{projects[hoveredIndex].shortDesc}"</p>
-                </div>
-
-                <div className="flex flex-wrap gap-2 pt-6 border-t border-[var(--fg)]/[0.08]">
-                  {projects[hoveredIndex].techs.map(t => (
-                    <span key={t} className="text-[0.5rem] text-[var(--fg2)] font-bold uppercase tracking-[0.2em] px-3 py-1 bg-[var(--bg3)] border border-[var(--fg)]/[0.1] transition-colors duration-300">{t}</span>
-                  ))}
-                </div>
-
-                <div className="flex items-center gap-6 pt-2 pb-2">
-                  <span className="text-[var(--red)] text-[0.65rem] font-bold uppercase tracking-[0.4em]">PROD_LIVE_V.25</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--fg3)] animate-pulse"></span>
-                  <span className="text-[var(--fg3)] text-[0.55rem] uppercase tracking-[0.3em] font-[family-name:var(--M)]">Git: Private Deployment</span>
-                </div>
-              </div>
-
-              {/* Decorative Red Line */}
-              <div className="h-2 w-full bg-[var(--red)]"></div>
-            </motion.div>
-          </AnimatePresence>
+              View More →
+            </Link>
+          </div>
         </div>
 
+        <div className="order-2 flex min-w-0 flex-col gap-12 md:gap-16 lg:gap-20">
+          {featured.map((p, i) => (
+            <figure
+              key={p.slug}
+              ref={(el) => {
+                figureRefs.current[i] = el;
+              }}
+              data-feature-index={i}
+              style={{ scrollMarginTop: '6rem' }}
+              className="m-0 overflow-hidden"
+            >
+              <Link
+                href={`/projects/${p.slug}`}
+                aria-label={`View project: ${p.name}`}
+                className="relative block aspect-video w-full cursor-view-project bg-[var(--fg2)]/10 md:aspect-auto md:min-h-[min(68vh,720px)]"
+              >
+                <img
+                  src={p.img}
+                  alt={p.name}
+                  className="absolute inset-0 h-full w-full object-cover object-center"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-black/[0.06]" />
+              </Link>
+              <figcaption className="flex items-center justify-between gap-4 px-4 py-3 font-[family-name:var(--M)] text-[0.65rem] uppercase tracking-[0.2em] text-[var(--fg2)] md:px-5 md:text-xs">
+                <span className="min-w-0">{p.name}</span>
+                <span className="shrink-0 tabular-nums text-[var(--fg)]">{p.year}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
       </div>
     </div>
   );

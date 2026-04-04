@@ -71,7 +71,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`dark ${bebasNeue.variable} ${spaceMono.variable} ${permanentMarker.variable} ${anton.variable}`}>
-      <body className="font-mono antialiased overflow-x-hidden bg-[var(--bg)] text-[var(--fg)] relative">
+      <body className="font-mono antialiased overflow-x-clip bg-[var(--bg)] text-[var(--fg)] relative">
         <SmoothScroll>
           <Cursor />
           {children}
