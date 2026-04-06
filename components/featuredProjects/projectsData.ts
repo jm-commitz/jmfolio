@@ -66,25 +66,25 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "company-landing-page",
+    slug: "moments-portraits",
     num: "03",
-    name: "COMPANY LANDING PAGE",
-    img: "/images/projects/landing.png",
+    name: "MOMENTS & PORTRAITS",
+    img: "/images/projects/1.png",
     category: "Landing page",
     techs: ["Next.js", "Tailwind CSS"],
     year: "2026",
     shortDesc:
-      "Modern company website showcasing projects, blog content, and inquiry forms.",
+      "Photography portfolio and lead-generation site so family, prenup, and event clients can find the studio on Google—not only on social.",
     clientProblem:
-      "Client’s old website was static, outdated, and not converting visitors into leads, especially on mobile devices.",
+      "Client had a strong Facebook presence but did not show up when prospects searched Google for a photographer. Social reached existing followers, while parents, couples, and event planners searching locally were booking competitors who were simply easier to find.",
     solution:
-      "I rebuilt the site on Next.js with a conversion-focused layout, clear messaging, fast performance, and responsive design tuned for both desktop and mobile.",
+      "I proposed a focused site that combines a trust-building portfolio gallery, search-friendly pages and metadata for local queries (e.g. photographer + area, session types), and a structured booking inquiry form so leads arrive with date, session type, and budget—streamlining follow-up and signaling a professional operation.",
     features: [
-      "Hero section optimized for clarity and quick value communication",
-      "Responsive layout with consistent spacing and typography system",
-      "Project/portfolio sections that highlight case studies and outcomes",
-      "Contact and inquiry forms wired to email or CRM",
-      "SEO-friendly structure with semantic HTML and metadata",
+      "Portfolio gallery layout built for first impressions and credibility",
+      "SEO-oriented structure and content so the business can surface for relevant local and session-type searches",
+      "Booking inquiry form capturing date, session type, and budget",
+      "Responsive layout tuned for how clients browse on phones and desktops",
+      "Clear messaging that connects search traffic to booking intent",
     ],
   },
   {
