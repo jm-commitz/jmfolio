@@ -19,6 +19,7 @@ export type ShowcaseProject = {
   name: string;
   year: string;
   img: string;
+  video?: string;
   category: string;
 };
 
@@ -206,7 +207,18 @@ function CarouselThumbnailStrip({
               selected === i ? 'opacity-100' : 'opacity-60 group-hover:opacity-100'
             }`}
           >
-            <Image src={p.img} alt={p.name} fill className="object-cover object-center" sizes="48px" />
+            {p.video ? (
+              <video
+                src={p.video}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 h-full w-full object-cover object-center"
+              />
+            ) : (
+              <Image src={p.img} alt={p.name} fill className="object-cover object-center" sizes="48px" />
+            )}
           </div>
           <div className="flex h-2 w-full items-center justify-center" aria-hidden>
             {selected === i && (
@@ -257,14 +269,25 @@ function ShowcaseGridView({
             className="group block cursor-view-project focus:outline-none focus-visible:[&_img]:brightness-110"
           >
             <div className="relative aspect-video w-full overflow-hidden bg-[var(--fg2)]/10">
-              <Image
-                src={project.img}
-                alt={project.name}
-                fill
-                className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                loading="lazy"
-              />
+              {project.video ? (
+                <video
+                  src={project.video}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
+                />
+              ) : (
+                <Image
+                  src={project.img}
+                  alt={project.name}
+                  fill
+                  className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  loading="lazy"
+                />
+              )}
               <div className="pointer-events-none absolute inset-0 bg-black/[0.06]" />
             </div>
             <div className="flex items-baseline justify-between gap-4 px-4 py-3 font-[family-name:var(--M)] text-[0.62rem] uppercase tracking-[0.2em] text-[var(--fg2)] max-md:items-center max-md:text-[0.65rem] sm:text-[0.65rem] md:mt-4 md:px-0 md:py-0">
@@ -396,15 +419,26 @@ function ShowcaseCarouselView({
                       className="relative block cursor-view-project focus:outline-none focus-visible:[&_img]:brightness-110"
                     >
                       <div className="relative block aspect-video w-full overflow-hidden bg-[var(--fg2)]/10 md:aspect-auto md:min-h-[min(68vh,720px)]">
-                        <Image
-                          src={project.img}
-                          alt={project.name}
-                          fill
-                          className="object-cover object-center"
-                          sizes="(max-width: 768px) 92vw, (max-width: 1280px) 88vw, 86vw"
-                          priority={false}
-                          loading="lazy"
-                        />
+                        {project.video ? (
+                          <video
+                            src={project.video}
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            className="absolute inset-0 h-full w-full object-cover object-center"
+                          />
+                        ) : (
+                          <Image
+                            src={project.img}
+                            alt={project.name}
+                            fill
+                            className="object-cover object-center"
+                            sizes="(max-width: 768px) 92vw, (max-width: 1280px) 88vw, 86vw"
+                            priority={false}
+                            loading="lazy"
+                          />
+                        )}
                         <div className="pointer-events-none absolute inset-0 bg-black/[0.06]" />
                       </div>
                     </Link>

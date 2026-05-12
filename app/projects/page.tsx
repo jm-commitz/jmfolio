@@ -15,6 +15,7 @@ export default function ProjectsIndexPage() {
     name: p.name,
     year: p.year,
     img: p.img,
+    video: p.video,
     category: p.category,
   }));
 

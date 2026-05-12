@@ -1,7 +1,6 @@
 /** High-level type for /projects filter (Dashboard, Landing page, etc.) */
 export type ProjectCategory =
   | 'Dashboard'
-  | 'Landing page'
   | 'Booking platform'
   | 'POS'
   | 'Rental platform';
@@ -11,6 +10,8 @@ export type Project = {
   num: string;
   name: string;
   img: string;
+  video?: string;
+  gallery?: string[];
   category: ProjectCategory;
   techs: string[];
   year: string;
@@ -22,25 +23,35 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "omnichannel-sales-dashboard",
+    slug: "doit-app",
     num: "01",
-    name: "OMNICHANNEL SALES DASHBOARD",
-    img: "/images/projects/omnichannel.png",
-    category: "Dashboard",
-    techs: ["React.js", "Zustand", "TanStack Query", "Laravel", "MySQL"],
-    year: "2025",
+    name: "DOIT APP",
+    img: "/images/projects/doit/home.jpg",
+    video: "/images/projects/doit/DoIt.mp4",
+    gallery: [
+      "/images/projects/doit/home.jpg",
+      "/images/projects/doit/orders.jpg",
+      "/images/projects/doit/chat.jpg",
+      "/images/projects/doit/maps.jpg",
+      "/images/projects/doit/rewards.jpg",
+      "/images/projects/doit/profile.jpg",
+    ],
+    category: "POS",
+    techs: ["Flutter", "Laravel", "MySQL"],
+    year: "2024",
     shortDesc:
-      "Centralized dashboard for managing and monitoring multi-platform sales across Lazada, Shopee, TikTok, and Shopify.",
+      "All-in-one POS and delivery app for water refilling stations and laundry services.",
     clientProblem:
-      "Client was managing sales separately across multiple marketplaces, leading to inconsistent reports, manual reconciliations, and no single source of truth for performance.",
+      "Business owners juggling both water delivery and laundry pickup/drop-off were managing everything manually — orders were lost, riders had no route visibility, and customers had no way to track their requests in real time.",
     solution:
-      "I designed a central dashboard backed by a Laravel REST API that aggregates orders, revenue, and inventory from each channel and exposes everything through a unified UI built with React, Zustand, and TanStack Query.",
+      "I built DoIt as a unified mobile platform with a POS backend for in-store transactions, a delivery scheduling module with live map tracking, and a customer-facing app with order history, real-time chat, and a loyalty rewards system.",
     features: [
-      "Real-time revenue and order tracking across Lazada, Shopee, TikTok, and Shopify",
-      "Multi-store and multi-brand support with consolidated analytics",
-      "Product catalog sync to keep SKUs consistent across channels",
-      "Top-selling product insights and performance breakdowns",
-      "Delivery and fulfillment status monitoring in a single view",
+      "POS for walk-in water refills and laundry drop-offs with container and service type support",
+      "Delivery order management with live map tracking for riders and customers",
+      "Real-time in-app chat between customers and staff",
+      "Rewards and loyalty points system to retain repeat customers",
+      "Order status tracking across all stages (pending, picked up, on the way, delivered)",
+      "Customer profile with full order history and outstanding balances",
     ],
   },
   {
@@ -66,30 +77,8 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "moments-portraits",
-    num: "03",
-    name: "MOMENTS & PORTRAITS",
-    img: "/images/projects/1.png",
-    category: "Landing page",
-    techs: ["Next.js", "Tailwind CSS"],
-    year: "2026",
-    shortDesc:
-      "Photography portfolio and lead-generation site so family, prenup, and event clients can find the studio on Google—not only on social.",
-    clientProblem:
-      "Client had a strong Facebook presence but did not show up when prospects searched Google for a photographer. Social reached existing followers, while parents, couples, and event planners searching locally were booking competitors who were simply easier to find.",
-    solution:
-      "I proposed a focused site that combines a trust-building portfolio gallery, search-friendly pages and metadata for local queries (e.g. photographer + area, session types), and a structured booking inquiry form so leads arrive with date, session type, and budget—streamlining follow-up and signaling a professional operation.",
-    features: [
-      "Portfolio gallery layout built for first impressions and credibility",
-      "SEO-oriented structure and content so the business can surface for relevant local and session-type searches",
-      "Booking inquiry form capturing date, session type, and budget",
-      "Responsive layout tuned for how clients browse on phones and desktops",
-      "Clear messaging that connects search traffic to booking intent",
-    ],
-  },
-  {
     slug: "airbnb-booking-system",
-    num: "04",
+    num: "03",
     name: "AIRBNB BOOKING SYSTEM",
     img: "/images/projects/airbnb.png",
     category: "Booking platform",
@@ -111,7 +100,7 @@ export const projects: Project[] = [
   },
   {
     slug: "multi-tenant-pos",
-    num: "05",
+    num: "04",
     name: "MULTI-TENANT POS SYSTEM",
     img: "/images/projects/salepoint.png",
     category: "POS",
@@ -134,30 +123,30 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "water-refilling-pos-delivery",
-    num: "06",
-    name: "WATER REFILLING POS & DELIVERY",
-    img: "/images/projects/refillpro.png",
-    category: "POS",
-    techs: ["Flutter", "Laravel"],
-    year: "2024",
+    slug: "omnichannel-sales-dashboard",
+    num: "05",
+    name: "OMNICHANNEL SALES DASHBOARD",
+    img: "/images/projects/omnichannel.png",
+    category: "Dashboard",
+    techs: ["React.js", "Zustand", "TanStack Query", "Laravel", "MySQL"],
+    year: "2025",
     shortDesc:
-      "POS and delivery management system tailored for water refilling stations.",
+      "Centralized dashboard for managing and monitoring multi-platform sales across Lazada, Shopee, TikTok, and Shopify.",
     clientProblem:
-      "Refilling stations were tracking walk-in and delivery orders manually, making it hard to monitor routes, empty containers, and daily cash flow.",
+      "Client was managing sales separately across multiple marketplaces, leading to inconsistent reports, manual reconciliations, and no single source of truth for performance.",
     solution:
-      "I created a POS and delivery module that connects store sales with delivery scheduling so the owner can see orders, assigned riders, and payments in real time.",
+      "I designed a central dashboard backed by a Laravel REST API that aggregates orders, revenue, and inventory from each channel and exposes everything through a unified UI built with React, Zustand, and TanStack Query.",
     features: [
-      "POS for walk-in refills with support for multiple container types",
-      "Delivery order management with address and schedule tracking",
-      "Status tracking for orders (pending, on the way, delivered, paid)",
-      "Customer history with order frequency and outstanding balances",
-      "Basic route overview to help cluster deliveries efficiently",
+      "Real-time revenue and order tracking across Lazada, Shopee, TikTok, and Shopify",
+      "Multi-store and multi-brand support with consolidated analytics",
+      "Product catalog sync to keep SKUs consistent across channels",
+      "Top-selling product insights and performance breakdowns",
+      "Delivery and fulfillment status monitoring in a single view",
     ],
   },
   {
     slug: "condo-rental-system",
-    num: "07",
+    num: "06",
     name: "REAL STATE MANAGEMENT SYSTEM",
     img: "/images/projects/dale.png",
     category: "Rental platform",

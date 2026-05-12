@@ -27,17 +27,28 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     <main className="min-h-screen bg-[var(--bg)] text-[var(--fg)] selection:bg-[var(--red)] selection:text-white">
       <div className="pointer-events-none fixed inset-0 z-[5] h-scan opacity-[0.25]" aria-hidden />
 
-      {/* Full-viewport hero image (Good Fella–style case study lead) */}
+      {/* Full-viewport hero (video when available, fallback to image) */}
       <section className="relative h-[100dvh] min-h-[20rem] w-full overflow-hidden">
-        <Image
-          src={project.img}
-          alt={project.name}
-          fill
-          className="object-cover object-center"
-          sizes="100vw"
-          priority
-          quality={90}
-        />
+        {project.video ? (
+          <video
+            src={project.video}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          />
+        ) : (
+          <Image
+            src={project.img}
+            alt={project.name}
+            fill
+            className="object-cover object-center"
+            sizes="100vw"
+            priority
+            quality={90}
+          />
+        )}
         <div
           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-[var(--bg)]"
           aria-hidden
@@ -132,6 +143,30 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             </div>
           </div>
         </section>
+
+        {/* Project gallery */}
+        {project.gallery && project.gallery.length > 0 && (
+          <section className="mb-24 reveal animate-[terminal-slide_1.3s_ease-out_forwards]">
+            <h2 className="mb-6 flex items-center gap-3 text-[1rem] font-semibold uppercase tracking-[0.06em] text-[var(--fg)] md:text-[1.1rem]">
+              <span className="h-2 w-2 shrink-0 bg-[var(--primary)]" aria-hidden />
+              Project Gallery
+            </h2>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4">
+              {project.gallery.map((src, idx) => (
+                <div key={idx} className="relative aspect-[9/16] w-full overflow-hidden bg-[var(--bg2)]">
+                  <Image
+                    src={src}
+                    alt={`${project.name} screenshot ${idx + 1}`}
+                    fill
+                    className="object-cover object-top transition-transform duration-500 hover:scale-105"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    quality={85}
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* CTA Footer */}
         <footer className="flex flex-col items-start justify-between gap-8 pt-16 md:flex-row md:items-center md:gap-10 reveal animate-[terminal-slide_1.4s_ease-out_forwards]">

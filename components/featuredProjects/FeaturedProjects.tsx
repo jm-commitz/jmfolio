@@ -98,14 +98,25 @@ export default function FeaturedProjects() {
                       : 'opacity-60 group-hover:opacity-100'
                   }`}
                 >
-                  <Image
-                    src={p.img}
-                    alt={p.name}
-                    fill
-                    className="object-cover object-center"
-                    sizes="76px"
-                    quality={75}
-                  />
+                  {p.video ? (
+                    <video
+                      src={p.video}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="absolute inset-0 h-full w-full object-cover object-center"
+                    />
+                  ) : (
+                    <Image
+                      src={p.img}
+                      alt={p.name}
+                      fill
+                      className="object-cover object-center"
+                      sizes="76px"
+                      quality={75}
+                    />
+                  )}
                 </div>
               </div>
             ))}
@@ -137,16 +148,27 @@ export default function FeaturedProjects() {
                 aria-label={`View project: ${p.name}`}
                 className="relative block aspect-video w-full cursor-view-project bg-[var(--fg2)]/10 md:aspect-auto md:min-h-[min(68vh,720px)]"
               >
-                <Image
-                  src={p.img}
-                  alt={p.name}
-                  fill
-                  className="object-cover object-center"
-                  sizes="(max-width: 1024px) 100vw, 75vw"
-                  quality={85}
-                  priority={i === 0}
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                />
+                {p.video ? (
+                  <video
+                    src={p.video}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="absolute inset-0 h-full w-full object-cover object-center"
+                  />
+                ) : (
+                  <Image
+                    src={p.img}
+                    alt={p.name}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 1024px) 100vw, 75vw"
+                    quality={85}
+                    priority={i === 0}
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                  />
+                )}
                 <div className="pointer-events-none absolute inset-0 bg-black/[0.06]" />
               </Link>
               <figcaption className="flex items-center justify-between gap-4 px-4 py-3 font-[family-name:var(--M)] text-[0.65rem] uppercase tracking-[0.2em] text-[var(--fg2)] md:px-5 md:text-xs">
