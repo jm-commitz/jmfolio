@@ -82,6 +82,7 @@ export const projects: Project[] = [
     num: "03",
     name: "AIRBNB BOOKING SYSTEM",
     img: "/images/projects/airbnb.png",
+    video: "/images/airbnb.mp4",
     category: "Booking platform",
     techs: ["Next.js", "Node.js", "Prisma"],
     year: "2026",
