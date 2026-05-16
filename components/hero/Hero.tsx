@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { HERO_SCROLL_VH } from '@/lib/heroConstants';
 
 type AsciiData = { text: string; cols: number; rows: number };
 
@@ -29,6 +30,8 @@ function AsciiPanel({
   style?: CSSProperties;
 }) {
   const [data, setData] = useState<AsciiData | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [fontSize, setFontSize] = useState(10);
 
   useEffect(() => {
     fetch(url)
@@ -37,19 +40,37 @@ function AsciiPanel({
       .catch(() => {});
   }, [url]);
 
+  useEffect(() => {
+    if (!data || !containerRef.current) return;
+    const el = containerRef.current;
+    const compute = () => {
+      const w = el.clientWidth;
+      const h = el.clientHeight;
+      if (w === 0 || h === 0) return;
+      const byWidth = w / (data.cols * 0.6);
+      const byHeight = h / data.rows;
+      setFontSize(Math.min(byWidth, byHeight));
+    };
+    const ro = new ResizeObserver(compute);
+    ro.observe(el);
+    compute();
+    return () => ro.disconnect();
+  }, [data]);
+
   return (
     <div
+      ref={containerRef}
       className={`w-full h-full overflow-hidden flex items-center ${
         align === 'start' ? 'justify-start' : align === 'end' ? 'justify-end' : 'justify-center'
       }`}
-      style={{ containerType: 'size', ...style }}
+      style={style}
     >
       {data && (
         <pre
           aria-hidden="true"
           style={{
             fontFamily: 'ui-monospace, monospace',
-            fontSize: `min(calc(100cqi / ${(data.cols * 0.6).toFixed(2)}), calc(100cqb / ${data.rows}))`,
+            fontSize: `${fontSize}px`,
             lineHeight: 1,
             letterSpacing: 0,
             color: 'var(--primary)',
@@ -68,20 +89,20 @@ function AsciiPanel({
   );
 }
 
-const SCROLL_HEIGHT = '300vh';
+const SCROLL_HEIGHT = `${HERO_SCROLL_VH * 100}vh`;
 
 export default function Hero() {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const progress   = useMotionValue(0);
+  const progress = useMotionValue(0);
 
-  const leftX    = useTransform(progress, [0, 1], ['0%', '-55%']);
-  const rightX   = useTransform(progress, [0, 1], ['0%',  '55%']);
+  const leftX  = useTransform(progress, [0, 1], ['0%', '-55%']);
+  const rightX = useTransform(progress, [0, 1], ['0%',  '55%']);
+
   const hintOpacity    = useTransform(progress, [0, 0.08], [1, 0]);
-  const headingOpacity = useTransform(progress, [0.55, 0.85], [0, 1]);
-  const headingY       = useTransform(progress, [0.55, 0.85], ['16%', '0%']);
-  
-  const softwareX  = useTransform(progress, [0, 1], ['27.5vw', '0vw']);
-  const developerX = useTransform(progress, [0, 1], ['-27.5vw', '0vw']);
+  const headingOpacity = useTransform(progress, [0.6, 1], [0, 1]);
+  const headingY       = useTransform(progress, [0.6, 1], ['16%', '0%']);
+  const softwareX      = useTransform(progress, [0, 1], ['27.5vw', '0vw']);
+  const developerX     = useTransform(progress, [0, 1], ['-27.5vw', '0vw']);
 
   useEffect(() => {
     const update = () => {
@@ -102,6 +123,7 @@ export default function Hero() {
         className="sticky top-0 w-full overflow-hidden grid grid-cols-2 grid-rows-[1fr]"
         style={{ height: '100vh' }}
       >
+        {/* Hands */}
         <motion.div className="w-full h-full" style={{ x: leftX }}>
           <AsciiPanel url="/ascii/left_hand.txt" align="start" />
         </motion.div>
@@ -109,7 +131,7 @@ export default function Hero() {
           <AsciiPanel url="/ascii/right_hand.txt" align="end" />
         </motion.div>
 
-        {/* ── Centered heading ── */}
+        {/* Text — only appears after hands are spread */}
         <motion.div
           style={{ opacity: headingOpacity, y: headingY }}
           className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none z-10"
@@ -129,41 +151,30 @@ export default function Hero() {
               <motion.span style={{ display: 'block', color: 'var(--fg)', x: softwareX }}>SOFTWARE</motion.span>
               <motion.span style={{ display: 'block', color: 'var(--fg)', x: developerX }}>DEVELOPER</motion.span>
             </h1>
-            <div className="self-end mt-2 md:mt-3 font-[family-name:var(--M)] text-[0.65rem] md:text-[0.75rem] uppercase tracking-[0.4em] text-[var(--primary)] opacity-90">
-              JM ANCHETA
+            <div className="w-full flex items-center justify-between mt-3 md:mt-4 gap-6 pointer-events-auto">
+              <div className="flex flex-row items-center gap-4 md:gap-6 select-none">
+                {['laravel.svg', 'nextjs2.svg', 'flutter.svg', 'react.svg', 'mysql.svg'].map(logo => (
+                  <img
+                    key={logo}
+                    src={`/images/techstack/${logo}`}
+                    alt={logo.split('.')[0]}
+                    className="h-4 md:h-5 w-auto object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-pointer"
+                  />
+                ))}
+              </div>
+              <div className="font-[family-name:var(--M)] text-[0.65rem] md:text-[0.75rem] uppercase tracking-[0.4em] text-[var(--primary)] opacity-90 shrink-0 select-none">
+                JM ANCHETA
+              </div>
             </div>
           </div>
         </motion.div>
 
-        {/* ── Tech Stack ── */}
-        <motion.div
-          style={{ opacity: headingOpacity, y: headingY }}
-          className="absolute bottom-8 md:bottom-12 left-6 md:left-10 flex flex-row items-center gap-6 md:gap-10 select-none z-10"
-        >
-          <div className="flex flex-col font-[family-name:var(--M)] text-[0.55rem] md:text-[0.6rem] uppercase tracking-[0.15em] text-[var(--fg2)] opacity-80 leading-loose pointer-events-none">
-            <span>TECH I BUILD WITH EVERY DAY</span>
-            <span>FROM APIS TO INTERFACES</span>
-          </div>
-          <div className="flex flex-row items-center gap-4 md:gap-6">
-            {['laravel.svg', 'nextjs2.svg', 'flutter.svg', 'react.svg', 'mysql.svg'].map(logo => (
-              <img
-                key={logo}
-                src={`/images/techstack/${logo}`}
-                alt={logo.split('.')[0]}
-                className="h-4 md:h-5 w-auto object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-pointer"
-              />
-            ))}
-          </div>
-        </motion.div>
-
-        {/* ── Scroll hint ── */}
+        {/* Scroll hint */}
         <motion.div
           style={{ opacity: hintOpacity }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none select-none"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none select-none z-10"
         >
-          <span
-            style={{ fontFamily: 'var(--M)', fontSize: '0.6rem', letterSpacing: '0.2em', color: 'var(--primary)', opacity: 0.7 }}
-          >
+          <span style={{ fontFamily: 'var(--M)', fontSize: '0.6rem', letterSpacing: '0.2em', color: 'var(--primary)', opacity: 0.7 }}>
             SCROLL
           </span>
           <motion.div

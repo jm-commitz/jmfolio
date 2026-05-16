@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { projects, getProjectBySlug } from '@/components/featuredProjects/projectsData';
+import ProjectGallery from '@/components/projects/ProjectGallery';
 
 type ProjectPageProps = {
   params: Promise<{
@@ -56,7 +57,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
         <nav className="absolute left-0 right-0 top-0 z-10 flex min-w-0 items-center justify-start px-6 py-8 md:px-12 md:py-10 reveal animate-[terminal-slide_0.6s_ease-out_forwards]">
           <Link
-            href="/projects"
+            href="/#projects"
             className="group flex min-w-0 items-center gap-2 text-[0.6rem] uppercase tracking-[0.2em] text-[var(--fg)] drop-shadow-md transition-colors hover:text-white md:gap-3 md:text-[0.65rem] md:tracking-[0.3em]"
           >
             <span className="shrink-0 text-[1rem] transition-transform group-hover:-translate-x-1 md:text-[1.2rem]">
@@ -145,28 +146,21 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </section>
 
         {/* Project gallery */}
-        {project.gallery && project.gallery.length > 0 && (
-          <section className="mb-24 reveal animate-[terminal-slide_1.3s_ease-out_forwards]">
-            <h2 className="mb-6 flex items-center gap-3 text-[1rem] font-semibold uppercase tracking-[0.06em] text-[var(--fg)] md:text-[1.1rem]">
-              <span className="h-2 w-2 shrink-0 bg-[var(--primary)]" aria-hidden />
-              Project Gallery
-            </h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4">
-              {project.gallery.map((src, idx) => (
-                <div key={idx} className="relative aspect-[9/16] w-full overflow-hidden bg-[var(--bg2)]">
-                  <Image
-                    src={src}
-                    alt={`${project.name} screenshot ${idx + 1}`}
-                    fill
-                    className="object-cover object-top transition-transform duration-500 hover:scale-105"
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    quality={85}
-                  />
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+        {(() => {
+          const galleryImages = [
+            project.img,
+            ...(project.gallery ?? []).filter((g) => g !== project.img),
+          ];
+          return (
+            <section className="mb-24 reveal animate-[terminal-slide_1.3s_ease-out_forwards]">
+              <h2 className="mb-6 flex items-center gap-3 text-[1rem] font-semibold uppercase tracking-[0.06em] text-[var(--fg)] md:text-[1.1rem]">
+                <span className="h-2 w-2 shrink-0 bg-[var(--primary)]" aria-hidden />
+                Project Gallery
+              </h2>
+              <ProjectGallery images={galleryImages} projectName={project.name} />
+            </section>
+          );
+        })()}
 
         {/* CTA Footer */}
         <footer className="flex flex-col items-start justify-between gap-8 pt-16 md:flex-row md:items-center md:gap-10 reveal animate-[terminal-slide_1.4s_ease-out_forwards]">

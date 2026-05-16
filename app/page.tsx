@@ -1,10 +1,11 @@
 'use client';
 import Nav from '@/components/nav/Nav';
 import Hero from '@/components/hero/Hero';
-import Ticker from '@/components/ui/Ticker';
-import FeaturedProjects from '@/components/featuredProjects/FeaturedProjects';
+import ProjectsPageShowcase from '@/components/projects/ProjectsPageShowcase';
 import Footer from '@/components/footer/Footer';
 import PromoCard from '@/components/ui/PromoCard';
+import { projects } from '@/components/featuredProjects/projectsData';
+import { motion } from 'framer-motion';
 
 
 export default function Home() {
@@ -14,12 +15,16 @@ export default function Home() {
     >
       <Nav />
       <Hero />
-      <Ticker
-        items={['DESIGN', 'DEVELOPMENT', 'PERFORMANCE', 'SEO', 'CONVERSION', 'STRATEGY', 'DESIGN', 'DEVELOPMENT', 'PERFORMANCE', 'SEO', 'CONVERSION']}
-        theme="red"
-        emIcon="★"
-      />
-      <FeaturedProjects />
+      <motion.div
+        id="projects"
+        className="pb-24 md:pb-32"
+        initial={{ opacity: 0, y: 48 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <ProjectsPageShowcase projects={projects} />
+      </motion.div>
       <Footer />
 
       <PromoCard

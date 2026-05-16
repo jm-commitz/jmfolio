@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { motion } from 'framer-motion';
 import useEmblaCarousel from 'embla-carousel-react';
 import {
@@ -254,7 +253,6 @@ function GridProjectCard({ project }: { project: ShowcaseProject }) {
             <video
               ref={videoRef}
               src={project.video}
-              poster={project.img}
               muted
               loop
               playsInline
@@ -305,7 +303,6 @@ function CarouselProjectCard({ project, isActive }: { project: ShowcaseProject; 
             <video
               ref={videoRef}
               src={project.video}
-              poster={project.img}
               muted
               loop
               playsInline
@@ -415,6 +412,17 @@ function ShowcaseCarouselView({
     emblaApi?.scrollTo(0, true);
     emblaApi?.reInit();
   }, [emblaApi, projects]);
+
+  // Auto-advance every 3 seconds; pause on user interaction
+  useEffect(() => {
+    if (!emblaApi) return;
+    let timer: ReturnType<typeof setTimeout>;
+    const schedule = () => { timer = setTimeout(() => { emblaApi.scrollNext(); schedule(); }, 3000); };
+    const reset = () => { clearTimeout(timer); schedule(); };
+    schedule();
+    emblaApi.on('pointerDown', reset);
+    return () => { clearTimeout(timer); emblaApi.off('pointerDown', reset); };
+  }, [emblaApi]);
 
   const empty = projects.length === 0;
 
@@ -542,13 +550,6 @@ export default function ProjectsPageShowcase({ projects }: ProjectsPageShowcaseP
 
   return (
     <div className="mx-auto max-w-full overflow-visible px-6 md:px-10">
-      <Breadcrumbs
-        className="mb-6 md:mb-8"
-        items={[
-          { label: 'Home', href: '/' },
-          { label: 'Projects' },
-        ]}
-      />
       <div className="mb-10 min-w-0 space-y-4 md:mb-14 [container-type:inline-size]">
         <div className="-mb-1 flex items-center gap-3 text-[0.62rem] font-bold uppercase tracking-[0.4em] text-[var(--primary)]">
           <span className="h-[2px] w-8 bg-[var(--primary)]" aria-hidden />

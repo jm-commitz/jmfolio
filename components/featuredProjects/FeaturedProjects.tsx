@@ -107,7 +107,6 @@ export default function FeaturedProjects() {
                         }
                       }}
                       src={p.video}
-                      poster={p.img}
                       muted
                       loop
                       playsInline
@@ -163,7 +162,6 @@ export default function FeaturedProjects() {
                       }
                     }}
                     src={p.video}
-                    poster={p.img}
                     muted
                     loop
                     playsInline

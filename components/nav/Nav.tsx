@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
 import { usePathname } from 'next/navigation';
+import { HERO_SCROLL_VH } from '@/lib/heroConstants';
 
 export default function Nav() {
   const pathname = usePathname();
@@ -17,7 +18,7 @@ export default function Nav() {
       setIsVisible(true);
       setScrolled(window.scrollY > 50);
     } else {
-      setIsVisible(window.scrollY >= window.innerHeight * 1.1);
+      setIsVisible(window.scrollY >= 0.6 * (HERO_SCROLL_VH - 1) * window.innerHeight);
     }
   }, [isHomePage]);
 
@@ -38,8 +39,9 @@ export default function Nav() {
         return;
       }
 
-      const textAppearY = window.innerHeight * 1.1;
-      const heroEnd = window.innerHeight * 2;
+      const scrollable  = (HERO_SCROLL_VH - 1) * window.innerHeight;
+      const textAppearY = 0.6 * scrollable;
+      const heroEnd     = scrollable;
 
       if (currentScrollY < textAppearY) {
         setIsVisible(false);
@@ -81,7 +83,7 @@ export default function Nav() {
         className={`fixed top-0 left-0 right-0 z-[900] flex md:grid md:grid-cols-3 justify-between items-center px-6 md:px-10 transition-all duration-500 backdrop-blur-md bg-[var(--bg)]/94 ${scrolled ? 'py-3' : 'py-[1.1rem]'} ${isVisible || isOpen ? 'translate-y-0' : '-translate-y-full opacity-0'}`}
       >
         <div className="flex items-center justify-start">
-          <a href="/" className="hover-trigger flex items-center justify-center w-9 h-9 bg-[var(--primary)] transition-all duration-500 hover:scale-105 font-[family-name:var(--D)] text-lg text-white no-underline tracking-normal group pt-1 xl:w-10 xl:h-10 xl:text-[1.4rem]">
+          <a href="/" className="hover-trigger flex items-center justify-center w-9 h-9 bg-[var(--primary)] transition-all duration-500 hover:scale-105 font-[family-name:var(--D)] text-xl font-black text-white no-underline tracking-normal group pt-1 xl:w-10 xl:h-10 xl:text-2xl">
             JA
           </a>
         </div>
@@ -107,7 +109,7 @@ export default function Nav() {
           <a
             href="/cv/JAYMARK ANCHETA - CV.pdf"
             download="JAYMARK ANCHETA - CV.pdf"
-            className="btn-y hover-trigger text-[0.7rem] font-bold uppercase tracking-[0.1em] py-[0.65rem] px-6 whitespace-nowrap"
+            className="btn-y hover-trigger text-[0.7rem] font-black uppercase tracking-[0.1em] py-[0.65rem] px-6 whitespace-nowrap"
           >
             Download CV ↓
           </a>
