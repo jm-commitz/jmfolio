@@ -39,7 +39,7 @@ export default function Footer() {
             <span className="inline-block h-[2px] w-[25px] bg-[var(--red)]" />
             Let&apos;s Work Together
           </div>
-          <div className="font-[family-name:var(--D)] text-[clamp(4rem,10vw,9rem)] leading-[0.88] tracking-[-0.01em]">
+          <div className="font-display text-[clamp(4rem,10vw,9rem)] leading-[0.88] tracking-[-0.01em]">
             GOT A<br />
             <span className="text-transparent" style={{ WebkitTextStroke: '1.5px var(--fg)' }}>
               PROJECT

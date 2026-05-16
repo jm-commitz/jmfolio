@@ -129,6 +129,7 @@ export const projects: Project[] = [
     num: "05",
     name: "OMNICHANNEL SALES DASHBOARD",
     img: "/images/projects/omnichannel.png",
+    video: "/images/omnichannel.mp4",
     category: "Dashboard",
     techs: ["React.js", "Zustand", "TanStack Query", "Laravel", "MySQL"],
     year: "2025",

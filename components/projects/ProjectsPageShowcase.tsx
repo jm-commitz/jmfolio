@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { motion } from 'framer-motion';
 import useEmblaCarousel from 'embla-carousel-react';
 import {
@@ -13,6 +14,7 @@ import {
   LayoutGrid,
   ListFilter,
 } from 'lucide-react';
+import { useInView } from 'framer-motion';
 
 export type ShowcaseProject = {
   slug: string;
@@ -204,21 +206,10 @@ function CarouselThumbnailStrip({
         >
           <div
             className={`relative h-7 w-full overflow-hidden bg-[var(--fg2)]/15 transition-all duration-500 sm:h-8 ${
-              selected === i ? 'opacity-100' : 'opacity-60 group-hover:opacity-100'
+              selected === i ? 'opacity-100 grayscale-0' : 'opacity-60 grayscale group-hover:opacity-100'
             }`}
           >
-            {p.video ? (
-              <video
-                src={p.video}
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="absolute inset-0 h-full w-full object-cover object-center"
-              />
-            ) : (
-              <Image src={p.img} alt={p.name} fill className="object-cover object-center" sizes="48px" />
-            )}
+            <Image src={p.img} alt={p.name} fill className="object-cover object-center" sizes="48px" />
           </div>
           <div className="flex h-2 w-full items-center justify-center" aria-hidden>
             {selected === i && (
@@ -232,6 +223,118 @@ function CarouselThumbnailStrip({
         </div>
       ))}
     </div>
+  );
+}
+
+function GridProjectCard({ project }: { project: ShowcaseProject }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const isInView = useInView(ref, { margin: "-20% 0px" });
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isInView) videoRef.current.play().catch(()=>{});
+      else videoRef.current.pause();
+    }
+  }, [isInView]);
+
+  return (
+    <motion.article
+      layout
+      className="min-w-0"
+      transition={{ layout: gridItemLayoutTransition }}
+    >
+      <Link
+        href={`/projects/${project.slug}`}
+        ref={ref}
+        className="group block cursor-view-project focus:outline-none focus-visible:[&_img]:brightness-110"
+      >
+        <div className={`relative aspect-video w-full overflow-hidden bg-[var(--fg2)]/10 transition-all duration-500 ${isInView ? 'grayscale-0' : 'grayscale'}`}>
+          {project.video ? (
+            <video
+              ref={videoRef}
+              src={project.video}
+              poster={project.img}
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
+            />
+          ) : (
+            <Image
+              src={project.img}
+              alt={project.name}
+              fill
+              className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              loading="lazy"
+            />
+          )}
+          <div className="pointer-events-none absolute inset-0 bg-black/[0.06]" />
+        </div>
+        <div className="flex items-baseline justify-between gap-4 px-4 py-3 font-[family-name:var(--M)] text-[0.62rem] uppercase tracking-[0.2em] text-[var(--fg2)] max-md:items-center max-md:text-[0.65rem] sm:text-[0.65rem] md:mt-4 md:px-0 md:py-0">
+          <span className="min-w-0 text-[var(--fg)] transition-colors group-hover:text-[var(--primary)]">
+            {project.name}
+          </span>
+          <span className="shrink-0 tabular-nums text-[var(--fg)]">{project.year}</span>
+        </div>
+      </Link>
+    </motion.article>
+  );
+}
+
+function CarouselProjectCard({ project, isActive }: { project: ShowcaseProject; isActive: boolean }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isActive) videoRef.current.play().catch(()=>{});
+      else videoRef.current.pause();
+    }
+  }, [isActive]);
+
+  return (
+    <figure className="m-0">
+      <Link
+        href={`/projects/${project.slug}`}
+        aria-label={`View project: ${project.name}`}
+        className="relative block cursor-view-project focus:outline-none focus-visible:[&_img]:brightness-110"
+      >
+        <div className={`relative block aspect-video w-full overflow-hidden bg-[var(--fg2)]/10 md:aspect-auto md:min-h-[min(68vh,720px)] transition-all duration-500 ${isActive ? 'grayscale-0' : 'grayscale'}`}>
+          {project.video ? (
+            <video
+              ref={videoRef}
+              src={project.video}
+              poster={project.img}
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 h-full w-full object-cover object-center"
+            />
+          ) : (
+            <Image
+              src={project.img}
+              alt={project.name}
+              fill
+              className="object-cover object-center"
+              sizes="(max-width: 768px) 92vw, (max-width: 1280px) 88vw, 86vw"
+              priority={false}
+              loading="lazy"
+            />
+          )}
+          <div className="pointer-events-none absolute inset-0 bg-black/[0.06]" />
+        </div>
+      </Link>
+      <figcaption className="mt-5 flex items-baseline justify-between gap-6 px-1 font-[family-name:var(--M)] text-[0.62rem] uppercase tracking-[0.2em] text-[var(--fg2)] sm:mt-6 sm:text-[0.65rem] md:px-2 md:text-xs">
+        <Link
+          href={`/projects/${project.slug}`}
+          className={`min-w-0 text-left no-underline transition-colors focus:outline-none focus-visible:underline hover:text-[var(--primary)] ${isActive ? 'text-[var(--primary)]' : 'text-[var(--fg2)]'}`}
+        >
+          {project.name}
+        </Link>
+        <span className="shrink-0 tabular-nums text-[var(--fg)]">{project.year}</span>
+      </figcaption>
+    </figure>
   );
 }
 
@@ -258,46 +361,7 @@ function ShowcaseGridView({
   return (
     <div className={`w-full ${gridClass}`}>
       {projects.map((project) => (
-        <motion.article
-          key={project.slug}
-          layout
-          className="min-w-0"
-          transition={{ layout: gridItemLayoutTransition }}
-        >
-          <Link
-            href={`/projects/${project.slug}`}
-            className="group block cursor-view-project focus:outline-none focus-visible:[&_img]:brightness-110"
-          >
-            <div className="relative aspect-video w-full overflow-hidden bg-[var(--fg2)]/10">
-              {project.video ? (
-                <video
-                  src={project.video}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
-                />
-              ) : (
-                <Image
-                  src={project.img}
-                  alt={project.name}
-                  fill
-                  className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  loading="lazy"
-                />
-              )}
-              <div className="pointer-events-none absolute inset-0 bg-black/[0.06]" />
-            </div>
-            <div className="flex items-baseline justify-between gap-4 px-4 py-3 font-[family-name:var(--M)] text-[0.62rem] uppercase tracking-[0.2em] text-[var(--fg2)] max-md:items-center max-md:text-[0.65rem] sm:text-[0.65rem] md:mt-4 md:px-0 md:py-0">
-              <span className="min-w-0 text-[var(--fg)] transition-colors group-hover:text-[var(--primary)]">
-                {project.name}
-              </span>
-              <span className="shrink-0 tabular-nums text-[var(--fg)]">{project.year}</span>
-            </div>
-          </Link>
-        </motion.article>
+        <GridProjectCard key={project.slug} project={project} />
       ))}
     </div>
   );
@@ -407,51 +471,12 @@ function ShowcaseCarouselView({
           </button>
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex touch-pan-y [-webkit-tap-highlight-color:transparent]">
-              {projects.map((project) => (
+              {projects.map((project, i) => (
                 <div
                   key={project.slug}
                   className="min-w-0 shrink-0 grow-0 basis-[min(92vw,1200px)] pl-3 sm:basis-[min(90vw,1280px)] sm:pl-4 md:basis-[min(88vw,1380px)] md:pl-5 lg:basis-[min(86vw,1500px)] lg:pl-6"
                 >
-                  <figure className="m-0">
-                    <Link
-                      href={`/projects/${project.slug}`}
-                      aria-label={`View project: ${project.name}`}
-                      className="relative block cursor-view-project focus:outline-none focus-visible:[&_img]:brightness-110"
-                    >
-                      <div className="relative block aspect-video w-full overflow-hidden bg-[var(--fg2)]/10 md:aspect-auto md:min-h-[min(68vh,720px)]">
-                        {project.video ? (
-                          <video
-                            src={project.video}
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                            className="absolute inset-0 h-full w-full object-cover object-center"
-                          />
-                        ) : (
-                          <Image
-                            src={project.img}
-                            alt={project.name}
-                            fill
-                            className="object-cover object-center"
-                            sizes="(max-width: 768px) 92vw, (max-width: 1280px) 88vw, 86vw"
-                            priority={false}
-                            loading="lazy"
-                          />
-                        )}
-                        <div className="pointer-events-none absolute inset-0 bg-black/[0.06]" />
-                      </div>
-                    </Link>
-                    <figcaption className="mt-5 flex items-baseline justify-between gap-6 px-1 font-[family-name:var(--M)] text-[0.62rem] uppercase tracking-[0.2em] text-[var(--fg2)] sm:mt-6 sm:text-[0.65rem] md:px-2 md:text-xs">
-                      <Link
-                        href={`/projects/${project.slug}`}
-                        className="min-w-0 text-left text-[var(--fg2)] no-underline transition-colors hover:text-[var(--primary)] focus:outline-none focus-visible:underline"
-                      >
-                        {project.name}
-                      </Link>
-                      <span className="shrink-0 tabular-nums text-[var(--fg)]">{project.year}</span>
-                    </figcaption>
-                  </figure>
+                  <CarouselProjectCard project={project} isActive={selected === i} />
                 </div>
               ))}
             </div>
@@ -517,16 +542,23 @@ export default function ProjectsPageShowcase({ projects }: ProjectsPageShowcaseP
 
   return (
     <div className="mx-auto max-w-full overflow-visible px-6 md:px-10">
+      <Breadcrumbs
+        className="mb-6 md:mb-8"
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Projects' },
+        ]}
+      />
       <div className="mb-10 min-w-0 space-y-4 md:mb-14 [container-type:inline-size]">
         <div className="-mb-1 flex items-center gap-3 text-[0.62rem] font-bold uppercase tracking-[0.4em] text-[var(--primary)]">
           <span className="h-[2px] w-8 bg-[var(--primary)]" aria-hidden />
           SELECTED WORK
         </div>
-        <h1 className="max-w-full break-words font-[family-name:var(--D)] text-4xl uppercase leading-[0.92] tracking-tighter text-[var(--fg)] sm:text-5xl md:text-6xl lg:text-[clamp(2.15rem,4.2cqi,3.75rem)] lg:leading-[0.92] xl:text-6xl xl:leading-none 2xl:text-7xl min-[1800px]:text-8xl">
+        <h1 className="font-display max-w-full break-words text-4xl uppercase leading-[0.92] tracking-tighter text-[var(--fg)] sm:text-5xl md:text-6xl lg:text-[clamp(2.15rem,4.2cqi,3.75rem)] lg:leading-[0.92] xl:text-6xl xl:leading-none 2xl:text-7xl min-[1800px]:text-8xl">
           All <br className="max-sm:hidden" /> Projects
         </h1>
         <p className="max-w-full font-[family-name:var(--M)] text-[0.75rem] uppercase leading-relaxed tracking-[0.1em] text-[var(--fg2)] sm:max-w-xl lg:max-w-2xl">
-          We build websites where every scroll, every transition, and every interaction feels intentional. The details most teams skip are the details we care about most.
+          I build robust applications and dynamic interfaces designed to solve complex business problems. From scalable backends to intuitive frontends, every detail is engineered with intention.
         </p>
       </div>
 

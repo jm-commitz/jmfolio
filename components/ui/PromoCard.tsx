@@ -130,7 +130,7 @@ export default function PromoCard({
 
           <div aria-hidden className="grid grid-cols-2 gap-2 p-2 sm:p-2">
             <div className="overflow-hidden bg-black h-[104px] sm:h-[132px] relative">
-              {previewVideoSrc && videoOk ? (
+              {previewVideoSrc && videoOk && open ? (
                 <video
                   key={previewVideoSrc}
                   className="absolute inset-0 h-full w-full object-cover"
@@ -157,7 +157,7 @@ export default function PromoCard({
               )}
             </div>
             <div className="overflow-hidden bg-black h-[76px] sm:h-[92px] relative">
-              {previewVideoSrc && videoOk ? (
+              {previewVideoSrc && videoOk && open ? (
                 <video
                   key={previewVideoSrc}
                   className="absolute inset-0 h-full w-full object-cover"

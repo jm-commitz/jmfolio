@@ -68,7 +68,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
         <header className="absolute inset-x-0 bottom-0 z-10 min-w-0 px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-32 md:px-12 md:pb-14 md:pt-40 reveal animate-[terminal-slide_0.85s_ease-out_forwards]">
           <div className="w-full min-w-0 [container-type:inline-size]">
-            <h1 className="mb-5 max-w-full text-balance break-words font-[family-name:var(--D)] text-[clamp(1.5rem,min(6.5vw,3.75cqi),4rem)] uppercase leading-[0.95] tracking-tight text-[var(--fg)] drop-shadow-[0_2px_24px_rgba(0,0,0,0.65)] md:mb-8 lg:text-[clamp(1.65rem,min(5vw,3.5cqi),4.25rem)]">
+            <h1 className="font-display mb-5 max-w-full text-balance break-words text-[clamp(1.5rem,min(6.5vw,3.75cqi),4rem)] uppercase leading-[0.95] tracking-tight text-[var(--fg)] drop-shadow-[0_2px_24px_rgba(0,0,0,0.65)] md:mb-8 lg:text-[clamp(1.65rem,min(5vw,3.5cqi),4.25rem)]">
               {project.name}
             </h1>
             <p className="w-full max-w-full py-2 font-sans text-pretty text-[0.9rem] font-normal leading-relaxed text-[#ebe8e0] backdrop-blur-[2px] md:text-[1.05rem]">

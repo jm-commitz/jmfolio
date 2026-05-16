@@ -56,11 +56,11 @@ export default function FeaturedProjects() {
             <div className="text-[0.62rem] text-[var(--primary)] uppercase tracking-[0.4em] font-bold -mb-4 flex items-center gap-3">
               <span className="w-8 h-[2px] bg-[var(--primary)]"></span> SELECTED WORK
             </div>
-            <h2 className="max-w-full break-words font-[family-name:var(--D)] text-4xl leading-[0.92] uppercase tracking-tighter text-[var(--fg)] sm:text-5xl md:text-6xl lg:text-[clamp(2.15rem,4.2cqi,3.35rem)] lg:leading-[0.92] xl:text-6xl xl:leading-none 2xl:text-7xl min-[1800px]:text-8xl">
+            <h2 className="font-display max-w-full text-3xl leading-[0.92] uppercase tracking-tighter text-[var(--fg)] sm:text-4xl md:text-5xl lg:text-[clamp(1.75rem,7cqi,2.75rem)] lg:leading-[0.92] xl:text-5xl xl:leading-none 2xl:text-6xl min-[1800px]:text-7xl">
               Featured <br /> Work
             </h2>
             <p className="max-w-full text-[0.75rem] text-[var(--fg2)] font-[family-name:var(--M)] leading-relaxed uppercase tracking-[0.1em] sm:max-w-sm lg:max-w-[min(100%,18rem)] xl:max-w-xs">
-              We build websites where every scroll, every transition, and every interaction feels intentional. The details most teams skip are the details we care about most.
+              I build robust applications and dynamic interfaces designed to solve complex business problems. From scalable backends to intuitive frontends, every detail is engineered with intention.
             </p>
           </div>
 
@@ -100,19 +100,25 @@ export default function FeaturedProjects() {
                 >
                   {p.video ? (
                     <video
+                      ref={(el) => {
+                        if (el) {
+                          if (activeIndex === i && el.paused) el.play().catch(() => {});
+                          else if (activeIndex !== i && !el.paused) el.pause();
+                        }
+                      }}
                       src={p.video}
-                      autoPlay
+                      poster={p.img}
                       muted
                       loop
                       playsInline
-                      className="absolute inset-0 h-full w-full object-cover object-center"
+                      className={`absolute inset-0 h-full w-full object-cover object-center transition-all duration-500 ${activeIndex !== i ? 'grayscale' : 'grayscale-0'}`}
                     />
                   ) : (
                     <Image
                       src={p.img}
                       alt={p.name}
                       fill
-                      className="object-cover object-center"
+                      className={`object-cover object-center transition-all duration-500 ${activeIndex !== i ? 'grayscale' : 'grayscale-0'}`}
                       sizes="76px"
                       quality={75}
                     />
@@ -150,19 +156,25 @@ export default function FeaturedProjects() {
               >
                 {p.video ? (
                   <video
+                    ref={(el) => {
+                      if (el) {
+                        if (activeIndex === i && el.paused) el.play().catch(() => {});
+                        else if (activeIndex !== i && !el.paused) el.pause();
+                      }
+                    }}
                     src={p.video}
-                    autoPlay
+                    poster={p.img}
                     muted
                     loop
                     playsInline
-                    className="absolute inset-0 h-full w-full object-cover object-center"
+                    className={`absolute inset-0 h-full w-full object-cover object-center transition-all duration-500 ${activeIndex !== i ? 'grayscale' : 'grayscale-0'}`}
                   />
                 ) : (
                   <Image
                     src={p.img}
                     alt={p.name}
                     fill
-                    className="object-cover object-center"
+                    className={`object-cover object-center transition-all duration-500 ${activeIndex !== i ? 'grayscale' : 'grayscale-0'}`}
                     sizes="(max-width: 1024px) 100vw, 75vw"
                     quality={85}
                     priority={i === 0}

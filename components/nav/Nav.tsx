@@ -1,39 +1,77 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function Nav() {
-  const [isVisible, setIsVisible] = useState(true);
+  const pathname = usePathname();
+  const isHomePage = pathname === '/';
+  
+  const [isVisible, setIsVisible] = useState(!isHomePage);
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
+    // Re-evaluate visibility on route change
+    if (!isHomePage) {
+      setIsVisible(true);
+      setScrolled(window.scrollY > 50);
+    } else {
+      setIsVisible(window.scrollY >= window.innerHeight * 1.1);
+    }
+  }, [isHomePage]);
+
+  useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // Check scroll direction
-      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
+      if (!isHomePage) {
+        if (currentScrollY < 50) {
+          setIsVisible(true);
+          setScrolled(false);
+        } else {
+          const scrollingDown = currentScrollY > lastScrollY.current;
+          setIsVisible(!scrollingDown);
+          setScrolled(true);
+        }
+        lastScrollY.current = currentScrollY;
+        return;
       }
 
-      setScrolled(currentScrollY > 60);
+      const textAppearY = window.innerHeight * 1.1;
+      const heroEnd = window.innerHeight * 2;
+
+      if (currentScrollY < textAppearY) {
+        setIsVisible(false);
+        setScrolled(false);
+        lastScrollY.current = currentScrollY;
+        return;
+      }
+
+      if (currentScrollY >= textAppearY && currentScrollY <= heroEnd) {
+        setIsVisible(true);
+        setScrolled(false);
+        lastScrollY.current = currentScrollY;
+        return;
+      }
+
+      // Normal show-on-scroll-up / hide-on-scroll-down behaviour past the hero
+      const scrollingDown = currentScrollY > lastScrollY.current;
+      // Grace zone: always show nav right as it enters post-hero territory
+      setIsVisible(!scrollingDown || currentScrollY < heroEnd + 120);
+      setScrolled(true);
       lastScrollY.current = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isHomePage]);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const navLinks = [
     { name: 'Home', href: '/' },
-    { name: 'Services', href: '/#arsenal' },
     { name: 'Projects', href: '/#projects' },
-    { name: 'About', href: '/#about' },
-    { name: 'Reviews', href: '/#testimonials' },
     { name: 'Contact', href: '/#contact' },
   ];
 
@@ -99,7 +137,7 @@ export default function Nav() {
                   onClick={() => setIsOpen(false)}
                   className="group block relative py-2 no-underline hover-trigger"
                 >
-                  <span className="font-[family-name:var(--D)] text-[clamp(2.5rem,8vw,5.5rem)] text-[var(--fg)] leading-none uppercase tracking-tighter group-hover:text-[var(--red)] group-hover:scale-[1.1] transition-all duration-500 inline-block">
+                  <span className="font-[family-name:var(--D)] font-bold text-[clamp(2.5rem,8vw,5.5rem)] text-[var(--fg)] leading-none uppercase tracking-tighter group-hover:text-[var(--red)] group-hover:scale-[1.1] transition-all duration-500 inline-block">
                     {link.name}
                   </span>
                 </a>

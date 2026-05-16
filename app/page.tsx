@@ -2,12 +2,7 @@
 import Nav from '@/components/nav/Nav';
 import Hero from '@/components/hero/Hero';
 import Ticker from '@/components/ui/Ticker';
-import Arsenal from '@/components/arsenal/Arsenal';
-import Interlude from '@/components/ui/Interlude';
 import FeaturedProjects from '@/components/featuredProjects/FeaturedProjects';
-import About from '@/components/about/About';
-import Testimonials from '@/components/testimonials/Testimonials';
-import WhyChooseMe from '@/components/whyChooseMe/WhyChooseMe';
 import Footer from '@/components/footer/Footer';
 import PromoCard from '@/components/ui/PromoCard';
 
@@ -24,21 +19,11 @@ export default function Home() {
         theme="red"
         emIcon="★"
       />
-      <Arsenal />
-      <Interlude />
       <FeaturedProjects />
-      <About />
-      <Testimonials />
-      <WhyChooseMe />
-      <Ticker
-        items={['AVAILABLE FOR FREELANCE', 'OPEN TO CONTRACTS', 'BASED IN THE PHILIPPINES', 'WEB DEV', 'MOBILE DEV', 'SAAS BUILDER']}
-        theme="red"
-        emIcon="★"
-      />
       <Footer />
 
       <PromoCard
-        triggerSelector="#arsenal"
+        triggerSelector="#projects"
         storageKey="promo:swarm-escape:dismissed"
         kicker="[NEW GAME]"
         title="Swarm Escape"

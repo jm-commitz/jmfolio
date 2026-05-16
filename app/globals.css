@@ -16,57 +16,28 @@
   --pink: var(--primary);
   --green: #00ff77;
   ;
-  --D: var(--font-bebas), sans-serif;
-  --M: var(--font-space-mono), monospace;
-  --H: var(--font-permanent), cursive;
+  --D: var(--font-jakarta), sans-serif;
+  --M: var(--font-jakarta), sans-serif;
+  --H: var(--font-jakarta), sans-serif;
   transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+body {
+  font-family: var(--font-jakarta), sans-serif;
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--D);
+    font-weight: 800;
+  }
 }
 
 html {
   overflow-y: scroll;
 }
 
-/* Disable custom cursor on mobile/touch */
-@media (pointer: coarse) {
 
-  .cur,
-  .cur-ring,
-  .cursor-view-project-label {
-    display: none !important;
-  }
-}
-
-/* Hide default cursor only when a mouse/fine pointer is used */
-@media (pointer: fine) {
-
-  body,
-  a,
-  button,
-  .btn-y,
-  .btn-o,
-  .proj-row {
-    cursor: none;
-  }
-
-  /* Native pointer on featured images so the hand stays visible with the VIEW PROJECT label */
-  .cursor-view-project {
-    cursor: pointer;
-  }
-}
-
-/* While the game modal is open, disable the custom cursor overlay */
-html[data-game-modal-open="1"] .cur,
-html[data-game-modal-open="1"] .cur-ring,
-html[data-game-modal-open="1"] .cursor-view-project-label {
-  display: none !important;
-}
-@media (pointer: fine) {
-  html[data-game-modal-open="1"] body,
-  html[data-game-modal-open="1"] a,
-  html[data-game-modal-open="1"] button {
-    cursor: auto !important;
-  }
-}
 
 /* While the game modal is open, hard-lock scrolling (Lenis + native). */
 html[data-game-modal-open="1"],
@@ -86,19 +57,6 @@ html[data-game-modal-open="1"] #nav-menu {
   display: none !important;
 }
 
-.cursor-view-project-label {
-  font-family: var(--M);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  line-height: 1;
-  text-transform: uppercase;
-  color: #000;
-  background: var(--primary);
-  padding: 0.55rem 1rem;
-  border: 2px solid var(--primary);
-  white-space: nowrap;
-}
 
 html.lenis {
   height: auto;
@@ -161,41 +119,6 @@ body::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23f)' opacity='.06'/%3E%3C/svg%3E");
 }
 
-.cur {
-  width: 8px;
-  height: 8px;
-  background: var(--red);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 99999;
-  transform: translate(-50%, -50%);
-  transition: width .2s, height .2s, background .2s, transform .1s;
-}
-
-.cur.on {
-  width: 14px;
-  height: 14px;
-  background: var(--primary);
-}
-
-.cur-ring {
-  width: 38px;
-  height: 38px;
-  border: 1.5px solid rgba(255, 69, 0, .55);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 99997;
-  transform: translate(-50%, -50%);
-  transition: left .12s ease-out, top .12s ease-out, width .3s, height .3s, border-color .3s;
-}
-
-.cur-ring.on {
-  width: 56px;
-  height: 56px;
-  border-color: var(--primary);
-}
 
 @keyframes blink {
 
@@ -452,7 +375,7 @@ body::after {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  font-family: var(--M), ui-monospace, monospace;
+  font-family: ui-monospace, monospace;
   /* Fallback when container queries unavailable */
   font-size: clamp(0.26rem, 2.8vw, 0.52rem);
   line-height: 1;

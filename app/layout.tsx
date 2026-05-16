@@ -1,30 +1,15 @@
 import type { Metadata } from "next";
-import { Space_Mono, Permanent_Marker } from "next/font/google";
-import localFont from 'next/font/local';
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import "./additional-styles.css";
 
-const bebasNeue = localFont({
-  src: '../font/Bebas_Neue/BebasNeue-Regular.ttf',
-  variable: "--font-bebas",
+const plusJakartaSans = Plus_Jakarta_Sans({
+  weight: ['200', '300', '400', '500', '600', '700', '800'],
+  subsets: ['latin'],
+  variable: '--font-jakarta',
   display: 'swap',
 });
 
-const spaceMono = Space_Mono({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  variable: "--font-space-mono",
-  display: 'swap',
-});
-
-const permanentMarker = Permanent_Marker({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-permanent",
-  display: 'swap',
-});
-
-import Cursor from "@/components/ui/Cursor";
 import SmoothScroll from "@/components/ui/SmoothScroll";
 
 
@@ -67,8 +52,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`dark ${bebasNeue.variable} ${spaceMono.variable} ${permanentMarker.variable}`}>
-      <body className="font-mono antialiased overflow-x-clip bg-[var(--bg)] text-[var(--fg)] relative">
+    <html lang="en" className={`dark ${plusJakartaSans.variable}`}>
+      <body className="antialiased overflow-x-clip bg-[var(--bg)] text-[var(--fg)] relative">
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[99999] focus:bg-[#FF4500] focus:text-black focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:outline-none"
@@ -76,7 +61,6 @@ export default function RootLayout({
           Skip to content
         </a>
         <SmoothScroll>
-          <Cursor />
           <div id="main-content">
             {children}
           </div>

@@ -1,125 +1,187 @@
 'use client';
-import { useContext, useEffect, useRef, useState } from 'react';
-import { cn } from '@/lib/utils';
-import { HeroIntroContext } from '@/components/ui/SmoothScroll';
-import MaskedLinesHeadline from '@/components/ui/MaskedLinesHeadline';
-import HeroAsideVisual from './HeroAsideVisual';
-import HeroTechStack from './HeroTechStack';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 
-export default function Hero() {
-  const heroRef = useRef<HTMLElement>(null);
-  const introReady = useContext(HeroIntroContext) ?? true;
-  const [enterSweep, setEnterSweep] = useState(false);
+type AsciiData = { text: string; cols: number; rows: number };
+
+function parseAscii(raw: string): AsciiData {
+  const lines = raw.split('\n');
+  while (lines.length > 0 && lines[lines.length - 1].trim() === '') lines.pop();
+  let minIndent = Infinity;
+  for (const line of lines) {
+    if (line.trim() === '') continue;
+    const m = line.match(/^( *)/);
+    if (m) minIndent = Math.min(minIndent, m[1].length);
+  }
+  if (!isFinite(minIndent)) minIndent = 0;
+  const trimmed = lines.map(l => l.slice(minIndent).trimEnd());
+  const cols = Math.max(...trimmed.map(l => l.length), 1);
+  return { text: trimmed.join('\n'), cols, rows: trimmed.length };
+}
+
+function AsciiPanel({
+  url,
+  align = 'center',
+  style,
+}: {
+  url: string;
+  align?: 'start' | 'end' | 'center';
+  style?: CSSProperties;
+}) {
+  const [data, setData] = useState<AsciiData | null>(null);
 
   useEffect(() => {
-    if (!introReady) return;
-    let raf1 = 0;
-    let raf2 = 0;
-    raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => setEnterSweep(true));
-    });
-    return () => {
-      cancelAnimationFrame(raf1);
-      cancelAnimationFrame(raf2);
-    };
-  }, [introReady]);
-
-  useEffect(() => {
-    if (!introReady || !enterSweep) return;
-
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('in');
-          obs.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal').forEach((el) => {
-      const d = parseFloat(el.getAttribute('data-d') || "0");
-      (el as HTMLElement).style.transitionDelay = d + 's';
-      obs.observe(el);
-    });
-
-    const animCount = (el: HTMLElement) => {
-      const target = +(el.dataset.count || 0);
-      const suf = el.dataset.suf || '';
-      const dur = 1200;
-      const start = performance.now();
-      function step(now: number) {
-        const p = Math.min((now - start) / dur, 1);
-        const ease = 1 - Math.pow(1 - p, 3);
-        el.textContent = Math.round(ease * target) + suf;
-        if (p < 1) requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-    };
-
-    const countObs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          animCount(e.target as HTMLElement);
-          countObs.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.5 });
-
-    document.querySelectorAll('.stat-n[data-count]').forEach(el => countObs.observe(el));
-
-    return () => {
-      obs.disconnect();
-      countObs.disconnect();
-    };
-  }, [introReady, enterSweep]);
-
-  const introAnim = cn(
-    'hero-intro-animate',
-    (!introReady || !enterSweep) && 'hero-intro-before',
-    introReady && enterSweep && 'hero-intro-active',
-  );
+    fetch(url)
+      .then(r => r.text())
+      .then(raw => setData(parseAscii(raw)))
+      .catch(() => {});
+  }, [url]);
 
   return (
-    <section ref={heroRef} className="hero" id="home">
-      <div className="h-inner">
-        <div className="h-col h-col-main">
-          {/* <div className="avail reveal"><span className="avail-dot"></span>Available for Projects</div> */}
-          <MaskedLinesHeadline
-            as="h1"
-            className="h-title"
-            lines={['Launch Faster.', 'Build Smarter.']}
-            play={introReady && enterSweep}
-          />
-          <div className={cn('h-main-below-title flex min-w-0 flex-col', introAnim)}>
-            <p className="h-desc reveal" data-d="0.2">
-              <span className="h-desc-line">Full-stack development designed for speed and scalability, <br />
-built around real-world use,
-from architecture to launch.</span>
-            </p>
-            <div
-              className="h-btns reveal !gap-2 sm:!gap-3 md:!gap-[0.8rem]"
-              data-d="0.25"
+    <div
+      className={`w-full h-full overflow-hidden flex items-center ${
+        align === 'start' ? 'justify-start' : align === 'end' ? 'justify-end' : 'justify-center'
+      }`}
+      style={{ containerType: 'size', ...style }}
+    >
+      {data && (
+        <pre
+          aria-hidden="true"
+          style={{
+            fontFamily: 'ui-monospace, monospace',
+            fontSize: `min(calc(100cqi / ${(data.cols * 0.6).toFixed(2)}), calc(100cqb / ${data.rows}))`,
+            lineHeight: 1,
+            letterSpacing: 0,
+            color: 'var(--primary)',
+            whiteSpace: 'pre',
+            userSelect: 'none',
+            pointerEvents: 'none',
+            margin: 0,
+            padding: 0,
+            opacity: 0.9,
+          }}
+        >
+          {data.text}
+        </pre>
+      )}
+    </div>
+  );
+}
+
+const SCROLL_HEIGHT = '300vh';
+
+export default function Hero() {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const progress   = useMotionValue(0);
+
+  const leftX    = useTransform(progress, [0, 1], ['0%', '-55%']);
+  const rightX   = useTransform(progress, [0, 1], ['0%',  '55%']);
+  const hintOpacity    = useTransform(progress, [0, 0.08], [1, 0]);
+  const headingOpacity = useTransform(progress, [0.55, 0.85], [0, 1]);
+  const headingY       = useTransform(progress, [0.55, 0.85], ['16%', '0%']);
+  
+  const softwareX  = useTransform(progress, [0, 1], ['27.5vw', '0vw']);
+  const developerX = useTransform(progress, [0, 1], ['-27.5vw', '0vw']);
+
+  useEffect(() => {
+    const update = () => {
+      const el = wrapperRef.current;
+      if (!el) return;
+      const { top, height } = el.getBoundingClientRect();
+      const viewH = window.innerHeight;
+      progress.set(Math.max(0, Math.min(1, -top / (height - viewH))));
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+    return () => window.removeEventListener('scroll', update);
+  }, [progress]);
+
+  return (
+    <div ref={wrapperRef} id="home" style={{ height: SCROLL_HEIGHT }}>
+      <section
+        className="sticky top-0 w-full overflow-hidden grid grid-cols-2 grid-rows-[1fr]"
+        style={{ height: '100vh' }}
+      >
+        <motion.div className="w-full h-full" style={{ x: leftX }}>
+          <AsciiPanel url="/ascii/left_hand.txt" align="start" />
+        </motion.div>
+        <motion.div className="w-full h-full" style={{ x: rightX }}>
+          <AsciiPanel url="/ascii/right_hand.txt" align="end" />
+        </motion.div>
+
+        {/* ── Centered heading ── */}
+        <motion.div
+          style={{ opacity: headingOpacity, y: headingY }}
+          className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none z-10"
+        >
+          <div className="flex flex-col items-center">
+            <h1
+              className="font-display"
+              style={{
+                fontSize: 'clamp(3.8rem, 11vw, 10rem)',
+                lineHeight: 0.88,
+                letterSpacing: '-0.01em',
+                textTransform: 'uppercase',
+                textAlign: 'center',
+                margin: 0,
+              }}
             >
-              <a
-                href="#projects"
-                className="btn-y hover-trigger !px-4 !py-2 !text-[0.62rem] !tracking-[0.08em] sm:!px-5 sm:!py-2.5 sm:!text-[0.68rem] md:!px-[2.2rem] md:!py-[0.9rem] md:!text-[0.75rem] md:!tracking-[0.1em]"
-              >
-                See My Work →
-              </a>
-              <a
-                href="mailto:anchetajaymark69@gmail.com"
-                className="btn-o hover-trigger !px-4 !py-2 !text-[0.62rem] !tracking-[0.08em] sm:!px-5 sm:!py-2.5 sm:!text-[0.68rem] md:!px-[2.2rem] md:!py-[0.9rem] md:!text-[0.75rem] md:!tracking-[0.1em]"
-              >
-                Get In Touch
-              </a>
+              <motion.span style={{ display: 'block', color: 'var(--fg)', x: softwareX }}>SOFTWARE</motion.span>
+              <motion.span style={{ display: 'block', color: 'var(--fg)', x: developerX }}>DEVELOPER</motion.span>
+            </h1>
+            <div className="self-end mt-2 md:mt-3 font-[family-name:var(--M)] text-[0.65rem] md:text-[0.75rem] uppercase tracking-[0.4em] text-[var(--primary)] opacity-90">
+              JM ANCHETA
             </div>
           </div>
-        </div>
-        <div className={cn('h-col h-col-aside', introAnim)}>
-          <HeroAsideVisual />
-        </div>
-        <HeroTechStack className={cn('reveal', introAnim)} data-d="0.3" />
-      </div>
-    </section>
+        </motion.div>
+
+        {/* ── Tech Stack ── */}
+        <motion.div
+          style={{ opacity: headingOpacity, y: headingY }}
+          className="absolute bottom-8 md:bottom-12 left-6 md:left-10 flex flex-row items-center gap-6 md:gap-10 select-none z-10"
+        >
+          <div className="flex flex-col font-[family-name:var(--M)] text-[0.55rem] md:text-[0.6rem] uppercase tracking-[0.15em] text-[var(--fg2)] opacity-80 leading-loose pointer-events-none">
+            <span>TECH I BUILD WITH EVERY DAY</span>
+            <span>FROM APIS TO INTERFACES</span>
+          </div>
+          <div className="flex flex-row items-center gap-4 md:gap-6">
+            {['laravel.svg', 'nextjs2.svg', 'flutter.svg', 'react.svg', 'mysql.svg'].map(logo => (
+              <img
+                key={logo}
+                src={`/images/techstack/${logo}`}
+                alt={logo.split('.')[0]}
+                className="h-4 md:h-5 w-auto object-contain grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-pointer"
+              />
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ── Scroll hint ── */}
+        <motion.div
+          style={{ opacity: hintOpacity }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none select-none"
+        >
+          <span
+            style={{ fontFamily: 'var(--M)', fontSize: '0.6rem', letterSpacing: '0.2em', color: 'var(--primary)', opacity: 0.7 }}
+          >
+            SCROLL
+          </span>
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ color: 'var(--primary)', opacity: 0.7 }}
+          >
+            <svg width="16" height="24" viewBox="0 0 16 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1" y="1" width="14" height="22" rx="7" stroke="currentColor" strokeWidth="1.5"/>
+              <motion.rect
+                x="7" y="5" width="2" height="5" rx="1" fill="currentColor"
+                animate={{ y: [5, 9, 5], opacity: [1, 0.3, 1] }}
+                transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+              />
+            </svg>
+          </motion.div>
+        </motion.div>
+      </section>
+    </div>
   );
 }
