@@ -42,3 +42,10 @@ next-env.d.ts
 
 .vscode/
 .next/
+
+# claude code
+.claude/
+
+# windows "mark of the web" metadata
+*:Zone.Identifier
+*Zone.Identifier
