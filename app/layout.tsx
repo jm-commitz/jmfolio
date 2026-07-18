@@ -11,8 +11,21 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://jmancheta.cloud"),
   title: "Jaymark Ancheta | Portfolio",
   description: "Full-Stack & Mobile Developer. Building the Next Big Thing.",
+  openGraph: {
+    title: "Jaymark Ancheta | Portfolio",
+    description: "Full-Stack & Mobile Developer. Building the Next Big Thing.",
+    url: "https://jmancheta.cloud",
+    siteName: "Jaymark Ancheta",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Jaymark Ancheta | Portfolio",
+    description: "Full-Stack & Mobile Developer. Building the Next Big Thing.",
+  },
 };
 
 export default function RootLayout({
