@@ -47,8 +47,17 @@ export default function Highlights() {
               onClick={() => setIndex(i)}
               className="flex shrink-0 flex-col items-center gap-1.5"
             >
-              <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-[var(--border)] bg-[var(--muted)] transition-colors hover:border-[var(--foreground)]">
-                <Icon className="h-6 w-6 text-[var(--foreground)]" />
+              <span className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-2 border-[var(--border)] bg-[var(--muted)] transition-colors hover:border-[var(--foreground)]">
+                {h.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={h.image}
+                    alt={h.label}
+                    className="h-full w-full object-cover grayscale"
+                  />
+                ) : (
+                  <Icon className="h-6 w-6 text-[var(--foreground)]" />
+                )}
               </span>
               <span className="text-[11px] text-[var(--muted-foreground)]">
                 {h.label}
@@ -106,11 +115,28 @@ export default function Highlights() {
             </div>
 
             {/* Body */}
-            <div className="flex flex-1 items-center px-6 py-10 sm:py-14">
-              <p className="text-lg leading-relaxed text-[var(--foreground)]">
-                {active.body}
-              </p>
-            </div>
+            {active.image ? (
+              <div className="relative min-h-[380px] flex-1 overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={active.image}
+                  alt={active.title}
+                  className="absolute inset-0 h-full w-full object-cover grayscale"
+                />
+                <div className="absolute inset-0 bg-black/55" />
+                <div className="absolute inset-0 flex items-center justify-center p-6">
+                  <p className="text-center text-lg font-medium leading-relaxed text-white">
+                    {active.body}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-1 items-center px-6 py-10 sm:py-14">
+                <p className="text-lg leading-relaxed text-[var(--foreground)]">
+                  {active.body}
+                </p>
+              </div>
+            )}
 
             {/* Prev / next tap zones */}
             <div className="flex border-t">
