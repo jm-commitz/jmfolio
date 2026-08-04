@@ -18,7 +18,8 @@ export default function FloatingThemeToggle() {
       type="button"
       aria-label="Toggle theme"
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      className="fixed bottom-5 right-5 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full border bg-[var(--background)] text-[var(--foreground)] shadow-lg transition-colors hover:bg-[var(--accent)]"
+      // Positioning lives on the FloatingRail wrapper in app/layout.tsx.
+      className="inline-flex h-11 w-11 items-center justify-center rounded-full border bg-[var(--background)] text-[var(--foreground)] shadow-lg transition-colors hover:bg-[var(--accent)]"
     >
       {mounted && isDark ? (
         <Sun className="h-5 w-5" />

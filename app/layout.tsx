@@ -3,6 +3,7 @@ import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import FloatingThemeToggle from "@/components/theme/FloatingThemeToggle";
+import ViewerCount from "@/components/presence/ViewerCount";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -43,7 +44,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <FloatingThemeToggle />
+
+          {/* Floating rail, bottom-right: live viewers above the theme toggle */}
+          <div className="fixed bottom-5 right-5 z-40 flex flex-col items-center gap-2">
+            <ViewerCount />
+            <FloatingThemeToggle />
+          </div>
         </ThemeProvider>
       </body>
     </html>

@@ -1,7 +1,7 @@
 import Hero from '@/components/hero/Hero';
 import Highlights from '@/components/highlights/Highlights';
 import Experience from '@/components/experience/Experience';
-import ProjectsGrid from '@/components/projects/ProjectsGrid';
+import ProjectsList from '@/components/projects/ProjectsList';
 import Tools from '@/components/tools/Tools';
 import GithubContributions from '@/components/github/GithubContributions';
 
@@ -11,7 +11,7 @@ export default function Home() {
       <Hero />
       <Highlights />
       <Experience />
-      <ProjectsGrid />
+      <ProjectsList />
       <Tools />
       <GithubContributions />
     </main>

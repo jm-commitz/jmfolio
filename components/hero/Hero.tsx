@@ -1,28 +1,12 @@
-import Image from 'next/image';
 import { BadgeCheck } from 'lucide-react';
-import NowPlaying from '@/components/spotify/NowPlaying';
+import HeroAvatar from './HeroAvatar';
 
 export default function Hero() {
   return (
     <section className="mx-auto w-full max-w-2xl px-5 pt-16 pb-2 sm:pt-20">
       {/* Avatar + name/role group */}
       <div className="flex items-center gap-3">
-        <div className="relative shrink-0">
-          {/* Spotify now playing — absolutely positioned layer, reserves no space */}
-          <div className="absolute bottom-full left-1 z-10 mb-1.5">
-            <NowPlaying />
-          </div>
-          <div className="relative h-14 w-14 overflow-hidden rounded-full border bg-[var(--muted)] sm:h-16 sm:w-16">
-            <Image
-              src="/hero/hero.png"
-              alt="Jaymark Ancheta"
-              fill
-              priority
-              sizes="64px"
-              className="object-cover grayscale"
-            />
-          </div>
-        </div>
+        <HeroAvatar />
         <div className="flex flex-col">
           <div className="flex items-center gap-1.5">
             <h1 className="text-lg font-bold tracking-tight text-[var(--foreground)] sm:text-xl">

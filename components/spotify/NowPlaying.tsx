@@ -1,38 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import type { Track } from './useNowPlaying';
 
-type Track = {
-  isPlaying: boolean;
-  title?: string;
-  artist?: string;
-  album?: string;
-  albumImageUrl?: string;
-  songUrl?: string;
-};
-
-export default function NowPlaying() {
-  const [track, setTrack] = useState<Track | null>(null);
-
-  useEffect(() => {
-    let active = true;
-    const load = async () => {
-      try {
-        const res = await fetch('/api/now-playing');
-        const data = (await res.json()) as Track;
-        if (active) setTrack(data);
-      } catch {
-        /* ignore */
-      }
-    };
-    load();
-    const id = setInterval(load, 30000);
-    return () => {
-      active = false;
-      clearInterval(id);
-    };
-  }, []);
-
+export default function NowPlaying({ track }: { track: Track | null }) {
   if (!track || !track.isPlaying) return null;
 
   return (

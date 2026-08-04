@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import {
+  ArrowUpRight,
   BadgeCheck,
   Bookmark,
   ChevronLeft,
@@ -67,6 +68,8 @@ export default function DesktopPost({
             alt={project.title}
             fill
             sizes="800px"
+            // SVG placeholders bypass the optimizer (needs dangerouslyAllowSVG).
+            unoptimized={project.image.endsWith('.svg')}
             className="object-contain"
           />
         )}
@@ -140,6 +143,18 @@ export default function DesktopPost({
             <p className="mt-1 text-sm text-[var(--muted-foreground)]">
               {hashtags}
             </p>
+          )}
+          {/* Live projects link out; placeholder '#' hrefs stay hidden. */}
+          {project.href?.startsWith('http') && (
+            <a
+              href={project.href}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-[var(--foreground)] underline underline-offset-2"
+            >
+              {project.href.replace(/^https?:\/\//, '')}
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </a>
           )}
         </div>
 
