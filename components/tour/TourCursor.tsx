@@ -17,7 +17,7 @@ const STEPS: Step[] = [
   { id: 'recent', text: 'And what I’ve been listening to lately 🎶' },
   { id: 'featured', text: 'My favorite build 🏆 Tap it to read the full case study.' },
   { id: 'projects', text: 'My projects 🚀 Filter by category, or click one for details.' },
-  { id: 'github', text: 'My GitHub activity 🔥 Hover a square or drag to scroll.' },
+  { id: 'github', text: 'My GitHub activity 🔥 Hover a dot or drag to scroll.' },
   { id: 'tools', text: 'The tools and tech I use day to day 🧰' },
   { id: 'availability', text: "Need something built? I'm open for work. Grab my CV here 📄" },
   // Floating rail — icon-only, so the cursor points at the button itself.
@@ -268,15 +268,17 @@ export default function TourCursor() {
           style={{ originX: 0, originY: 0 }}
           initial={{ opacity: 0, scale: 0.4, x: pos.x, y: pos.y }}
           animate={{ opacity: 1, scale: 1, x: pos.x, y: pos.y }}
-          // Leaves by gliding off the left edge of the screen.
+          // Leaves slowly, drifting off the screen at the centre of the left edge.
           exit={{
             x: -80,
+            y: pos ? window.innerHeight / 2 : 0,
             opacity: 0,
             transition: reduce
               ? { duration: 0 }
               : {
-                  x: { duration: 0.7, ease: [0.4, 0, 0.2, 1] },
-                  opacity: { duration: 0.5, delay: 0.2 },
+                  x: { duration: 1.8, ease: [0.45, 0, 0.25, 1] },
+                  y: { duration: 1.8, ease: [0.45, 0, 0.25, 1] },
+                  opacity: { duration: 0.8, delay: 1.0 },
                 },
           }}
           transition={
