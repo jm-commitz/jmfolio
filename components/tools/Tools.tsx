@@ -11,7 +11,7 @@ function toneClass(tone?: 'black' | 'white') {
 
 export default function Tools() {
   return (
-    <section data-tour="tools" className="mx-auto w-full max-w-2xl px-5 py-2 lg:max-w-none lg:px-6 lg:pt-20">
+    <section data-tour="tools" className="mx-auto w-full max-w-2xl px-5 py-2 lg:max-w-none lg:px-6 lg:pt-8">
       <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--muted-foreground)]">
         Tools &amp; Technologies
       </h2>

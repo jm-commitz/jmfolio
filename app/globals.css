@@ -148,6 +148,14 @@
   }
 }
 
+/* No visible page scrollbar anywhere — scrolling still works */
+html {
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
+
 /* Hide scrollbar but keep scrolling */
 .no-scrollbar {
   -ms-overflow-style: none;

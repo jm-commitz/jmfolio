@@ -5,23 +5,29 @@ import ProjectsList from '@/components/projects/ProjectsList';
 import Tools from '@/components/tools/Tools';
 import GithubContributions from '@/components/github/GithubContributions';
 import TourCursor from '@/components/tour/TourCursor';
+import FeaturedProject from '@/components/featured/FeaturedProject';
+import AvailabilityCard from '@/components/availability/AvailabilityCard';
 
 export default function Home() {
   return (
-    // Mobile: panels stack in DOM order. Desktop (lg): 3-column grid with
-    // sticky side panels — profile (+ highlights, experience) left, projects middle, tools/GitHub right.
-    <main className="min-h-screen lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1fr)]">
-      <aside className="no-scrollbar lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:border-r">
+    // Mobile: panels stack in DOM order and the page scrolls normally.
+    // Desktop (lg): a full-height 3-column grid where each column is its own
+    // scroller — the wheel only moves the column under the pointer, and
+    // overscroll-contain stops it chaining into the others at the ends.
+    <main className="min-h-screen lg:grid lg:h-screen lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1fr)] lg:overflow-hidden">
+      <aside className="no-scrollbar lg:h-screen lg:overflow-y-auto lg:overscroll-contain lg:border-r">
         <Hero />
         <Highlights />
         <Experience />
       </aside>
 
-      <div className="min-w-0">
+      <div className="no-scrollbar min-w-0 lg:h-screen lg:overflow-y-auto lg:overscroll-contain">
+        <FeaturedProject />
         <ProjectsList />
       </div>
 
-      <aside className="no-scrollbar lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:border-l">
+      <aside className="no-scrollbar lg:h-screen lg:overflow-y-auto lg:overscroll-contain lg:border-l">
+        <AvailabilityCard />
         <Tools />
         <GithubContributions />
       </aside>

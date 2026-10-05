@@ -23,6 +23,7 @@ export type Project = {
   features?: string[]; // bullet list on the detail page
   galleryVariant?: 'phone'; // portrait phone screenshots: a row of phone frames instead of the bento grid
   caseStudy?: CaseStudy; // long-form write-up rendered under the features
+  featured?: number; // position in the homepage Featured carousel (1 = first)
 };
 
 // Only `problem` and `highlights` are required, so a case study can be written
@@ -41,6 +42,7 @@ export const projects: Project[] = [
   {
     slug: 'doit',
     title: 'DoIt',
+    featured: 2,
     image: '/images/projects/doit/home.jpg',
     video: '/images/projects/doit/DoIt.mp4',
     tags: ['Delivery', 'Mobile', 'App'],
@@ -103,6 +105,7 @@ export const projects: Project[] = [
   {
     slug: 'caramove',
     title: 'Caramove',
+    featured: 1,
     image: '/images/projects/caramove/caramove1.jpg',
     logo: '/images/projects/caramove/caramove_pwa.png',
     tags: ['Marketplace', 'Mobile', 'PWA'],

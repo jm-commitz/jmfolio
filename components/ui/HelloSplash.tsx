@@ -6,8 +6,14 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 // Apple-style "hello" handwriting splash. Lettering paths from ncdai's
 // Apple Hello Effect (MIT, chanhdai.com), based on JaceThings' SF-Hello.
 
-const HOLD_MS = 400; // pause on the finished word before fading out
-const FALLBACK_MS = 6000; // never let the splash get stuck (e.g. animation interrupted)
+// Pause on the finished word before fading out — long enough for the tour
+// cursor to pop in over the splash and announce the tour.
+const HOLD_MS = 2200;
+const DRAW_MS = 2900; // "h" (0.8s) + "ello" (0.7s delay + 2.2s)
+const FADE_MS = 600; // overlay exit
+// The tour cursor appears this long before the splash has fully faded.
+const TOUR_LEAD_MS = 3000;
+const FALLBACK_MS = 9000; // never let the splash get stuck (e.g. animation interrupted)
 
 export default function HelloSplash() {
   const [visible, setVisible] = useState(true);
@@ -25,6 +31,17 @@ export default function HelloSplash() {
       clearTimeout(fallback);
     };
   }, [visible]);
+
+  // Signal the tour cursor TOUR_LEAD_MS before the splash ends, so it pops in
+  // over the splash and announces the tour.
+  useEffect(() => {
+    const total = reduce ? 600 + FADE_MS : DRAW_MS + HOLD_MS + FADE_MS;
+    const t = setTimeout(() => {
+      document.documentElement.dataset.splashDrawn = '1';
+      window.dispatchEvent(new Event('hello-splash-drawn'));
+    }, Math.max(0, total - TOUR_LEAD_MS));
+    return () => clearTimeout(t);
+  }, [reduce]);
 
   const finish = () => {
     setTimeout(() => setVisible(false), reduce ? 600 : HOLD_MS);
@@ -56,7 +73,7 @@ export default function HelloSplash() {
           aria-hidden
           className="fixed inset-0 z-[200] flex items-center justify-center bg-[var(--background)] text-[var(--foreground)]"
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: 'easeInOut' }}
+          transition={{ duration: FADE_MS / 1000, ease: 'easeInOut' }}
         >
           <motion.svg
             className="w-[min(70vw,480px)]"

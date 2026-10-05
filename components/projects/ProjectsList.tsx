@@ -29,7 +29,7 @@ export default function ProjectsList() {
   );
 
   return (
-    <section id="projects" className="mx-auto w-full max-w-2xl scroll-mt-6 py-8 lg:max-w-none lg:px-5 lg:pt-20">
+    <section id="projects" className="mx-auto w-full max-w-2xl scroll-mt-6 py-8 lg:max-w-none lg:px-5 lg:pt-10">
       {/* Header row — category filter is a compact dropdown on the right */}
       <div data-tour="projects" className="mb-2 flex items-center justify-between gap-2 px-5">
         <div className="flex items-baseline gap-2">
