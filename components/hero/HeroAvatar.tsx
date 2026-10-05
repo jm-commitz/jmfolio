@@ -37,7 +37,7 @@ export default function HeroAvatar() {
           fill
           priority
           sizes="(min-width: 1024px) 176px, 64px"
-          className={`object-cover grayscale transition-opacity duration-500 ${
+          className={`object-cover grayscale-[60%] transition-opacity duration-500 ${
             isPlaying ? 'opacity-0' : 'opacity-100'
           }`}
         />
