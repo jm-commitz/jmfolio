@@ -89,7 +89,7 @@ export default async function GithubContributions() {
   for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
 
   return (
-    <section data-tour="github" className="mx-auto w-full max-w-2xl px-5 py-8 lg:max-w-none lg:px-6">
+    <section data-tour="github" className="mx-auto w-full max-w-2xl px-5 py-8 lg:max-w-none lg:px-6 lg:pt-20">
       <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--muted-foreground)]">
         GitHub
       </h2>

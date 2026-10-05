@@ -17,9 +17,9 @@ const STEPS: Step[] = [
   { id: 'recent', text: 'And what I’ve been listening to lately 🎶' },
   { id: 'featured', text: 'My favorite build 🏆 Tap it to read the full case study.' },
   { id: 'projects', text: 'My projects 🚀 Filter by category, or click one for details.' },
-  { id: 'availability', text: "Need something built? I'm open for work. Grab my CV here 📄" },
-  { id: 'tools', text: 'The tools and tech I use day to day 🧰' },
   { id: 'github', text: 'My GitHub activity 🔥 Hover a square or drag to scroll.' },
+  { id: 'tools', text: 'The tools and tech I use day to day 🧰' },
+  { id: 'availability', text: "Need something built? I'm open for work. Grab my CV here 📄" },
   // Floating rail — icon-only, so the cursor points at the button itself.
   { id: 'viewers', text: "These are people checking out the site right now 👀", point: 'center' },
   { id: 'spotify', text: "Here's my Spotify 🎧 When I'm listening, you'll see the song.", point: 'center' },

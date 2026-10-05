@@ -29,9 +29,9 @@ export default function Home() {
       </div>
 
       <aside className="no-scrollbar lg:h-screen lg:overflow-y-auto lg:overscroll-contain lg:border-l">
-        <AvailabilityCard />
-        <Tools />
         <GithubContributions />
+        <Tools />
+        <AvailabilityCard />
       </aside>
 
       {/* Guided cursor tour — every page load, after the splash */}
