@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Pause, Play, Send, X } from 'lucide-react';
 import type { Highlight } from './highlightsData';
+import { githubAvatar } from '@/lib/github';
 
 const STORY_MS = 5000; // time per story before auto-advancing
 const HOLD_MS = 220; // a press longer than this is a "hold to pause", not a tap
@@ -212,7 +213,7 @@ export default function StoryViewer({
             <div className="mt-3 flex items-center gap-2.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/hero/hero.png"
+                src={githubAvatar(64)}
                 alt=""
                 className="h-8 w-8 rounded-full object-cover ring-1 ring-white/40 grayscale"
               />

@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { githubAvatar } from '@/lib/github';
 import NowPlaying from '@/components/spotify/NowPlaying';
 import { useNowPlaying, type AvatarMood } from '@/components/spotify/useNowPlaying';
 
@@ -24,11 +25,14 @@ export default function HeroAvatar() {
       </div>
       <div
         className={`relative h-14 w-14 sm:h-16 sm:w-16 lg:h-44 lg:w-44 ${
-          isPlaying ? '' : 'overflow-hidden rounded-full'
+          // Monochrome backdrop behind the transparent cutout (photo mode only)
+          isPlaying ? '' : 'avatar-backdrop overflow-hidden rounded-full'
         }`}
       >
         <Image
-          src="/hero/hero.png"
+          // Live GitHub avatar (see githubAvatar) — loaded straight from GitHub
+          src={githubAvatar(352)}
+          unoptimized
           alt="Jaymark Ancheta"
           fill
           priority

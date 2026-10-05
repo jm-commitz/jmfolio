@@ -173,6 +173,11 @@
   }
 }
 
+/* Hero avatar backdrop: a flat monochrome disc behind the transparent cutout. */
+.avatar-backdrop {
+  background-color: var(--muted);
+}
+
 /* Sparkles-on-text effect (magicui-style) */
 @keyframes sparkle-pop {
   0%,
