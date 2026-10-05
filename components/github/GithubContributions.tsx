@@ -1,6 +1,6 @@
 import { GITHUB_USERNAME } from '@/lib/github';
+import ContributionGraph, { type Day } from './ContributionGraph';
 
-type Day = { date: string; count: number; level: number };
 type Result = { total: number; days: Day[] };
 
 const LEVEL_MAP: Record<string, number> = {
@@ -71,14 +71,6 @@ async function fromPublic(username: string): Promise<Result | null> {
   }
 }
 
-const LEVEL_COLOR = [
-  'var(--border)',
-  'color-mix(in srgb, var(--foreground) 28%, transparent)',
-  'color-mix(in srgb, var(--foreground) 50%, transparent)',
-  'color-mix(in srgb, var(--foreground) 74%, transparent)',
-  'var(--foreground)',
-];
-
 export default async function GithubContributions() {
   const token = process.env.GITHUB_TOKEN;
   const data =
@@ -97,29 +89,12 @@ export default async function GithubContributions() {
   for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
 
   return (
-    <section className="mx-auto w-full max-w-2xl px-5 py-8">
+    <section data-tour="github" className="mx-auto w-full max-w-2xl px-5 py-8 lg:max-w-none lg:px-6">
       <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--muted-foreground)]">
         GitHub
       </h2>
 
-      <div className="no-scrollbar overflow-x-auto pb-1">
-        <div className="flex gap-[4px]">
-          {weeks.map((week, wi) => (
-            <div key={wi} className="flex flex-col gap-[4px]">
-              {week.map((day, di) => (
-                <span
-                  key={di}
-                  title={day ? `${day.count} contribution(s) on ${day.date}` : ''}
-                  className="h-[14px] w-[14px] rounded-[3px]"
-                  style={{
-                    backgroundColor: day ? LEVEL_COLOR[day.level] : 'transparent',
-                  }}
-                />
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
+      <ContributionGraph weeks={weeks} />
 
       <p className="mt-3 text-xs text-[var(--muted-foreground)]">
         {data.total} contributions in the last year

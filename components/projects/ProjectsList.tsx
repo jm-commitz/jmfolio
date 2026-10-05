@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import CategoryDropdown from './CategoryDropdown';
 import ProjectRow from './ProjectRow';
 import { projects } from './projectsData';
 
@@ -28,39 +29,29 @@ export default function ProjectsList() {
   );
 
   return (
-    <section id="projects" className="mx-auto w-full max-w-2xl scroll-mt-6 py-8">
-      <div className="mb-3 flex items-baseline gap-2 px-5">
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted-foreground)]">
-          Projects
-        </h2>
-        <span className="text-[11px] text-[var(--muted-foreground)]">
-          {projects.length}
-        </span>
+    <section id="projects" className="mx-auto w-full max-w-2xl scroll-mt-6 py-8 lg:max-w-none lg:px-5 lg:pt-20">
+      {/* Header row — category filter is a compact dropdown on the right */}
+      <div data-tour="projects" className="mb-2 flex items-center justify-between gap-2 px-5">
+        <div className="flex items-baseline gap-2">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted-foreground)]">
+            Projects
+          </h2>
+          <span className="text-[11px] text-[var(--muted-foreground)]">
+            {filtered.length}
+          </span>
+        </div>
+
+        <CategoryDropdown
+          options={chips}
+          value={filter}
+          onChange={(chip) => {
+            setFilter(chip);
+            setVisible(STEP);
+          }}
+        />
       </div>
 
-      {/* Category chips */}
-      <div className="mb-2 flex flex-wrap gap-1.5 px-5">
-        {chips.map((chip) => (
-          <button
-            key={chip}
-            type="button"
-            onClick={() => {
-              setFilter(chip);
-              setVisible(STEP);
-            }}
-            aria-pressed={filter === chip}
-            className={`rounded-full border px-3 py-1 text-xs transition-colors ${
-              filter === chip
-                ? 'border-[var(--foreground)] bg-[var(--foreground)] font-medium text-[var(--background)]'
-                : 'text-[var(--muted-foreground)] hover:bg-[var(--accent)] hover:text-[var(--foreground)]'
-            }`}
-          >
-            {chip}
-          </button>
-        ))}
-      </div>
-
-      <div className="flex flex-col">
+      <div className="flex flex-col lg:gap-1">
         {filtered.slice(0, visible).map((project) => (
           <ProjectRow key={project.slug} project={project} />
         ))}
@@ -69,11 +60,11 @@ export default function ProjectsList() {
       {/* Reveals 3 at a time; disappears once everything is shown, so adding
           projects to projectsData needs no change here. */}
       {visible < filtered.length && (
-        <div className="mt-2 px-5">
+        <div className="mt-3 flex justify-center px-5">
           <button
             type="button"
             onClick={() => setVisible((v) => v + STEP)}
-            className="w-full rounded-xl border py-2.5 text-xs font-medium text-[var(--muted-foreground)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--foreground)]"
+            className="rounded-full border px-5 py-2 text-xs font-medium text-[var(--muted-foreground)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--foreground)]"
           >
             View more ({filtered.length - visible})
           </button>

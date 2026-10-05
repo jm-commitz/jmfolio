@@ -16,6 +16,7 @@ export default function ViewerCount() {
 
   return (
     <div
+      data-tour="viewers"
       // Faces stacked top-down in the floating rail, overlapping like an
       // avatar group. Each keeps its own border so the seams stay readable.
       className="flex flex-col items-center"

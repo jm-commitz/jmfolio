@@ -11,12 +11,12 @@ function toneClass(tone?: 'black' | 'white') {
 
 export default function Tools() {
   return (
-    <section className="mx-auto w-full max-w-2xl px-5 py-2">
+    <section data-tour="tools" className="mx-auto w-full max-w-2xl px-5 py-2 lg:max-w-none lg:px-6 lg:pt-20">
       <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--muted-foreground)]">
         Tools &amp; Technologies
       </h2>
 
-      <div className="grid grid-cols-6 gap-x-2 gap-y-3 sm:grid-cols-8">
+      <div className="grid grid-cols-6 gap-x-2 gap-y-3 sm:grid-cols-8 lg:grid-cols-5">
         {tech.map((t) => (
           <div key={t.name} className="group flex flex-col items-center gap-1">
             <div className="relative h-6 w-6 sm:h-7 sm:w-7">

@@ -16,6 +16,7 @@ export default function FloatingThemeToggle() {
   return (
     <button
       type="button"
+      data-tour="theme"
       aria-label="Toggle theme"
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
       // Positioning lives on the FloatingRail wrapper in app/layout.tsx.

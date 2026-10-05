@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import FloatingThemeToggle from "@/components/theme/FloatingThemeToggle";
 import ViewerCount from "@/components/presence/ViewerCount";
+import SpotifyRail from "@/components/spotify/SpotifyRail";
+import HelloSplash from "@/components/ui/HelloSplash";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -45,11 +47,15 @@ export default function RootLayout({
         >
           {children}
 
-          {/* Floating rail, bottom-right: live viewers above the theme toggle */}
+          {/* Floating rail, bottom-right: live viewers, Spotify, theme toggle */}
           <div className="fixed bottom-5 right-5 z-40 flex flex-col items-center gap-2">
             <ViewerCount />
+            <SpotifyRail />
             <FloatingThemeToggle />
           </div>
+
+          {/* iOS-style "hello" splash, plays on every load */}
+          <HelloSplash />
         </ThemeProvider>
       </body>
     </html>

@@ -19,11 +19,11 @@ export default function HeroAvatar() {
   return (
     <div className="relative shrink-0">
       {/* Spotify now playing — absolutely positioned layer, reserves no space */}
-      <div className="absolute bottom-full left-1 z-10 mb-1.5">
+      <div className="absolute bottom-full left-1 z-10 mb-1.5 origin-bottom-left lg:mb-3 lg:scale-150">
         <NowPlaying track={track} />
       </div>
       <div
-        className={`relative h-14 w-14 sm:h-16 sm:w-16 ${
+        className={`relative h-14 w-14 sm:h-16 sm:w-16 lg:h-44 lg:w-44 ${
           isPlaying ? '' : 'overflow-hidden rounded-full'
         }`}
       >
@@ -32,7 +32,7 @@ export default function HeroAvatar() {
           alt="Jaymark Ancheta"
           fill
           priority
-          sizes="64px"
+          sizes="(min-width: 1024px) 176px, 64px"
           className={`object-cover grayscale transition-opacity duration-500 ${
             isPlaying ? 'opacity-0' : 'opacity-100'
           }`}
@@ -46,7 +46,7 @@ export default function HeroAvatar() {
           aria-hidden
           fill
           unoptimized
-          sizes="64px"
+          sizes="(min-width: 1024px) 176px, 64px"
           className={`scale-75 object-contain transition-opacity duration-500 ${
             isPlaying ? 'opacity-100' : 'opacity-0'
           }`}

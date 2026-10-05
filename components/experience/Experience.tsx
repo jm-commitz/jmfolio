@@ -13,7 +13,7 @@ export default function Experience() {
   const hasMore = experiences.length > COLLAPSED_COUNT;
 
   return (
-    <section className="mx-auto w-full max-w-2xl px-5 pt-3 pb-8">
+    <section data-tour="experience" className="mx-auto w-full max-w-2xl px-5 pt-3 pb-8 lg:max-w-none lg:px-8 lg:pt-6">
       <h2 className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--muted-foreground)]">
         Experience
       </h2>

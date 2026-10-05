@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, ArrowUpRight } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Check } from 'lucide-react';
 import ProjectIcon from '@/components/projects/ProjectIcon';
 import ProjectGallery from '@/components/projects/ProjectGallery';
 import { getProjectBySlug, projects } from '@/components/projects/projectsData';
@@ -48,85 +48,91 @@ export default async function ProjectPage({
   const isLive = project.href?.startsWith('http');
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-5 py-10">
-      <Link
-        href="/#projects"
-        className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" />
-        Back to projects
-      </Link>
-
-      <div className="mt-6 flex items-start gap-3">
-        <ProjectIcon project={project} size={56} />
-        <div className="min-w-0 flex-1">
-          <h1 className="text-xl font-bold tracking-tight text-[var(--foreground)] sm:text-2xl">
-            {project.title}
-          </h1>
-          {project.date && (
-            <p className="mt-0.5 text-[11px] uppercase tracking-widest text-[var(--muted-foreground)]">
-              {project.date}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div className="mt-3 flex flex-wrap gap-1">
-        {project.tags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full border px-2 py-0.5 text-[10px] leading-4 text-[var(--muted-foreground)]"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-
-      {project.description && (
-        <p className="mt-4 text-sm leading-relaxed text-[var(--muted-foreground)]">
-          {project.description}
-        </p>
-      )}
-
-      {isLive && (
-        <a
-          href={project.href}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-[var(--foreground)] px-4 py-2 text-sm font-semibold text-[var(--background)] transition-opacity hover:opacity-90"
-        >
-          View Live
-          <ArrowUpRight className="h-4 w-4" />
-        </a>
-      )}
-
-      {project.features && project.features.length > 0 && (
-        <section className="mt-8">
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted-foreground)]">
-            Features
-          </h2>
-          <ul className="mt-2 space-y-1.5">
-            {project.features.map((feature) => (
-              <li
-                key={feature}
-                className="flex gap-2 text-sm leading-relaxed text-[var(--muted-foreground)]"
-              >
-                <span aria-hidden className="text-[var(--foreground)]">
-                  ·
-                </span>
-                {feature}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
+    <main className="mx-auto w-full max-w-6xl px-5 py-8 lg:py-10">
       <ProjectGallery
         title={project.title}
         image={project.image}
         video={project.video}
         gallery={project.gallery}
       />
+
+      <div className="mt-8">
+        <div>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/#projects"
+              aria-label="Back to projects"
+              className="flex h-9 w-9 items-center justify-center rounded-full border text-[var(--foreground)] transition-colors hover:bg-[var(--accent)]"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+            <span className="text-sm font-semibold text-[var(--foreground)]">
+              Project Details
+            </span>
+          </div>
+
+          <div className="mt-6 flex items-start gap-4">
+            <ProjectIcon project={project} size={52} />
+            <div className="min-w-0 flex-1">
+              <h1 className="text-2xl font-bold tracking-tight text-[var(--foreground)] lg:text-3xl">
+                {project.title}
+              </h1>
+              <p className="mt-1 flex flex-wrap items-center gap-x-2 text-sm text-[var(--muted-foreground)]">
+                {[project.date, ...project.tags].filter(Boolean).map((item, i) => (
+                  <span key={item} className="inline-flex items-center gap-2">
+                    {i > 0 && <span aria-hidden>·</span>}
+                    {item}
+                  </span>
+                ))}
+              </p>
+            </div>
+          </div>
+
+          {isLive && (
+            <a
+              href={project.href}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-5 inline-flex items-center gap-1.5 rounded-xl bg-[var(--foreground)] px-4 py-2.5 text-sm font-semibold text-[var(--background)] transition-opacity hover:opacity-90"
+            >
+              View Live
+              <ArrowUpRight className="h-4 w-4" />
+            </a>
+          )}
+
+          <hr className="my-6 border-[var(--border)]" />
+
+          {project.description && (
+            <section>
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted-foreground)]">
+                About
+              </h2>
+              <p className="mt-2 text-[15px] leading-relaxed text-[var(--foreground)]">
+                {project.description}
+              </p>
+            </section>
+          )}
+
+          {project.features && project.features.length > 0 && (
+            <section className="mt-8">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted-foreground)]">
+                Features
+              </h2>
+              <ul className="mt-3 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+                {project.features.map((feature) => (
+                  <li
+                    key={feature}
+                    className="flex items-start gap-2.5 rounded-xl border p-3 text-sm leading-relaxed text-[var(--foreground)]"
+                  >
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--muted-foreground)]" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </div>
+      </div>
     </main>
   );
 }

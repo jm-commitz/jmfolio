@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, type ComponentType } from 'react';
+import { createPortal } from 'react-dom';
 import { AtSign, Code2, Sparkles, User, X } from 'lucide-react';
 import { highlights, type Highlight } from './highlightsData';
 
@@ -36,8 +37,8 @@ export default function Highlights() {
   const ActiveIcon = active ? ICONS[active.id] : null;
 
   return (
-    <section className="mx-auto w-full max-w-2xl px-5 pb-4 pt-2">
-      <div className="flex gap-5 overflow-x-auto pb-1">
+    <section className="mx-auto w-full max-w-2xl px-5 pb-4 pt-2 lg:max-w-none lg:px-8 lg:pt-6">
+      <div data-tour="highlights" className="flex gap-5 overflow-x-auto pb-1">
         {highlights.map((h, i) => {
           const Icon = ICONS[h.id];
           return (
@@ -67,8 +68,10 @@ export default function Highlights() {
         })}
       </div>
 
-      {/* Story viewer */}
-      {active && (
+      {/* Story viewer — portaled to <body> so the sticky desktop panel's
+          stacking context can't trap it under the other columns */}
+      {active &&
+        createPortal(
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm sm:p-6"
           onClick={() => setIndex(null)}
@@ -163,8 +166,9 @@ export default function Highlights() {
               </button>
             </div>
           </div>
-        </div>
-      )}
+        </div>,
+          document.body,
+        )}
     </section>
   );
 }
