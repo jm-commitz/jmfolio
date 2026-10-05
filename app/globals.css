@@ -27,6 +27,10 @@
     --radius: 0.75rem;
     --shine-base: #0a0a0a; /* dark text */
     --shine: #c2c2c2; /* light streak */
+    /* Page background pattern (.page-bg) */
+    --bg-dot: rgb(0 0 0 / 0.16);
+    --bg-glow: rgb(0 0 0 / 0.045);
+    --bg-grain-opacity: 0.05;
   }
 
   .dark {
@@ -52,6 +56,9 @@
     --ring: #525252;
     --shine-base: #8a8a8a; /* dimmed base so the bright streak is visible */
     --shine: #ffffff; /* bright streak */
+    --bg-dot: rgb(255 255 255 / 0.14);
+    --bg-glow: rgb(255 255 255 / 0.07);
+    --bg-grain-opacity: 0.04;
   }
 }
 
@@ -69,6 +76,94 @@
     color: var(--foreground);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Premium page background: a fine dot grid fading out from the top, a soft
+   top spotlight and a light film grain. Fixed behind all content, monochrome,
+   themed via --bg-dot / --bg-glow / --bg-grain-opacity. */
+.page-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 70% 45% at 50% -8%, var(--bg-glow), transparent 70%);
+}
+
+.page-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--bg-dot) 1.2px, transparent 1.4px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 0%, #000 45%, transparent 85%);
+  mask-image: radial-gradient(ellipse 85% 75% at 50% 0%, #000 45%, transparent 85%);
+}
+
+.page-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: var(--bg-grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* Theme switch: the new theme is revealed by a growing circle (animated in
+   FloatingThemeToggle); turn off the default cross-fade so only the circle shows. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+/* Floating rail: items bounce in (staggered, overshooting) when the rail
+   opens, and dip up-and-away with a little anticipation when it collapses. */
+.rail-items > * {
+  transition:
+    transform 0.32s cubic-bezier(0.3, 1.9, 0.6, 1),
+    opacity 0.15s ease-out;
+}
+.rail-items > :nth-child(2) {
+  transition-delay: 0.03s;
+}
+.rail-items > :nth-child(3) {
+  transition-delay: 0.06s;
+}
+[data-collapsed='true'] .rail-items > * {
+  opacity: 0;
+  transform: translateY(-14px) scale(0.5);
+  transition:
+    transform 0.18s cubic-bezier(0.36, 0, 0.66, -0.56),
+    opacity 0.14s ease-in;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rail-items > *,
+  [data-collapsed='true'] .rail-items > * {
+    transition: none;
+  }
+}
+
+/* Sun/moon icon spins in on each theme switch */
+@keyframes theme-icon-in {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+.theme-icon-in {
+  animation: theme-icon-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-icon-in {
+    animation: none;
   }
 }
 

@@ -46,6 +46,8 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
+          {/* Decorative dot-grid / glow / grain background (see .page-bg) */}
+          <div aria-hidden className="page-bg" />
           {children}
 
           {/* Floating rail, bottom-right: live viewers, Spotify, theme toggle */}

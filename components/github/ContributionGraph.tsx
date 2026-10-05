@@ -5,13 +5,10 @@ import DragScroll from '@/components/ui/DragScroll';
 
 export type Day = { date: string; count: number; level: number };
 
-const LEVEL_COLOR = [
-  'var(--border)',
-  'color-mix(in srgb, var(--foreground) 28%, transparent)',
-  'color-mix(in srgb, var(--foreground) 50%, transparent)',
-  'color-mix(in srgb, var(--foreground) 74%, transparent)',
-  'var(--foreground)',
-];
+// Dot-matrix style: each day is a monochrome dot whose SIZE grows with its
+// contribution level. Empty days are a tiny faint dot so the grid stays visible.
+const LEVEL_DOT = [3, 5, 7, 9, 12]; // px diameter by level 0–4
+const CELL = 14; // px — every dot sits centered in a fixed cell
 
 const dateFormat = new Intl.DateTimeFormat('en-US', {
   month: 'short',
@@ -39,20 +36,30 @@ export default function ContributionGraph({ weeks }: { weeks: (Day | null)[][] }
         onScroll={() => setTip(null)}
         onMouseLeave={() => setTip(null)}
       >
-        <div dir="ltr" className="flex w-max gap-[4px]">
+        <div dir="ltr" className="flex w-max gap-[2px]">
           {weeks.map((week, wi) => (
-            <div key={wi} className="flex flex-col gap-[4px]">
+            <div key={wi} className="flex flex-col gap-[2px]">
               {week.map((day, di) => (
                 <span
                   key={di}
                   onMouseEnter={day ? show(day) : undefined}
-                  className={`h-[14px] w-[14px] rounded-[3px] ${
-                    day ? 'transition-shadow hover:ring-1 hover:ring-[var(--foreground)]' : ''
-                  }`}
-                  style={{
-                    backgroundColor: day ? LEVEL_COLOR[day.level] : 'transparent',
-                  }}
-                />
+                  className="group/dot flex items-center justify-center"
+                  style={{ width: CELL, height: CELL }}
+                >
+                  {day && (
+                    <span
+                      className="rounded-full transition-transform duration-150 group-hover/dot:scale-125"
+                      style={{
+                        width: LEVEL_DOT[day.level] ?? LEVEL_DOT[0],
+                        height: LEVEL_DOT[day.level] ?? LEVEL_DOT[0],
+                        backgroundColor:
+                          day.level === 0
+                            ? 'color-mix(in srgb, var(--muted-foreground) 35%, transparent)'
+                            : 'var(--foreground)',
+                      }}
+                    />
+                  )}
+                </span>
               ))}
             </div>
           ))}

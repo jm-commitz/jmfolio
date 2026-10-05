@@ -67,8 +67,9 @@ function bubblePosition(
 const FLIP_X_EDGE = 72;
 const TAG_W = 80; // rough width of the "Jaymark" name tag
 const BUBBLE_MAX_H = 150; // fully typed bubble, used to decide if it fits below
-// Figma's multiplayer purple — cursor, name tag and chat bubble share it.
-const CURSOR_COLOR = '#7B61FF';
+// Monochrome: cursor, name tag and bubble use the theme's text colour, with
+// the background colour for their text and outline, so they invert per theme.
+const CURSOR_COLOR = 'var(--foreground)';
 
 type Point = { x: number; y: number };
 
@@ -306,7 +307,7 @@ export default function TourCursor() {
               // Same arrow with softened corners (quadratic curves at each vertex)
               d="M4.01 2.9L16.36 8.46Q18 9.2 16.27 9.71L11.75 11.06Q10.6 11.4 10.17 12.52L8.25 17.52Q7.6 19.2 7.04 17.49L2.68 4.09Q2 2 4.01 2.9Z"
               fill={CURSOR_COLOR}
-              stroke="#fff"
+              stroke="var(--background)"
               strokeWidth="1.6"
               strokeLinejoin="round"
             />
@@ -329,7 +330,7 @@ export default function TourCursor() {
               <motion.span
                 key="name-tag"
                 style={{ backgroundColor: CURSOR_COLOR, ...tagPosition(tagFlipX, flipY) }}
-                className={`absolute whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-semibold text-white shadow-[0_2px_6px_rgba(0,0,0,0.25)]`}
+                className={`absolute whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-semibold text-[var(--background)] shadow-[0_2px_6px_rgba(0,0,0,0.25)]`}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, transition: { duration: 0.1 } }}
@@ -392,7 +393,7 @@ function Bubble({
   return (
     <motion.div
       role="status"
-      className={`absolute overflow-hidden rounded-[18px] text-white shadow-[0_6px_20px_rgba(0,0,0,0.25)] ${corner}`}
+      className={`absolute overflow-hidden rounded-[18px] text-[var(--background)] shadow-[0_6px_20px_rgba(0,0,0,0.25)] ${corner}`}
       style={{
         ...bubblePosition(side, flipX, flipY, shiftX),
         backgroundColor: CURSOR_COLOR,
@@ -425,7 +426,7 @@ function Bubble({
         className="absolute w-max px-3.5 py-2.5 text-left"
         style={{ ...anchor, maxWidth: maxW }}
       >
-        <span className="block text-[11px] font-semibold text-white/75">Jaymark</span>
+        <span className="block text-[11px] font-semibold opacity-60">Jaymark</span>
         <TypingText text={text} instant={reduce} />
       </div>
     </motion.div>
@@ -473,7 +474,7 @@ function TypingText({ text, instant }: { text: string; instant: boolean }) {
       <span aria-hidden>
         {chars.slice(0, count).join('')}
         {!done && (
-          <span className="ml-px inline-block h-[1em] w-[2px] translate-y-[2px] animate-pulse bg-white/80 align-baseline" aria-hidden />
+          <span className="ml-px inline-block h-[1em] w-[2px] translate-y-[2px] animate-pulse bg-current opacity-80 align-baseline" aria-hidden />
         )}
         {!done && (
           <span className="invisible">{chars.slice(count, count + LOOKAHEAD).join('')}</span>
