@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState, type ComponentType } from 'react';
-import { createPortal } from 'react-dom';
-import { AtSign, Code2, Sparkles, User, X } from 'lucide-react';
+import { useState, type ComponentType } from 'react';
+import { AtSign, Code2, Sparkles, User } from 'lucide-react';
 import { highlights, type Highlight } from './highlightsData';
+import StoryViewer from './StoryViewer';
 
 const ICONS: Record<Highlight['id'], ComponentType<{ className?: string }>> = {
   about: User,
@@ -14,27 +14,6 @@ const ICONS: Record<Highlight['id'], ComponentType<{ className?: string }>> = {
 
 export default function Highlights() {
   const [index, setIndex] = useState<number | null>(null);
-  const open = index !== null;
-
-  useEffect(() => {
-    if (!open) return;
-    document.body.style.overflow = 'hidden';
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIndex(null);
-      if (e.key === 'ArrowRight')
-        setIndex((i) => (i === null ? i : Math.min(i + 1, highlights.length - 1)));
-      if (e.key === 'ArrowLeft')
-        setIndex((i) => (i === null ? i : Math.max(i - 1, 0)));
-    };
-    window.addEventListener('keydown', onKey);
-    return () => {
-      document.body.style.overflow = '';
-      window.removeEventListener('keydown', onKey);
-    };
-  }, [open]);
-
-  const active = index !== null ? highlights[index] : null;
-  const ActiveIcon = active ? ICONS[active.id] : null;
 
   return (
     <section className="mx-auto w-full max-w-2xl px-5 pb-4 pt-2 lg:max-w-none lg:px-8 lg:pt-6">
@@ -68,107 +47,9 @@ export default function Highlights() {
         })}
       </div>
 
-      {/* Story viewer — portaled to <body> so the sticky desktop panel's
-          stacking context can't trap it under the other columns */}
-      {active &&
-        createPortal(
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm sm:p-6"
-          onClick={() => setIndex(null)}
-          role="dialog"
-          aria-modal="true"
-          aria-label={active.title}
-        >
-          <div
-            className="flex h-full w-full max-w-sm flex-col bg-[var(--background)] sm:h-auto sm:rounded-2xl sm:border"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Progress bars */}
-            <div className="flex gap-1 px-3 pt-3">
-              {highlights.map((_, i) => (
-                <span
-                  key={i}
-                  className={`h-0.5 flex-1 rounded-full ${
-                    i <= (index ?? 0)
-                      ? 'bg-[var(--foreground)]'
-                      : 'bg-[var(--border)]'
-                  }`}
-                />
-              ))}
-            </div>
-
-            {/* Header */}
-            <div className="flex items-center gap-2 px-4 py-3">
-              {ActiveIcon && (
-                <span className="flex h-8 w-8 items-center justify-center rounded-full border bg-[var(--muted)]">
-                  <ActiveIcon className="h-4 w-4 text-[var(--foreground)]" />
-                </span>
-              )}
-              <span className="text-sm font-semibold text-[var(--foreground)]">
-                {active.title}
-              </span>
-              <button
-                type="button"
-                onClick={() => setIndex(null)}
-                aria-label="Close"
-                className="ml-auto text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            {/* Body */}
-            {active.image ? (
-              <div className="relative min-h-[380px] flex-1 overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={active.image}
-                  alt={active.title}
-                  className="absolute inset-0 h-full w-full object-cover grayscale"
-                />
-                <div className="absolute inset-0 bg-black/55" />
-                <div className="absolute inset-0 flex items-center justify-center p-6">
-                  <p className="text-center text-lg font-medium leading-relaxed text-white">
-                    {active.body}
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-1 items-center px-6 py-10 sm:py-14">
-                <p className="text-lg leading-relaxed text-[var(--foreground)]">
-                  {active.body}
-                </p>
-              </div>
-            )}
-
-            {/* Prev / next tap zones */}
-            <div className="flex border-t">
-              <button
-                type="button"
-                onClick={() => setIndex((i) => Math.max((i ?? 0) - 1, 0))}
-                disabled={index === 0}
-                className="flex-1 py-3 text-sm font-medium text-[var(--muted-foreground)] transition-colors enabled:hover:text-[var(--foreground)] disabled:opacity-30"
-              >
-                Prev
-              </button>
-              <span className="w-px bg-[var(--border)]" />
-              <button
-                type="button"
-                onClick={() =>
-                  setIndex((i) =>
-                    Math.min((i ?? 0) + 1, highlights.length - 1),
-                  )
-                }
-                disabled={index === highlights.length - 1}
-                className="flex-1 py-3 text-sm font-medium text-[var(--muted-foreground)] transition-colors enabled:hover:text-[var(--foreground)] disabled:opacity-30"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        </div>,
-          document.body,
-        )}
+      {index !== null && (
+        <StoryViewer stories={highlights} startIndex={index} onClose={() => setIndex(null)} />
+      )}
     </section>
   );
 }

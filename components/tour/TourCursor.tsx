@@ -14,6 +14,7 @@ const STEPS: Step[] = [
   { id: 'cta', text: 'Follow me on GitHub or send me a message here 💬' },
   { id: 'highlights', text: 'Tap these to get to know me a little better ✨' },
   { id: 'experience', text: "Where I've been working lately 💼" },
+  { id: 'recent', text: 'And what I’ve been listening to lately 🎶' },
   { id: 'featured', text: 'My favorite build 🏆 Tap it to read the full case study.' },
   { id: 'projects', text: 'My projects 🚀 Filter by category, or click one for details.' },
   { id: 'availability', text: "Need something built? I'm open for work. Grab my CV here 📄" },

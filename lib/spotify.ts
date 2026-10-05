@@ -219,3 +219,48 @@ export async function getNowPlaying(): Promise<NowPlaying> {
     previewUrl: song.item.preview_url ?? null,
   };
 }
+
+const RECENTLY_PLAYED_ENDPOINT = 'https://api.spotify.com/v1/me/player/recently-played';
+
+export type RecentTrack = {
+  id: string;
+  title: string;
+  artist: string;
+  albumImageUrl?: string;
+  songUrl?: string;
+  playedAt: string;
+};
+
+/**
+ * Last few distinct tracks. Needs the `user-read-recently-played` scope on the
+ * refresh token — without it Spotify answers 401/403 and this returns [].
+ */
+export async function getRecentlyPlayed(limit = 5): Promise<RecentTrack[]> {
+  const accessToken = await getAccessToken();
+  if (!accessToken) return [];
+
+  const res = await fetch(`${RECENTLY_PLAYED_ENDPOINT}?limit=20`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+    cache: 'no-store',
+  });
+  if (!res.ok) return [];
+
+  const data = await res.json();
+  const seen = new Set<string>();
+  const tracks: RecentTrack[] = [];
+  for (const item of data.items ?? []) {
+    const t = item?.track;
+    if (!t?.id || seen.has(t.id)) continue; // replays show up once
+    seen.add(t.id);
+    tracks.push({
+      id: t.id,
+      title: t.name,
+      artist: (t.artists ?? []).map((a: { name: string }) => a.name).join(', '),
+      albumImageUrl: t.album?.images?.[t.album.images.length > 1 ? 1 : 0]?.url,
+      songUrl: t.external_urls?.spotify,
+      playedAt: item.played_at,
+    });
+    if (tracks.length >= limit) break;
+  }
+  return tracks;
+}

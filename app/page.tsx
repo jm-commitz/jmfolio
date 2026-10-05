@@ -7,6 +7,7 @@ import GithubContributions from '@/components/github/GithubContributions';
 import TourCursor from '@/components/tour/TourCursor';
 import FeaturedProject from '@/components/featured/FeaturedProject';
 import AvailabilityCard from '@/components/availability/AvailabilityCard';
+import RecentlyPlayed from '@/components/spotify/RecentlyPlayed';
 
 export default function Home() {
   return (
@@ -19,6 +20,7 @@ export default function Home() {
         <Hero />
         <Highlights />
         <Experience />
+        <RecentlyPlayed />
       </aside>
 
       <div className="no-scrollbar min-w-0 lg:h-screen lg:overflow-y-auto lg:overscroll-contain">
