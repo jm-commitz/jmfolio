@@ -7,6 +7,7 @@ import ViewerCount from "@/components/presence/ViewerCount";
 import SpotifyRail from "@/components/spotify/SpotifyRail";
 import FloatingRail from "@/components/ui/FloatingRail";
 import HelloSplash from "@/components/ui/HelloSplash";
+import PageBackground from "@/components/ui/PageBackground";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -47,7 +48,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {/* Decorative dot-grid / glow / grain background (see .page-bg) */}
-          <div aria-hidden className="page-bg" />
+          <PageBackground />
           {children}
 
           {/* Floating rail, bottom-right: live viewers, Spotify, theme toggle */}

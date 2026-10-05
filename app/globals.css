@@ -90,14 +90,20 @@
   background: radial-gradient(ellipse 70% 45% at 50% -8%, var(--bg-glow), transparent 70%);
 }
 
-.page-bg::before {
-  content: '';
+/* Dot grid is drawn on a canvas (components/ui/PageBackground.tsx) so a few
+   dots can breathe. Masked to two opposite corners only — top-left and
+   bottom-right — each fading out toward the middle. The mask sits on this
+   viewport-sized wrapper (the canvas inside can be taller on mobile). */
+.page-bg-dots {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(var(--bg-dot) 1.2px, transparent 1.4px);
-  background-size: 22px 22px;
-  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 0%, #000 45%, transparent 85%);
-  mask-image: radial-gradient(ellipse 85% 75% at 50% 0%, #000 45%, transparent 85%);
+  overflow: hidden;
+  -webkit-mask-image:
+    radial-gradient(ellipse 42vw 48vh at 0% 0%, #000 15%, transparent 100%),
+    radial-gradient(ellipse 42vw 48vh at 100% 100%, #000 15%, transparent 100%);
+  mask-image:
+    radial-gradient(ellipse 42vw 48vh at 0% 0%, #000 15%, transparent 100%),
+    radial-gradient(ellipse 42vw 48vh at 100% 100%, #000 15%, transparent 100%);
 }
 
 .page-bg::after {

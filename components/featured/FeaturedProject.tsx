@@ -63,6 +63,7 @@ function FeaturedCard({ project }: { project: Project }) {
                   unoptimized={src.endsWith('.svg')}
                   className="object-cover"
                 />
+                {offset >= 0 && <DynamicIsland live={offset === 0} />}
               </div>
             );
           })}
@@ -108,5 +109,28 @@ function FeaturedCard({ project }: { project: Project }) {
         </span>
       </div>
     </Link>
+  );
+}
+
+// iPhone-style Dynamic Island drawn over a screenshot. The `live` one (front
+// phone) stretches into a Live Activity with a pulsing dot on card hover.
+function DynamicIsland({ live }: { live: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={`absolute left-1/2 top-[2.2%] z-10 flex h-[4.4%] w-[34%] -translate-x-1/2 items-center justify-end rounded-full bg-black px-[3.5%] shadow-[0_1px_2px_rgba(0,0,0,0.4)] ${
+        live
+          ? 'transition-[width] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:w-[60%]'
+          : ''
+      }`}
+    >
+      {live && (
+        <span className="absolute left-[9%] flex aspect-square h-[42%] opacity-0 transition-opacity delay-150 duration-300 group-hover:opacity-100">
+          <span className="h-full w-full animate-pulse rounded-full bg-[#30d158]" />
+        </span>
+      )}
+      {/* Front camera */}
+      <span className="aspect-square h-[46%] rounded-full bg-[#14141f] ring-1 ring-white/10" />
+    </span>
   );
 }
