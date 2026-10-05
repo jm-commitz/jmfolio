@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
 // Guided "cursor tour" in the style of bryllim.com: a fake cursor glides to
-// each [data-tour] target and explains it in a speech bubble. Plays once, on
-// the visitor's first visit, after the hello splash.
+// each [data-tour] target and explains it in a speech bubble. Like the hello
+// splash, it plays on every full page load, right after the splash.
 
 type Step = { id: string; text: string; point?: 'text' | 'center' };
 
@@ -23,7 +23,9 @@ const STEPS: Step[] = [
   { id: 'theme', text: 'Prefer light mode? ☀️ Switch themes here.', point: 'center' },
 ];
 
-const STORAGE_KEY = 'tourSeen';
+// Once per page load, same as the splash: navigating back to the homepage
+// inside the site (no reload) doesn't replay it.
+let playedThisLoad = false;
 const START_DELAY = 800;
 const HOLD_MS = 2400; // after the text finishes typing
 const TYPE_MS = 28; // per character
@@ -80,21 +82,14 @@ export default function TourCursor() {
   const bubbleRef = useRef<HTMLDivElement>(null);
   const stepRef = useRef(-1);
 
-  // Start once, after the splash has uncovered the page.
+  // Start after the splash has uncovered the page.
   useEffect(() => {
-    let seen = false;
-    try {
-      seen = Boolean(localStorage.getItem(STORAGE_KEY));
-    } catch {}
-    if (seen) return;
+    if (playedThisLoad) return;
 
     let timer: ReturnType<typeof setTimeout>;
     const start = () => {
       timer = setTimeout(() => {
-        // Marked at start so a reload mid-tour doesn't replay it.
-        try {
-          localStorage.setItem(STORAGE_KEY, '1');
-        } catch {}
+        playedThisLoad = true;
         setActive(true);
       }, START_DELAY);
     };

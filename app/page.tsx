@@ -26,7 +26,7 @@ export default function Home() {
         <GithubContributions />
       </aside>
 
-      {/* Guided cursor tour — first visit only */}
+      {/* Guided cursor tour — every page load, after the splash */}
       <TourCursor />
     </main>
   );

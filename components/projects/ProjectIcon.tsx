@@ -13,11 +13,13 @@ export default function ProjectIcon({
   size = 44,
   interactive = false,
   className = '',
+  rounded = 'rounded-xl',
 }: {
   project: Project;
   size?: number;
   interactive?: boolean;
   className?: string;
+  rounded?: string; // corner class, e.g. an App Store squircle
 }) {
   const box = { width: size, height: size };
   const glyph = Math.round(size * 0.5);
@@ -29,7 +31,7 @@ export default function ProjectIcon({
     return (
       <span
         style={box}
-        className={`relative shrink-0 overflow-hidden rounded-xl border border-black/5 ${className}`}
+        className={`relative shrink-0 overflow-hidden ${rounded} border border-black/5 ${className}`}
       >
         <Image
           src={project.logo}
@@ -49,7 +51,7 @@ export default function ProjectIcon({
     return (
       <span
         style={{ ...box, backgroundColor: project.iconBg ?? 'var(--foreground)' }}
-        className={`flex shrink-0 items-center justify-center rounded-xl border border-black/5 ${hover} ${className}`}
+        className={`flex shrink-0 items-center justify-center ${rounded} border border-black/5 ${hover} ${className}`}
       >
         <Glyph
           style={{ width: glyph, height: glyph }}
@@ -64,7 +66,7 @@ export default function ProjectIcon({
   return (
     <span
       style={box}
-      className={`relative shrink-0 overflow-hidden rounded-xl border bg-[var(--muted)] ${className}`}
+      className={`relative shrink-0 overflow-hidden ${rounded} border bg-[var(--muted)] ${className}`}
     >
       <Image
         src={project.image}

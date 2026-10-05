@@ -1,30 +1,18 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
-import { ChevronLeft, ChevronRight, Grid2x2, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Monitor, Smartphone, X } from 'lucide-react';
 
 type Slide = { type: 'video'; src: string; poster: string } | { type: 'image'; src: string };
 
-// Bento layouts by slide count (md+). Tile 0 is always the large one.
-const GRID: Record<number, string> = {
-  1: 'grid-cols-1',
-  2: 'grid-cols-[2fr_1fr]',
-  3: 'grid-cols-[2fr_1fr] grid-rows-2',
-  4: 'grid-cols-[2fr_1fr_1fr] grid-rows-2',
-  5: 'grid-cols-[2fr_1fr_1fr] grid-rows-2',
-};
-const MAX_TILES = 5;
-
-function tileSpan(i: number, count: number) {
-  if (i === 0 && count >= 3) return 'row-span-2';
-  if (i === 1 && count === 4) return 'col-span-2';
-  return '';
-}
-
 /**
+ * App Store-style "Preview" strip: one horizontal snap scroller of screenshots.
+ * Phone projects get tall phone-shaped shots, everything else 16:9 captures.
+ * Clicking a shot opens the fullscreen lightbox.
+ *
  * Primitive props only — a server component can't hand a whole `Project`
  * across the client boundary because `icon` is a function.
  */
@@ -33,11 +21,13 @@ export default function ProjectGallery({
   image,
   video,
   gallery,
+  variant,
 }: {
   title: string;
   image: string;
   video?: string;
   gallery?: string[];
+  variant?: 'phone';
 }) {
   const slides: Slide[] = [];
   // The video leads — it used to be the only media the modal showed.
@@ -46,59 +36,91 @@ export default function ProjectGallery({
   // Every project gets at least one slide.
   if (!slides.length) slides.push({ type: 'image', src: image });
 
+  const phone = variant === 'phone';
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const count = slides.length;
-  const tiles = slides.slice(0, MAX_TILES);
-  const hidden = count - tiles.length;
+  const scroller = useRef<HTMLDivElement>(null);
+  const [edges, setEdges] = useState({ start: true, end: true });
+
+  const measure = useCallback(() => {
+    const el = scroller.current;
+    if (!el) return;
+    setEdges({
+      start: el.scrollLeft <= 4,
+      end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4,
+    });
+  }, []);
+
+  // Re-measure when the strip resizes (also fires once on mount).
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el) return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [measure]);
+
+  const step = (dir: 1 | -1) => {
+    const el = scroller.current;
+    if (!el) return;
+    const shot = el.querySelector<HTMLElement>('[data-shot]');
+    const width = shot ? shot.getBoundingClientRect().width + 12 : el.clientWidth * 0.8;
+    el.scrollBy({ left: dir * width, behavior: 'smooth' });
+  };
+
+  const arrow =
+    'absolute top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border bg-[var(--background)] text-[var(--foreground)] shadow-md transition hover:bg-[var(--accent)] sm:flex';
 
   return (
-    <section>
-      {/* Desktop: bento grid */}
-      <div
-        className={`relative hidden h-[min(60vh,520px)] gap-2 overflow-hidden rounded-2xl md:grid ${
-          GRID[Math.min(count, MAX_TILES)]
-        }`}
-      >
-        {tiles.map((slide, i) => (
-          <button
-            key={slide.src}
-            type="button"
-            onClick={() => setLightbox(i)}
-            aria-label={`Open ${title} media ${i + 1}`}
-            className={`group relative overflow-hidden bg-[var(--muted)] ${tileSpan(i, count)}`}
-          >
-            <Media
-              slide={slide}
-              alt={`${title} screenshot ${i + 1}`}
-              // A lone tile shows the whole capture; grid tiles are crops.
-              fit={count === 1 ? 'contain' : 'cover'}
-              playVideo={i === 0}
-              priority={i === 0}
-              sizes={i === 0 ? '(min-width: 768px) 60vw, 100vw' : '(min-width: 768px) 25vw, 100vw'}
-              className="transition duration-500 group-hover:scale-[1.03] group-hover:brightness-90"
-            />
-            {hidden > 0 && i === tiles.length - 1 && (
-              <span className="absolute inset-0 flex items-center justify-center bg-black/50 text-lg font-semibold text-white">
-                +{hidden} more
-              </span>
-            )}
-          </button>
-        ))}
+    <div>
+      <div className="relative">
+        <div
+          ref={scroller}
+          onScroll={measure}
+          className="no-scrollbar -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-1 sm:mx-0 sm:scroll-px-0 sm:px-0"
+        >
+          {slides.map((slide, i) => (
+            <button
+              key={slide.src}
+              data-shot
+              type="button"
+              onClick={() => setLightbox(i)}
+              aria-label={`Open ${title} screenshot ${i + 1}`}
+              className={`group relative shrink-0 snap-start overflow-hidden border bg-[var(--muted)] ${
+                phone
+                  ? 'aspect-[912/2016] h-[440px] rounded-[22px] lg:h-[520px]'
+                  : 'aspect-video w-[85%] rounded-2xl sm:w-[560px]'
+              }`}
+            >
+              <Media
+                slide={slide}
+                alt={`${title} screenshot ${i + 1}`}
+                fit="cover"
+                playVideo={slide.type === 'video'}
+                priority={i < 3}
+                sizes={phone ? '240px' : '(min-width: 640px) 560px, 85vw'}
+                className="transition duration-500 group-hover:scale-[1.02]"
+              />
+            </button>
+          ))}
+        </div>
 
-        {count > 1 && (
-          <button
-            type="button"
-            onClick={() => setLightbox(0)}
-            className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full border bg-[var(--background)] px-3 py-1.5 text-xs font-semibold text-[var(--foreground)] shadow-md transition hover:bg-[var(--accent)]"
-          >
-            <Grid2x2 className="h-3.5 w-3.5" />
-            Show all ({count})
+        {!edges.start && (
+          <button type="button" onClick={() => step(-1)} aria-label="Previous screenshots" className={`${arrow} -left-4`}>
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+        )}
+        {!edges.end && (
+          <button type="button" onClick={() => step(1)} aria-label="Next screenshots" className={`${arrow} -right-4`}>
+            <ChevronRight className="h-5 w-5" />
           </button>
         )}
       </div>
 
-      {/* Mobile: swipeable carousel */}
-      <MobileCarousel slides={slides} title={title} onOpen={setLightbox} />
+      {/* Device caption, like the App Store's "iPhone" line */}
+      <p className="mt-3 flex items-center gap-1.5 text-xs font-medium text-[var(--muted-foreground)]">
+        {phone ? <Smartphone className="h-3.5 w-3.5" /> : <Monitor className="h-3.5 w-3.5" />}
+        {phone ? 'iPhone & Android' : 'Web'}
+      </p>
 
       {lightbox !== null && (
         <Lightbox
@@ -108,7 +130,7 @@ export default function ProjectGallery({
           onClose={() => setLightbox(null)}
         />
       )}
-    </section>
+    </div>
   );
 }
 
@@ -157,60 +179,6 @@ function Media({
       unoptimized={src.endsWith('.svg')}
       className={`${objectFit} ${className}`}
     />
-  );
-}
-
-function MobileCarousel({
-  slides,
-  title,
-  onOpen,
-}: {
-  slides: Slide[];
-  title: string;
-  onOpen: (i: number) => void;
-}) {
-  const [emblaRef, embla] = useEmblaCarousel({ loop: slides.length > 2 });
-  const [selected, setSelected] = useState(0);
-
-  useEffect(() => {
-    if (!embla) return;
-    const onSelect = () => setSelected(embla.selectedScrollSnap());
-    embla.on('select', onSelect);
-    return () => {
-      embla.off('select', onSelect);
-    };
-  }, [embla]);
-
-  return (
-    <div className="relative md:hidden">
-      <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
-        <div className="flex">
-          {slides.map((slide, i) => (
-            <button
-              key={slide.src}
-              type="button"
-              onClick={() => onOpen(i)}
-              aria-label={`Open ${title} media ${i + 1}`}
-              className="relative aspect-[4/3] min-w-0 flex-[0_0_100%] bg-[var(--muted)]"
-            >
-              <Media
-                slide={slide}
-                alt={`${title} screenshot ${i + 1}`}
-                fit={slides.length === 1 ? 'contain' : 'cover'}
-                playVideo
-                priority={i === 0}
-                sizes="100vw"
-              />
-            </button>
-          ))}
-        </div>
-      </div>
-      {slides.length > 1 && (
-        <span className="pointer-events-none absolute bottom-3 right-3 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">
-          {selected + 1} / {slides.length}
-        </span>
-      )}
-    </div>
   );
 }
 
