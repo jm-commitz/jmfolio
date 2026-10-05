@@ -47,9 +47,25 @@ function tagPosition(flipX: boolean, flipY: boolean): CSSProperties {
   };
 }
 
-function bubblePosition(side: boolean, flipX: boolean, flipY: boolean): CSSProperties {
-  return side ? { right: 34, bottom: 10 } : tagPosition(flipX, flipY);
+// `shiftX` slides a right-side bubble left so it stays on screen (phones).
+function bubblePosition(
+  side: boolean,
+  flipX: boolean,
+  flipY: boolean,
+  shiftX: number,
+): CSSProperties {
+  if (side) return { right: 34, bottom: 10 };
+  const base = { ...tagPosition(flipX, flipY), ...(flipX ? {} : { left: shiftX }) };
+  // Slid under the cursor: drop a little lower so the arrow doesn't overlap it.
+  if (!flipX && !flipY && shiftX < 0) return { ...base, top: BUBBLE_OFFSET.y + 8 };
+  if (!flipX && flipY && shiftX < 0) return { ...base, bottom: BUBBLE_OFFSET.y + 8 };
+  return base;
 }
+// Only flip to the left when the cursor is right at the screen's edge (e.g.
+// the bottom-right rail); otherwise the bubble stays on the right and slides
+// left just enough to fit, so phones don't get every stop mirrored.
+const FLIP_X_EDGE = 72;
+const TAG_W = 80; // rough width of the "Jaymark" name tag
 const BUBBLE_MAX_H = 150; // fully typed bubble, used to decide if it fits below
 // Figma's multiplayer purple — cursor, name tag and chat bubble share it.
 const CURSOR_COLOR = '#7B61FF';
@@ -228,8 +244,12 @@ export default function TourCursor() {
   const side = current?.point === 'center';
   // Otherwise flip the bubble left/up when it wouldn't fit on screen. Uses the
   // bubble's worst-case (fully typed) height so it never grows past the edge.
-  const flipX =
-    side || (pos ? pos.x + BUBBLE_OFFSET.x + BUBBLE_W > window.innerWidth - 8 : false);
+  const vw = pos ? window.innerWidth : 0;
+  const bubbleMaxW = Math.min(BUBBLE_W, vw - 24);
+  const flipX = side || (pos ? pos.x > vw - FLIP_X_EDGE : false);
+  // Right-side bubble: as far left as needed to keep its full width on screen.
+  const shiftX = pos ? Math.min(BUBBLE_OFFSET.x, vw - 12 - pos.x - bubbleMaxW) : 0;
+  const tagFlipX = flipX || (pos ? pos.x + BUBBLE_OFFSET.x + TAG_W > vw - 8 : false);
   const flipY =
     side || (pos ? pos.y + BUBBLE_OFFSET.y + BUBBLE_MAX_H > window.innerHeight - 8 : false);
   // The arrow turns with the bubble so its tail always leads into it: up-left
@@ -301,12 +321,14 @@ export default function TourCursor() {
                 side={side}
                 flipX={flipX}
                 flipY={flipY}
+                shiftX={shiftX}
+                maxW={bubbleMaxW}
                 reduce={Boolean(reduce)}
               />
             ) : (
               <motion.span
                 key="name-tag"
-                style={{ backgroundColor: CURSOR_COLOR, ...tagPosition(flipX, flipY) }}
+                style={{ backgroundColor: CURSOR_COLOR, ...tagPosition(tagFlipX, flipY) }}
                 className={`absolute whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-semibold text-white shadow-[0_2px_6px_rgba(0,0,0,0.25)]`}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -332,12 +354,16 @@ function Bubble({
   side,
   flipX,
   flipY,
+  shiftX,
+  maxW,
   reduce,
 }: {
   text: string;
   side: boolean;
   flipX: boolean;
   flipY: boolean;
+  shiftX: number;
+  maxW: number;
   reduce: boolean;
 }) {
   const live = useRef<HTMLDivElement>(null);
@@ -368,7 +394,7 @@ function Bubble({
       role="status"
       className={`absolute overflow-hidden rounded-[18px] text-white shadow-[0_6px_20px_rgba(0,0,0,0.25)] ${corner}`}
       style={{
-        ...bubblePosition(side, flipX, flipY),
+        ...bubblePosition(side, flipX, flipY, shiftX),
         backgroundColor: CURSOR_COLOR,
         originX: flipX ? 1 : 0,
         originY: flipY ? 1 : 0,
@@ -396,8 +422,8 @@ function Bubble({
     >
       <div
         ref={live}
-        className="absolute w-max max-w-[240px] px-3.5 py-2.5 text-left"
-        style={anchor}
+        className="absolute w-max px-3.5 py-2.5 text-left"
+        style={{ ...anchor, maxWidth: maxW }}
       >
         <span className="block text-[11px] font-semibold text-white/75">Jaymark</span>
         <TypingText text={text} instant={reduce} />

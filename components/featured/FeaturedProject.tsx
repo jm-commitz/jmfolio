@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import type { CSSProperties } from 'react';
 import { ArrowRight } from 'lucide-react';
 import ProjectIcon from '@/components/projects/ProjectIcon';
 import { projects, type Project } from '@/components/projects/projectsData';
@@ -37,17 +38,22 @@ function FeaturedCard({ project }: { project: Project }) {
     >
       {/* Fanned screenshots */}
       <div className="relative flex h-60 items-end justify-center overflow-hidden bg-[var(--muted)] sm:h-auto sm:min-h-[280px]">
-        <div className="absolute inset-0 flex items-end justify-center transition-transform duration-500 ease-out group-hover:-translate-y-2">
+        <div className="absolute inset-0 flex items-end justify-center">
           {shots.map((src, i) => {
             const offset = i - (shots.length - 1) / 2;
             return (
+              // Fanned by default; on card hover the shots spread apart, tilt a
+              // little further and lift (via --o, the shot's offset from center).
               <div
                 key={src}
-                className="absolute bottom-[-12%] aspect-[912/2016] w-[30%] max-w-[130px] overflow-hidden rounded-[18px] border-[3px] border-[var(--background)] shadow-xl"
-                style={{
-                  transform: `translateX(${offset * 72}%) rotate(${offset * 8}deg)`,
-                  zIndex: 10 - Math.abs(offset),
-                }}
+                className="absolute bottom-[-12%] aspect-[912/2016] w-[30%] max-w-[130px] overflow-hidden rounded-[18px] border-[3px] border-[var(--background)] shadow-xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] [transform:translateX(calc(var(--o)*72%))_rotate(calc(var(--o)*8deg))] group-hover:[transform:translateX(calc(var(--o)*88%))_translateY(calc(-8px_+_var(--a)*3px))_rotate(calc(var(--o)*10deg))]"
+                style={
+                  {
+                    '--o': offset,
+                    '--a': Math.abs(offset),
+                    zIndex: 10 - Math.abs(offset),
+                  } as CSSProperties
+                }
               >
                 <Image
                   src={src}
