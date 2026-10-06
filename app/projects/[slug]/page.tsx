@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowUpRight, Check, Globe, LayoutGrid, Smartphone, UserRound } from 'lucide-react';
+import { ArrowUpRight, Check, Github, Globe, LayoutGrid, Smartphone, UserRound } from 'lucide-react';
 import ProjectIcon from '@/components/projects/ProjectIcon';
 import ProjectGallery from '@/components/projects/ProjectGallery';
 import StickyAppBar from '@/components/projects/appstore/StickyAppBar';
@@ -145,9 +145,36 @@ export default async function ProjectPage({
             image={project.image}
             video={project.video}
             gallery={project.gallery}
+            mobileGallery={project.mobileGallery}
             variant={project.galleryVariant}
           />
         </Section>
+
+        {/* Open-source offer: visitors can take this project for themselves */}
+        {project.sourceHref && (
+          <Section>
+            <div className="flex flex-col gap-4 rounded-2xl border bg-[var(--muted)] p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-lg font-bold tracking-tight text-[var(--foreground)]">
+                  Want a portfolio like this?
+                </p>
+                <p className="mt-1 text-sm leading-relaxed text-[var(--muted-foreground)]">
+                  It’s open source. Fork it on GitHub, swap in your own projects and make it yours.
+                </p>
+              </div>
+              <a
+                href={project.sourceHref}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[var(--foreground)] px-5 py-2.5 text-sm font-semibold text-[var(--background)] transition-opacity hover:opacity-85"
+              >
+                <Github className="h-4 w-4" />
+                Use this portfolio
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
+            </div>
+          </Section>
+        )}
 
         {project.description && (
           <Section>
@@ -228,6 +255,22 @@ export default async function ProjectPage({
               <InfoRow label="Timeline" value={(cs?.timeline ?? project.date) as string} />
             )}
             {cs?.role && <InfoRow label="Role" value={cs.role} />}
+            {project.sourceHref && (
+              <div className="flex items-center justify-between gap-6 py-3">
+                <dt className="text-[var(--muted-foreground)]">Source</dt>
+                <dd>
+                  <a
+                    href={project.sourceHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 font-medium text-[var(--foreground)] hover:underline"
+                  >
+                    {project.sourceHref.replace(/^https?:\/\/(www\.)?/, '')}
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                  </a>
+                </dd>
+              </div>
+            )}
             {isLive && project.href && (
               <div className="flex items-center justify-between gap-6 py-3">
                 <dt className="text-[var(--muted-foreground)]">Website</dt>

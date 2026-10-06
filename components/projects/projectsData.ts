@@ -21,7 +21,11 @@ export type Project = {
   logo?: string; // real logo/PWA icon file — wins over `icon` when present
   gallery?: string[]; // extra detail-page shots; the video is prepended at render
   features?: string[]; // bullet list on the detail page
-  galleryVariant?: 'phone'; // portrait phone screenshots: a row of phone frames instead of the bento grid
+  // 'phone': portrait phone screenshots in phone frames.
+  // 'devices': desktop `gallery` shots in MacBook frames + `mobileGallery` in iPhones.
+  galleryVariant?: 'phone' | 'devices';
+  mobileGallery?: string[]; // phone screenshots for the 'devices' variant
+  sourceHref?: string; // public repo — shows a "Use this portfolio" offer on the detail page
   caseStudy?: CaseStudy; // long-form write-up rendered under the features
   featured?: number; // position in the homepage Featured carousel (1 = first)
 };
@@ -42,7 +46,7 @@ export const projects: Project[] = [
   {
     slug: 'doit',
     title: 'DoIt',
-    featured: 2,
+    featured: 3,
     image: '/images/projects/doit/home.jpg',
     video: '/images/projects/doit/DoIt.mp4',
     tags: ['Delivery', 'Mobile', 'App'],
@@ -186,6 +190,83 @@ export const projects: Project[] = [
         {
           title: 'OpenStreetMap over Google Maps',
           body: 'Maps run on flutter_map against OSM tiles. For a single-city service area, Google’s tile costs and billing setup bought nothing, and dropping the dependency kept the app buildable without a paid API key.',
+        },
+      ],
+    },
+  },
+  {
+    slug: 'portfolio',
+    title: 'Portfolio',
+    featured: 2,
+    image: '/images/projects/portfolio/2.png',
+    logo: '/images/projects/portfolio/icon.png',
+    tags: ['Web App', 'Open Source', 'Live'],
+    href: 'https://www.jmancheta.cloud',
+    sourceHref: 'https://github.com/jm-commitz/jmfolio',
+    date: '2026',
+    description:
+      'This site: an open-source developer portfolio with a 3-column desktop layout, an iOS-style hello splash, a guided cursor tour, App Store-style project pages and live GitHub and Spotify data.',
+    galleryVariant: 'devices',
+    gallery: ['/images/projects/portfolio/2.png', '/images/projects/portfolio/1.png'],
+    mobileGallery: ['/images/projects/portfolio/3.png'],
+    features: [
+      'Three-column desktop layout where each column scrolls on its own',
+      'iOS-style "hello" splash that hands off to the tour',
+      'Figma-style guided cursor tour with typing speech bubbles',
+      'App Store-style project pages with full case studies',
+      'Instagram-style story highlights',
+      'Live GitHub graph, Spotify now playing and viewer count',
+      'Circular reveal when switching light and dark themes',
+      'Animated dot-grid background drawn on a canvas',
+    ],
+    caseStudy: {
+      role: 'Design & development',
+      timeline: '2026 · built with Claude Code',
+      stack: [
+        'Next.js 16',
+        'React 19',
+        'TypeScript',
+        'Tailwind CSS',
+        'Framer Motion',
+        'Embla Carousel',
+        'Supabase Realtime',
+        'Spotify Web API',
+        'GitHub GraphQL API',
+        'next-themes',
+        'Vercel',
+      ],
+      problem:
+        'Most developer portfolios are the same template: a hero, a grid of cards and a contact form. They show what you made but nothing about how you build. This one is designed to behave like a product: it greets you, gives you a tour, and its project pages read like App Store listings with real case studies, while staying fast and statically rendered.',
+      numbers: [
+        { value: '39', label: 'React components' },
+        { value: '13', label: 'guided tour stops' },
+        { value: '3', label: 'live data sources: GitHub, Spotify, Supabase' },
+        { value: '4', label: 'API routes' },
+      ],
+      highlights: [
+        {
+          title: 'Three columns, three scrollers',
+          body: 'On desktop the page itself never scrolls. Each column is its own full-height scroller with overscroll-contain, so the wheel only moves the column under the pointer and never spills into the others at the ends.',
+        },
+        {
+          title: 'A tour bubble that leads the typing',
+          body: 'The guided cursor types each message letter by letter. The bubble measures the typed text plus the next couple of characters, so it always grows just ahead of the caret. It flips sides, turns the cursor and slides to fit on small screens.',
+        },
+        {
+          title: 'A breathing dot field that costs almost nothing',
+          body: 'The background grid is drawn once to an offscreen canvas. Only about 6% of the dots are animated, at 30fps, and the loop pauses when the tab is hidden and stops entirely for reduced motion.',
+        },
+        {
+          title: 'Theme switch as a circular reveal',
+          body: 'Switching light and dark uses the View Transitions API: the new theme grows out of the toggle button as a circle, with an instant fallback where the API or motion is not available.',
+        },
+        {
+          title: 'Live data without giving up static pages',
+          body: 'The homepage stays statically generated. Spotify and viewer presence load on the client through API routes, the GitHub graph revalidates hourly, and the profile picture loads straight from GitHub so a new avatar shows up within minutes.',
+        },
+        {
+          title: 'Music-aware avatar',
+          body: 'While Spotify is playing, the avatar swaps to an animated GIF chosen from the artist’s genres (party, rock or normal), with a now-playing bubble above it.',
         },
       ],
     },

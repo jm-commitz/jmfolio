@@ -15,7 +15,7 @@ export const experiences: Experience[] = [
     role: 'Full-Stack Developer',
     current: true,
     href: 'https://socia.ph/',
-    shiny: true,
+    shiny: true, // sweeping reflection on the company name
   },
   {
     period: '2023 – Present',

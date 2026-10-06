@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import SparklesText from '@/components/ui/SparklesText';
 import { experiences } from './experienceData';
 
 const COLLAPSED_COUNT = 2;
@@ -53,15 +52,9 @@ export default function Experience() {
                     href={item.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-semibold text-[var(--foreground)] underline underline-offset-4 transition-opacity hover:opacity-70"
+                    className="font-semibold text-[var(--foreground)] transition-opacity hover:opacity-70"
                   >
-                    {item.shiny ? (
-                      <SparklesText>
-                        <span className="shiny-text">{item.company}</span>
-                      </SparklesText>
-                    ) : (
-                      item.company
-                    )}
+                    {item.shiny ? <span className="shiny-text">{item.company}</span> : item.company}
                   </a>
                 ) : (
                   <span className="font-semibold text-[var(--foreground)]">

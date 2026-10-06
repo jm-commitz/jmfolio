@@ -4,9 +4,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
-import { ChevronLeft, ChevronRight, Monitor, Smartphone, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Monitor, MonitorSmartphone, Smartphone, X } from 'lucide-react';
+import { IPhone, MacBook } from './DeviceFrame';
 
-type Slide = { type: 'video'; src: string; poster: string } | { type: 'image'; src: string };
+// `frame` puts an image in a device mockup (the 'devices' variant).
+type Slide =
+  | { type: 'video'; src: string; poster: string }
+  | { type: 'image'; src: string; frame?: 'mac' | 'phone' };
 
 /**
  * App Store-style "Preview" strip: one horizontal snap scroller of screenshots.
@@ -21,18 +25,24 @@ export default function ProjectGallery({
   image,
   video,
   gallery,
+  mobileGallery,
   variant,
 }: {
   title: string;
   image: string;
   video?: string;
   gallery?: string[];
-  variant?: 'phone';
+  mobileGallery?: string[];
+  variant?: 'phone' | 'devices';
 }) {
+  const devices = variant === 'devices';
   const slides: Slide[] = [];
   // The video leads — it used to be the only media the modal showed.
   if (video) slides.push({ type: 'video', src: video, poster: image });
-  for (const src of gallery ?? []) slides.push({ type: 'image', src });
+  for (const src of gallery ?? [])
+    slides.push({ type: 'image', src, ...(devices ? { frame: 'mac' as const } : {}) });
+  if (devices)
+    for (const src of mobileGallery ?? []) slides.push({ type: 'image', src, frame: 'phone' });
   // Every project gets at least one slide.
   if (!slides.length) slides.push({ type: 'image', src: image });
 
@@ -76,41 +86,84 @@ export default function ProjectGallery({
         <div
           ref={scroller}
           onScroll={measure}
-          className="no-scrollbar -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-1 sm:mx-0 sm:scroll-px-0 sm:px-0"
+          className={`no-scrollbar -mx-5 flex snap-x snap-mandatory scroll-px-5 overflow-x-auto px-5 pb-1 sm:mx-0 sm:scroll-px-0 sm:px-0 ${
+            devices ? 'items-center gap-6 py-4' : 'gap-3'
+          }`}
         >
-          {slides.map((slide, i) => (
-            <button
-              key={slide.src}
-              data-shot
-              type="button"
-              onClick={() => setLightbox(i)}
-              aria-label={`Open ${title} screenshot ${i + 1}`}
-              className={`group relative shrink-0 snap-start overflow-hidden border bg-[var(--muted)] ${
-                phone
-                  ? 'aspect-[912/2016] h-[440px] rounded-[22px] lg:h-[520px]'
-                  : 'aspect-video w-[85%] rounded-2xl sm:w-[560px]'
-              }`}
-            >
-              <Media
-                slide={slide}
-                alt={`${title} screenshot ${i + 1}`}
-                fit="cover"
-                playVideo={slide.type === 'video'}
-                priority={i < 3}
-                sizes={phone ? '240px' : '(min-width: 640px) 560px, 85vw'}
-                className="transition duration-500 group-hover:scale-[1.02]"
-              />
-            </button>
-          ))}
+          {slides.map((slide, i) =>
+            slide.type === 'image' && slide.frame ? (
+              // Device mockup (MacBook or iPhone with Dynamic Island)
+              <button
+                key={slide.src}
+                data-shot
+                type="button"
+                onClick={() => setLightbox(i)}
+                aria-label={`Open ${title} screenshot ${i + 1}`}
+                className={`group shrink-0 snap-start transition-transform duration-500 hover:-translate-y-1 ${
+                  slide.frame === 'mac' ? 'w-[85%] px-[3%] sm:w-[560px]' : 'h-[440px] lg:h-[480px]'
+                }`}
+              >
+                {slide.frame === 'mac' ? (
+                  <MacBook
+                    src={slide.src}
+                    alt={`${title} screenshot ${i + 1}`}
+                    sizes="(min-width: 640px) 540px, 80vw"
+                    priority={i < 2}
+                  />
+                ) : (
+                  <IPhone
+                    src={slide.src}
+                    alt={`${title} screenshot ${i + 1}`}
+                    sizes="240px"
+                    className="h-full"
+                    liveIsland
+                  />
+                )}
+              </button>
+            ) : (
+              <button
+                key={slide.src}
+                data-shot
+                type="button"
+                onClick={() => setLightbox(i)}
+                aria-label={`Open ${title} screenshot ${i + 1}`}
+                className={`group relative shrink-0 snap-start overflow-hidden border bg-[var(--muted)] ${
+                  phone
+                    ? 'aspect-[912/2016] h-[440px] rounded-[22px] lg:h-[520px]'
+                    : 'aspect-video w-[85%] rounded-2xl sm:w-[560px]'
+                }`}
+              >
+                <Media
+                  slide={slide}
+                  alt={`${title} screenshot ${i + 1}`}
+                  fit="cover"
+                  playVideo={slide.type === 'video'}
+                  priority={i < 3}
+                  sizes={phone ? '240px' : '(min-width: 640px) 560px, 85vw'}
+                  className="transition duration-500 group-hover:scale-[1.02]"
+                />
+              </button>
+            ),
+          )}
         </div>
 
         {!edges.start && (
-          <button type="button" onClick={() => step(-1)} aria-label="Previous screenshots" className={`${arrow} -left-4`}>
+          <button
+            type="button"
+            onClick={() => step(-1)}
+            aria-label="Previous screenshots"
+            className={`${arrow} -left-4`}
+          >
             <ChevronLeft className="h-5 w-5" />
           </button>
         )}
         {!edges.end && (
-          <button type="button" onClick={() => step(1)} aria-label="Next screenshots" className={`${arrow} -right-4`}>
+          <button
+            type="button"
+            onClick={() => step(1)}
+            aria-label="Next screenshots"
+            className={`${arrow} -right-4`}
+          >
             <ChevronRight className="h-5 w-5" />
           </button>
         )}
@@ -118,8 +171,14 @@ export default function ProjectGallery({
 
       {/* Device caption, like the App Store's "iPhone" line */}
       <p className="mt-3 flex items-center gap-1.5 text-xs font-medium text-[var(--muted-foreground)]">
-        {phone ? <Smartphone className="h-3.5 w-3.5" /> : <Monitor className="h-3.5 w-3.5" />}
-        {phone ? 'iPhone & Android' : 'Web'}
+        {devices ? (
+          <MonitorSmartphone className="h-3.5 w-3.5" />
+        ) : phone ? (
+          <Smartphone className="h-3.5 w-3.5" />
+        ) : (
+          <Monitor className="h-3.5 w-3.5" />
+        )}
+        {devices ? 'Web · Desktop & Mobile' : phone ? 'iPhone & Android' : 'Web'}
       </p>
 
       {lightbox !== null && (
@@ -253,7 +312,10 @@ function Lightbox({
         <div className="h-full overflow-hidden" ref={emblaRef}>
           <div className="flex h-full">
             {slides.map((slide, i) => (
-              <div key={slide.src} className="relative h-full min-w-0 flex-[0_0_100%] px-4 sm:px-16">
+              <div
+                key={slide.src}
+                className="relative h-full min-w-0 flex-[0_0_100%] px-4 sm:px-16"
+              >
                 <div className="relative h-full w-full">
                   <Media
                     slide={slide}

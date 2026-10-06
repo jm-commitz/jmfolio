@@ -5,10 +5,11 @@ import { ArrowRight } from 'lucide-react';
 import ProjectIcon from '@/components/projects/ProjectIcon';
 import { projects, type Project } from '@/components/projects/projectsData';
 import FeaturedCarousel from './FeaturedCarousel';
+import { DynamicIsland, IPhone, MacBook } from '@/components/projects/DeviceFrame';
 
 // Top of the center column: a carousel with one big card per `featured`
-// project, ordered by its `featured` number: fanned phone screenshots, pitch,
-// a few case-study stats and a link to the case study.
+// project, ordered by its `featured` number: fanned phone screenshots (or a
+// MacBook + iPhone for web projects), pitch, a few stats and a link in.
 export default function FeaturedProject() {
   const featured = projects
     .filter((p) => p.featured)
@@ -28,7 +29,6 @@ export default function FeaturedProject() {
 
 function FeaturedCard({ project }: { project: Project }) {
   const pitch = project.description?.split(/(?<=\.)\s/)[0];
-  const shots = (project.gallery ?? [project.image]).slice(0, 3);
   const stats = project.caseStudy?.numbers?.slice(0, 3) ?? [];
 
   return (
@@ -36,39 +36,11 @@ function FeaturedCard({ project }: { project: Project }) {
       href={`/projects/${project.slug}`}
       className="group grid h-full overflow-hidden rounded-2xl border transition-colors hover:bg-[var(--accent)] sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]"
     >
-      {/* Fanned screenshots */}
-      <div className="relative flex h-60 items-end justify-center overflow-hidden bg-[var(--muted)] sm:h-auto sm:min-h-[280px]">
-        <div className="absolute inset-0 flex items-end justify-center">
-          {shots.map((src, i) => {
-            const offset = i - (shots.length - 1) / 2;
-            return (
-              // Fanned by default; on card hover the shots spread apart, tilt a
-              // little further and lift (via --o, the shot's offset from center).
-              <div
-                key={src}
-                className="absolute bottom-[-12%] aspect-[912/2016] w-[30%] max-w-[130px] overflow-hidden rounded-[18px] border-[3px] border-[var(--background)] shadow-xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] [transform:translateX(calc(var(--o)*72%))_rotate(calc(var(--o)*8deg))] group-hover:[transform:translateX(calc(var(--o)*88%))_translateY(calc(-8px_+_var(--a)*3px))_rotate(calc(var(--o)*10deg))]"
-                style={
-                  {
-                    '--o': offset,
-                    '--a': Math.abs(offset),
-                    zIndex: 10 - Math.abs(offset),
-                  } as CSSProperties
-                }
-              >
-                <Image
-                  src={src}
-                  alt=""
-                  fill
-                  sizes="130px"
-                  unoptimized={src.endsWith('.svg')}
-                  className="object-cover"
-                />
-                {offset >= 0 && <DynamicIsland live={offset === 0} />}
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      {project.galleryVariant === 'devices' ? (
+        <DeviceStage project={project} />
+      ) : (
+        <FannedPhones project={project} />
+      )}
 
       <div className="flex flex-col p-5">
         <div className="flex items-center gap-3">
@@ -112,25 +84,61 @@ function FeaturedCard({ project }: { project: Project }) {
   );
 }
 
-// iPhone-style Dynamic Island drawn over a screenshot. The `live` one (front
-// phone) stretches into a Live Activity with a pulsing dot on card hover.
-function DynamicIsland({ live }: { live: boolean }) {
+
+// Phone apps: three screenshots fanned out; they spread a little on hover.
+function FannedPhones({ project }: { project: Project }) {
+  const shots = (project.gallery ?? [project.image]).slice(0, 3);
   return (
-    <span
-      aria-hidden
-      className={`absolute left-1/2 top-[2.2%] z-10 flex h-[4.4%] w-[34%] -translate-x-1/2 items-center justify-end rounded-full bg-black px-[3.5%] shadow-[0_1px_2px_rgba(0,0,0,0.4)] ${
-        live
-          ? 'transition-[width] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:w-[60%]'
-          : ''
-      }`}
-    >
-      {live && (
-        <span className="absolute left-[9%] flex aspect-square h-[42%] opacity-0 transition-opacity delay-150 duration-300 group-hover:opacity-100">
-          <span className="h-full w-full animate-pulse rounded-full bg-[#30d158]" />
-        </span>
+    <div className="relative flex h-60 items-end justify-center overflow-hidden bg-[var(--muted)] sm:h-auto sm:min-h-[280px]">
+      <div className="absolute inset-0 flex items-end justify-center">
+        {shots.map((src, i) => {
+          const offset = i - (shots.length - 1) / 2;
+          return (
+            // Fanned by default; on card hover the shots spread apart, tilt a
+            // little further and lift (via --o, the shot's offset from center).
+            <div
+              key={src}
+              className="absolute bottom-[-12%] aspect-[912/2016] w-[30%] max-w-[130px] overflow-hidden rounded-[18px] border-[3px] border-[var(--background)] shadow-xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] [transform:translateX(calc(var(--o)*72%))_rotate(calc(var(--o)*8deg))] group-hover:[transform:translateX(calc(var(--o)*88%))_translateY(calc(-8px_+_var(--a)*3px))_rotate(calc(var(--o)*10deg))]"
+              style={
+                {
+                  '--o': offset,
+                  '--a': Math.abs(offset),
+                  zIndex: 10 - Math.abs(offset),
+                } as CSSProperties
+              }
+            >
+              <Image
+                src={src}
+                alt=""
+                fill
+                sizes="130px"
+                unoptimized={src.endsWith('.svg')}
+                className="object-cover"
+              />
+              {offset >= 0 && <DynamicIsland live={offset === 0} />}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// Web projects: a MacBook showing the desktop site with an iPhone in front.
+// On hover the MacBook lifts slightly and the iPhone slides out and tilts.
+function DeviceStage({ project }: { project: Project }) {
+  const desktop = project.gallery?.[0] ?? project.image;
+  const mobile = project.mobileGallery?.[0];
+  return (
+    <div className="relative h-60 overflow-hidden bg-[var(--muted)] sm:h-auto sm:min-h-[280px]">
+      <div className="absolute left-[7%] right-[16%] top-1/2 -translate-y-[56%] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-[60%]">
+        <MacBook src={desktop} sizes="(min-width: 1024px) 360px, 70vw" />
+      </div>
+      {mobile && (
+        <div className="absolute bottom-[7%] right-[6%] w-[22%] max-w-[92px] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-[6%] group-hover:translate-x-[6%] group-hover:rotate-[4deg]">
+          <IPhone src={mobile} sizes="92px" liveIsland />
+        </div>
       )}
-      {/* Front camera */}
-      <span className="aspect-square h-[46%] rounded-full bg-[#14141f] ring-1 ring-white/10" />
-    </span>
+    </div>
   );
 }

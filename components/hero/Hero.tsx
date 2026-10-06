@@ -13,17 +13,12 @@ export default function Hero() {
             <h1 data-tour="profile" className="text-lg font-bold tracking-tight text-[var(--foreground)] sm:text-xl lg:text-2xl">
               Jaymark Ancheta
             </h1>
-            {/* Verified badge — same sweeping shine as .shiny-text, clipped to the
-                badge shape; the icon on top only draws the check + outline */}
-            <span className="relative inline-flex h-4 w-4 lg:h-5 lg:w-5">
-              <span className="shiny-badge absolute inset-0" aria-hidden />
-              <BadgeCheck
-                className="relative h-full w-full"
-                fill="transparent"
-                stroke="var(--background)"
-                aria-label="Verified"
-              />
-            </span>
+            <BadgeCheck
+              className="h-4 w-4 lg:h-5 lg:w-5"
+              fill="var(--foreground)"
+              stroke="var(--background)"
+              aria-label="Verified"
+            />
           </div>
           <p className="text-sm font-medium text-[var(--muted-foreground)] sm:text-base">
             Full-Stack &amp; Mobile Developer
