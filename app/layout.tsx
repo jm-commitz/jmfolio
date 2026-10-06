@@ -8,6 +8,8 @@ import SpotifyRail from "@/components/spotify/SpotifyRail";
 import FloatingRail from "@/components/ui/FloatingRail";
 import HelloSplash from "@/components/ui/HelloSplash";
 import PageBackground from "@/components/ui/PageBackground";
+import ConsoleGreeting from "@/components/ui/ConsoleGreeting";
+import TemplateCredit from "@/components/ui/TemplateCredit";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -49,6 +51,10 @@ export default function RootLayout({
         >
           {/* Decorative dot-grid / glow / grain background (see .page-bg) */}
           <PageBackground />
+          {/* DevTools console easter egg */}
+          <ConsoleGreeting />
+          {/* Required template credit (see LICENSE) */}
+          <TemplateCredit />
           {children}
 
           {/* Floating rail, bottom-right: live viewers, Spotify, theme toggle */}
