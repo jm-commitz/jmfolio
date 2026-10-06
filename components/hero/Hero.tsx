@@ -1,5 +1,6 @@
 import { BadgeCheck } from 'lucide-react';
 import HeroAvatar from './HeroAvatar';
+import { FOLLOW_HREF, MESSAGE_HREF } from './profileLinks';
 
 export default function Hero() {
   return (
@@ -34,7 +35,7 @@ export default function Hero() {
       {/* CTAs */}
       <div data-tour="cta" className="mt-4 flex gap-2 lg:mt-6">
         <a
-          href="https://github.com/jm-commitz"
+          href={FOLLOW_HREF}
           target="_blank"
           rel="noreferrer"
           className="flex-1 rounded-lg bg-[var(--foreground)] px-4 py-2 text-center text-sm font-semibold text-[var(--background)] transition-opacity hover:opacity-90"
@@ -42,7 +43,7 @@ export default function Hero() {
           Follow
         </a>
         <a
-          href="https://api.whatsapp.com/send?phone=639917944729"
+          href={MESSAGE_HREF}
           target="_blank"
           rel="noreferrer"
           className="flex-1 rounded-lg border px-4 py-2 text-center text-sm font-semibold text-[var(--foreground)] transition-colors hover:bg-[var(--accent)]"

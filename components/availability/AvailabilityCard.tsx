@@ -43,7 +43,7 @@ export default function AvailabilityCard() {
   }, []);
 
   return (
-    <section data-tour="availability" className="px-5 pb-10 pt-8 lg:px-6">
+    <section data-tour="availability" className="mx-auto w-full max-w-2xl px-5 pb-8 lg:max-w-none lg:px-8">
       <div className="rounded-2xl border p-4">
         <div className="flex items-center gap-2">
           <span className="relative flex h-2.5 w-2.5" aria-hidden>

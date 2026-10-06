@@ -264,3 +264,38 @@ export async function getRecentlyPlayed(limit = 5): Promise<RecentTrack[]> {
   }
   return tracks;
 }
+
+export type TrackInfo = {
+  mood: AvatarMood;
+  title?: string;
+  artist?: string;
+  album?: string;
+  albumImageUrl?: string;
+  songUrl?: string;
+};
+
+/** Details + avatar mood for any track id — used when a visitor plays my playlist. */
+export async function getTrackInfo(trackId: string): Promise<TrackInfo> {
+  const accessToken = await getAccessToken();
+  if (!accessToken) return { mood: 'normal' };
+  const res = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+    cache: 'no-store',
+  });
+  if (!res.ok) return { mood: 'normal' };
+  const t = await res.json();
+  const { mood } = await getTrackMood(
+    t.id,
+    (t.artists ?? []).map((a: { id: string }) => a.id),
+    t.name ?? '',
+    accessToken
+  ).catch(() => ({ mood: 'normal' as AvatarMood }));
+  return {
+    mood,
+    title: t.name,
+    artist: (t.artists ?? []).map((a: { name: string }) => a.name).join(', '),
+    album: t.album?.name,
+    albumImageUrl: t.album?.images?.[t.album.images.length > 1 ? 1 : 0]?.url,
+    songUrl: t.external_urls?.spotify,
+  };
+}

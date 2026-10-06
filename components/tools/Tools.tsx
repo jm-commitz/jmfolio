@@ -14,7 +14,7 @@ export default function Tools() {
   return (
     <section
       data-tour="tools"
-      className="mx-auto w-full max-w-2xl px-5 py-2 lg:max-w-none lg:px-6 lg:pt-0"
+      className="mx-auto w-full max-w-2xl px-5 pb-10 pt-2 lg:max-w-none lg:px-6 lg:pt-0"
     >
       <div className="mb-4 flex items-baseline gap-2">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted-foreground)]">

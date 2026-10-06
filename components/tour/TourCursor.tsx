@@ -14,15 +14,15 @@ const STEPS: Step[] = [
   { id: 'cta', text: 'Follow me on GitHub or send me a message here 💬' },
   { id: 'highlights', text: 'Tap these to get to know me a little better ✨' },
   { id: 'experience', text: "Where I've been working lately 💼" },
+  { id: 'availability', text: "Need something built? I'm open for work. Grab my CV here 📄" },
   { id: 'recent', text: 'And what I’ve been listening to lately 🎶' },
   { id: 'featured', text: 'My favorite build 🏆 Tap it to read the full case study.' },
   { id: 'projects', text: 'My projects 🚀 Filter by category, or click one for details.' },
   { id: 'github', text: 'My GitHub activity 🔥 Hover a dot or drag to scroll.' },
   { id: 'tools', text: 'The tools and tech I use day to day 🧰' },
-  { id: 'availability', text: "Need something built? I'm open for work. Grab my CV here 📄" },
   // Floating rail — icon-only, so the cursor points at the button itself.
   { id: 'viewers', text: "These are people checking out the site right now 👀", point: 'center' },
-  { id: 'spotify', text: "Here's my Spotify 🎧 When I'm listening, you'll see the song.", point: 'center' },
+  { id: 'spotify', text: "Here's my Spotify 🎧 Tap to play my playlist right here.", point: 'center' },
   { id: 'theme', text: 'Prefer light mode? ☀️ Switch themes here.', point: 'center' },
 ];
 
