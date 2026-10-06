@@ -75,6 +75,68 @@ type Point = { x: number; y: number };
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+// Spotlight: the text the cursor points at smoothly enlarges, then settles
+// back when the cursor moves on. Uses the CSS `scale` property (not
+// `transform`) so it never fights ScrollColumn's scroll-fade transforms.
+type Saved = {
+  scale: string;
+  transition: string;
+  zIndex: string;
+  position: string;
+  transformOrigin: string;
+  display: string;
+};
+const saved = new WeakMap<HTMLElement, Saved>();
+
+function spotlight(el: HTMLElement) {
+  if (!saved.has(el)) {
+    saved.set(el, {
+      scale: el.style.scale,
+      transition: el.style.transition,
+      zIndex: el.style.zIndex,
+      position: el.style.position,
+      transformOrigin: el.style.transformOrigin,
+      display: el.style.display,
+    });
+  }
+  const cs = getComputedStyle(el);
+  // scale doesn't apply to plain inline elements.
+  if (cs.display === 'inline') el.style.display = 'inline-block';
+  // Size from the text itself, so a word in a wide block still pops.
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const tr = range.getBoundingClientRect();
+  const r = tr.width > 0 ? tr : el.getBoundingClientRect();
+  const amount = 1 + Math.min(0.12, 16 / Math.max(r.width, r.height, 1));
+  // Grow from where the text sits, so it doesn't drift sideways.
+  el.style.transformOrigin =
+    cs.textAlign === 'center' || cs.justifyContent === 'center' ? 'center' : 'left center';
+  if (cs.position === 'static') el.style.position = 'relative';
+  el.style.zIndex = '15';
+  el.style.transition = 'scale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+  el.style.scale = String(amount);
+}
+
+function unspotlight(el: HTMLElement) {
+  const prev = saved.get(el);
+  if (!prev) return;
+  el.style.transition = 'scale 0.35s ease-out';
+  el.style.scale = '1';
+  const restore = () => {
+    // Only restore if it hasn't been spotlit again in the meantime.
+    if (el.style.scale !== '1') return;
+    el.style.scale = prev.scale;
+    el.style.transition = prev.transition;
+    el.style.zIndex = prev.zIndex;
+    el.style.position = prev.position;
+    el.style.transformOrigin = prev.transformOrigin;
+    el.style.display = prev.display;
+    saved.delete(el);
+  };
+  el.addEventListener('transitionend', restore, { once: true });
+  setTimeout(restore, 400);
+}
+
 // Resolves once the hello splash has faded (or after a safety timeout).
 function splashGone() {
   return new Promise<void>((resolve) => {
@@ -103,6 +165,44 @@ function lastTextRect(root: HTMLElement): DOMRect | null {
     if (rect && rect.width > 0) last = rect; // skips hidden text
   }
   return last;
+}
+
+/**
+ * What to enlarge for a step: the element holding the exact text the cursor
+ * points at (the name, a heading, a button label) — not the whole section.
+ * Icon-only stops (point: 'center') enlarge the element itself.
+ */
+function customSpot(id: string) {
+  return document.querySelector<HTMLElement>(`[data-tour-spot="${id}"]`);
+}
+
+function spotTarget(el: HTMLElement, step: Step): HTMLElement {
+  // A stop can name its own group to enlarge, e.g. the name + verified badge.
+  const custom = customSpot(step.id);
+  if (custom) return custom;
+  const point = step.point ?? 'text';
+  if (point === 'center') return el;
+  const scope = el.matches('h1, h2') ? el : (el.querySelector<HTMLElement>('h1, h2') ?? el);
+  const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT);
+  let holder: HTMLElement | null = null;
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (!node.textContent?.trim() || !node.parentElement) continue;
+    if (node.parentElement.getClientRects().length) holder = node.parentElement;
+  }
+  return holder ?? el;
+}
+
+/** Where to point for a step: past a custom spot group, else the usual anchor. */
+function stepAnchor(el: HTMLElement, step: Step): Point {
+  const custom = customSpot(step.id);
+  if (custom) {
+    const b = custom.getBoundingClientRect();
+    return {
+      x: Math.max(8, Math.min(b.right + 2, window.innerWidth - 24)),
+      y: Math.max(8, Math.min(b.top + b.height * 0.6, window.innerHeight - 24)),
+    };
+  }
+  return anchor(el, step.point);
 }
 
 function anchor(el: HTMLElement, point: Step['point'] = 'text'): Point {
@@ -154,18 +254,24 @@ export default function TourCursor() {
   useEffect(() => {
     if (!active) return;
     let alive = true;
+    let lit: HTMLElement | null = null; // element currently enlarged
+    const release = () => {
+      if (lit) unspotlight(lit);
+      lit = null;
+    };
 
     // Bubble collapses first, then the cursor shrinks away.
     const stop = () => {
       if (!alive) return;
       alive = false;
+      release();
       setBubble(false);
       setTimeout(() => setActive(false), reduce ? 0 : 180);
     };
     const onResize = () => {
       const s = STEPS[stepRef.current];
       const el = s && target(s.id);
-      if (el) setPos(anchor(el, s.point));
+      if (el) setPos(stepAnchor(el, s));
     };
 
     window.addEventListener('wheel', stop, { passive: true });
@@ -216,8 +322,22 @@ export default function TourCursor() {
 
         stepRef.current = i;
         setStep(i);
-        setPos(anchor(el, STEPS[i].point));
-        await sleep(reduce ? 100 : 750);
+        // Glide to the target first; the previous text settles back as we leave.
+        release();
+        setPos(stepAnchor(el, STEPS[i]));
+        await sleep(reduce ? 100 : 650);
+        if (!alive) return;
+        // Arrived: only now does the pointed text enlarge, and the cursor
+        // follows its growing edge so it stays right at the end of the text.
+        if (!reduce) {
+          const spot = spotTarget(el, STEPS[i]);
+          spotlight(spot);
+          lit = spot;
+          await sleep(220);
+          if (!alive) return;
+          setPos(stepAnchor(el, STEPS[i]));
+          await sleep(200);
+        }
         if (!alive) return;
 
         setBubble(true);
@@ -231,6 +351,7 @@ export default function TourCursor() {
 
     return () => {
       alive = false;
+      release();
       window.removeEventListener('wheel', stop);
       window.removeEventListener('touchmove', stop);
       window.removeEventListener('keydown', stop);

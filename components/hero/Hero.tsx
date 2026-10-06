@@ -10,7 +10,8 @@ export default function Hero() {
         <HeroAvatar />
 
         <div className="flex flex-col lg:items-center lg:text-center">
-          <div className="flex items-center gap-1.5">
+          {/* data-tour-spot: the tour enlarges the name AND badge together */}
+          <div data-tour-spot="profile" className="flex items-center gap-1.5">
             <h1 data-tour="profile" className="text-lg font-bold tracking-tight text-[var(--foreground)] sm:text-xl lg:text-2xl">
               Jaymark Ancheta
             </h1>
