@@ -30,6 +30,7 @@ export default function ShareButton({ title }: { title: string }) {
     <button
       type="button"
       onClick={share}
+      data-say="Share this project"
       aria-label={copied ? 'Link copied' : `Share ${title}`}
       className="relative inline-flex h-8 w-8 items-center justify-center rounded-full text-[var(--foreground)] transition-colors hover:bg-[var(--accent)]"
     >

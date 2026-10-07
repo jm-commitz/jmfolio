@@ -37,6 +37,7 @@ export default function Hero() {
       <div data-tour="cta" className="mt-4 flex gap-2 lg:mt-6">
         <a
           href={FOLLOW_HREF}
+          data-say="Follow me on GitHub 🐙"
           target="_blank"
           rel="noreferrer"
           className="flex-1 rounded-lg bg-[var(--foreground)] px-4 py-2 text-center text-sm font-semibold text-[var(--background)] transition-opacity hover:opacity-90"
@@ -45,6 +46,7 @@ export default function Hero() {
         </a>
         <a
           href={MESSAGE_HREF}
+          data-say="Say hi on WhatsApp 💬"
           target="_blank"
           rel="noreferrer"
           className="flex-1 rounded-lg border px-4 py-2 text-center text-sm font-semibold text-[var(--foreground)] transition-colors hover:bg-[var(--accent)]"

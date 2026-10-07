@@ -71,6 +71,7 @@ export default function ProfileBar() {
               <motion.button
                 type="button"
                 onClick={backToTop}
+                data-say="Back to the top ↑"
                 aria-label="Back to profile"
                 className="relative shrink-0"
                 initial={{ opacity: 0, scale: reduce ? 1 : 0.8 }}
@@ -95,6 +96,7 @@ export default function ProfileBar() {
               <motion.button
                 type="button"
                 onClick={backToTop}
+                data-say="Back to the top ↑"
                 className="min-w-0 flex-1 text-left"
                 {...item(0.04)}
               >
@@ -117,6 +119,7 @@ export default function ProfileBar() {
               <motion.div className="flex shrink-0 items-center gap-1.5" {...item(0.08)}>
                 <a
                   href={FOLLOW_HREF}
+                  data-say="Follow me on GitHub 🐙"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex h-8 items-center rounded-full bg-[var(--foreground)] px-3.5 text-xs font-semibold text-[var(--background)] shadow-sm transition hover:opacity-90 active:scale-95"
@@ -125,6 +128,7 @@ export default function ProfileBar() {
                 </a>
                 <a
                   href={MESSAGE_HREF}
+                  data-say="Say hi on WhatsApp 💬"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex h-8 items-center rounded-full border bg-[color-mix(in_srgb,var(--background)_60%,transparent)] px-3.5 text-xs font-semibold text-[var(--foreground)] transition hover:bg-[var(--accent)] active:scale-95"

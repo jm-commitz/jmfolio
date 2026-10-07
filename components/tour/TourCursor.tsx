@@ -1,7 +1,16 @@
 'use client';
 
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import {
+  ARROW_PATH,
+  BUBBLE_OFFSET,
+  Bubble,
+  CURSOR_COLOR,
+  NameTag,
+  TYPE_MS,
+  TYPE_START_DELAY,
+} from './cursorParts';
 
 // Guided "cursor tour" in the style of bryllim.com: a fake cursor glides to
 // each [data-tour] target and explains it in a speech bubble. Like the hello
@@ -33,44 +42,13 @@ const START_DELAY = 0; // the splash signals the start 3s before it ends
 // Said over the splash, before it fades, so visitors know a tour is coming.
 const INTRO: Step = { id: 'intro', text: 'Psst… stick around, I’ll give you a quick tour 👀' };
 const HOLD_MS = 2400; // after the text finishes typing
-const TYPE_MS = 28; // per character
 const BUBBLE_W = 240;
-// Bubble and name tag hug the end of the (rotated) arrow's tail on whichever
-// side they open: below-right by default, mirrored left/up when they wouldn't
-// fit. Rail stops sit beside their 44px button, clear of the rail.
-const BUBBLE_OFFSET = { x: 14, y: 18 };
-
-function tagPosition(flipX: boolean, flipY: boolean): CSSProperties {
-  return {
-    ...(flipX ? { right: BUBBLE_OFFSET.x } : { left: BUBBLE_OFFSET.x }),
-    ...(flipY ? { bottom: BUBBLE_OFFSET.y } : { top: BUBBLE_OFFSET.y }),
-  };
-}
-
-// `shiftX` slides a right-side bubble left so it stays on screen (phones).
-function bubblePosition(
-  side: boolean,
-  flipX: boolean,
-  flipY: boolean,
-  shiftX: number,
-): CSSProperties {
-  if (side) return { right: 34, bottom: 10 };
-  const base = { ...tagPosition(flipX, flipY), ...(flipX ? {} : { left: shiftX }) };
-  // Slid under the cursor: drop a little lower so the arrow doesn't overlap it.
-  if (!flipX && !flipY && shiftX < 0) return { ...base, top: BUBBLE_OFFSET.y + 8 };
-  if (!flipX && flipY && shiftX < 0) return { ...base, bottom: BUBBLE_OFFSET.y + 8 };
-  return base;
-}
 // Only flip to the left when the cursor is right at the screen's edge (e.g.
 // the bottom-right rail); otherwise the bubble stays on the right and slides
 // left just enough to fit, so phones don't get every stop mirrored.
 const FLIP_X_EDGE = 72;
 const TAG_W = 80; // rough width of the "Jaymark" name tag
 const BUBBLE_MAX_H = 150; // fully typed bubble, used to decide if it fits below
-// Monochrome: cursor, name tag and bubble use the theme's text colour, with
-// the background colour for their text and outline, so they invert per theme.
-const CURSOR_COLOR = 'var(--foreground)';
-
 type Point = { x: number; y: number };
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -427,8 +405,7 @@ export default function TourCursor() {
             aria-hidden
           >
             <path
-              // Same arrow with softened corners (quadratic curves at each vertex)
-              d="M4.01 2.9L16.36 8.46Q18 9.2 16.27 9.71L11.75 11.06Q10.6 11.4 10.17 12.52L8.25 17.52Q7.6 19.2 7.04 17.49L2.68 4.09Q2 2 4.01 2.9Z"
+              d={ARROW_PATH}
               fill={CURSOR_COLOR}
               stroke="var(--background)"
               strokeWidth="1.6"
@@ -450,159 +427,17 @@ export default function TourCursor() {
                 reduce={Boolean(reduce)}
               />
             ) : (
-              <motion.span
+              <NameTag
                 key="name-tag"
-                style={{ backgroundColor: CURSOR_COLOR, ...tagPosition(tagFlipX, flipY) }}
-                className={`absolute whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-semibold text-[var(--background)] shadow-[0_2px_6px_rgba(0,0,0,0.25)]`}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, transition: { duration: 0.1 } }}
-                transition={{ duration: reduce ? 0 : 0.15 }}
-              >
-                Jaymark
-              </motion.span>
+                label="Jaymark"
+                flipX={tagFlipX}
+                flipY={flipY}
+                reduce={Boolean(reduce)}
+              />
             )}
           </AnimatePresence>
         </motion.div>
       )}
     </AnimatePresence>
-  );
-}
-
-// Speech bubble that grows with the text as it types (width and height),
-// anchored at the corner the cursor holds and growing away from it: to the
-// right/down normally, mirrored to the left/up when flipped. The content
-// ("Jaymark" label and text) is always left-aligned.
-function Bubble({
-  text,
-  side,
-  flipX,
-  flipY,
-  shiftX,
-  maxW,
-  reduce,
-}: {
-  text: string;
-  side: boolean;
-  flipX: boolean;
-  flipY: boolean;
-  shiftX: number;
-  maxW: number;
-  reduce: boolean;
-}) {
-  const live = useRef<HTMLDivElement>(null);
-  const [size, setSize] = useState<{ w: number; h: number } | null>(null);
-
-  useEffect(() => {
-    const el = live.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => setSize({ w: el.offsetWidth, h: el.offsetHeight }));
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  const corner = flipY
-    ? flipX
-      ? 'rounded-br-[4px]'
-      : 'rounded-bl-[4px]'
-    : flipX
-      ? 'rounded-tr-[4px]'
-      : 'rounded-tl-[4px]';
-  const anchor: CSSProperties = {
-    ...(flipX ? { right: 0 } : { left: 0 }),
-    ...(flipY ? { bottom: 0 } : { top: 0 }),
-  };
-
-  return (
-    <motion.div
-      role="status"
-      className={`absolute overflow-hidden rounded-[18px] text-[var(--background)] shadow-[0_6px_20px_rgba(0,0,0,0.25)] ${corner}`}
-      style={{
-        ...bubblePosition(side, flipX, flipY, shiftX),
-        backgroundColor: CURSOR_COLOR,
-        originX: flipX ? 1 : 0,
-        originY: flipY ? 1 : 0,
-      }}
-      initial={{ opacity: 0, scale: 0.85, width: 0, height: 0 }}
-      animate={{
-        opacity: size ? 1 : 0,
-        scale: size ? 1 : 0.85,
-        width: size?.w ?? 0,
-        height: size?.h ?? 0,
-      }}
-      exit={{ opacity: 0, scale: 0.9, transition: { duration: reduce ? 0 : 0.15 } }}
-      transition={
-        reduce
-          ? { duration: 0 }
-          : {
-              // Hugs the typed text: grows smoothly as each letter lands, kept
-              // just ahead by the couple of upcoming characters it measures.
-              width: { duration: 0.16, ease: [0.22, 1, 0.36, 1] },
-              height: { duration: 0.22, ease: [0.22, 1, 0.36, 1] },
-              scale: { type: 'spring', stiffness: 420, damping: 26 },
-              opacity: { duration: 0.15 },
-            }
-      }
-    >
-      <div
-        ref={live}
-        className="absolute w-max px-3.5 py-2.5 text-left"
-        style={{ ...anchor, maxWidth: maxW }}
-      >
-        <span className="block text-[11px] font-semibold opacity-60">Jaymark</span>
-        <TypingText text={text} instant={reduce} />
-      </div>
-    </motion.div>
-  );
-}
-
-// Types the message out character by character; the bubble resizes with it.
-// The next couple of characters are laid out invisibly after the caret, so the
-// bubble is always a step ahead of the letter about to appear.
-// The bubble only reserves room for the next couple of characters — it hugs
-// the typed text rather than the full message.
-const LOOKAHEAD = 2;
-const TYPE_START_DELAY = 220; // ms — matches the bubble's pop-in
-
-function TypingText({ text, instant }: { text: string; instant: boolean }) {
-  // Array.from keeps emoji (surrogate pairs) whole.
-  const chars = Array.from(text);
-  const [count, setCount] = useState(instant ? chars.length : 0);
-  const done = count >= chars.length;
-
-  useEffect(() => {
-    if (instant) return;
-    let id: ReturnType<typeof setInterval>;
-    // Wait for the bubble to pop open before the first letter appears.
-    const start = setTimeout(() => {
-      id = setInterval(() => {
-        setCount((c) => {
-          if (c >= chars.length) {
-            clearInterval(id);
-            return c;
-          }
-          return c + 1;
-        });
-      }, TYPE_MS);
-    }, TYPE_START_DELAY);
-    return () => {
-      clearTimeout(start);
-      clearInterval(id);
-    };
-  }, [chars.length, instant]);
-
-  return (
-    <p className="mt-0.5 text-sm font-medium leading-snug">
-      <span className="sr-only">{text}</span>
-      <span aria-hidden>
-        {chars.slice(0, count).join('')}
-        {!done && (
-          <span className="ml-px inline-block h-[1em] w-[2px] translate-y-[2px] animate-pulse bg-current opacity-80 align-baseline" aria-hidden />
-        )}
-        {!done && (
-          <span className="invisible">{chars.slice(count, count + LOOKAHEAD).join('')}</span>
-        )}
-      </span>
-    </p>
   );
 }

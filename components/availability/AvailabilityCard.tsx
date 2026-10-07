@@ -72,6 +72,7 @@ export default function AvailabilityCard() {
         <div className="mt-4 flex gap-2">
           <a
             href={CV_HREF}
+            data-say="Grab my CV 📄"
             download
             className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[var(--foreground)] px-3 py-2 text-sm font-semibold text-[var(--background)] transition-opacity hover:opacity-90"
           >
@@ -80,6 +81,7 @@ export default function AvailabilityCard() {
           </a>
           <a
             href={MESSAGE_HREF}
+            data-say="Say hi on WhatsApp 💬"
             target="_blank"
             rel="noreferrer"
             aria-label="Message me"

@@ -53,10 +53,10 @@ export default function FeaturedCarousel({ children }: { children: ReactNode }) 
         </h2>
         {many && (
           <div className="flex items-center gap-1.5">
-            <button type="button" onClick={prev} aria-label="Previous featured project" className={arrow}>
+            <button type="button" onClick={prev} aria-label="Previous featured project" data-say="← Previous project" className={arrow}>
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <button type="button" onClick={next} aria-label="Next featured project" className={arrow}>
+            <button type="button" onClick={next} aria-label="Next featured project" data-say="Next project →" className={arrow}>
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>

@@ -198,6 +198,69 @@
   background-color: var(--muted);
 }
 
+/* Desktop: the visitor's pointer is replaced by the Figma-style cursor
+   (components/ui/CursorFollower.tsx). Text fields keep their caret. */
+html.custom-cursor,
+html.custom-cursor * {
+  cursor: none !important;
+}
+/* With the custom cursor, its typing bubble replaces these small hover cards. */
+html.custom-cursor .hover-card {
+  display: none;
+}
+html.custom-cursor input,
+html.custom-cursor textarea,
+html.custom-cursor [contenteditable='true'] {
+  cursor: text !important;
+}
+
+/* Profile photo: breathing glow ring (HeroAvatar). The outer span breathes and
+   glows; the inner one is a spinning monochrome conic gradient masked to a ring. */
+.avatar-ring {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--foreground) 35%, transparent));
+}
+.avatar-ring:is(.opacity-100, .group:hover *, .group:focus-within *) {
+  animation: avatar-breathe 2.4s ease-in-out infinite;
+}
+.avatar-ring__spin {
+  background: conic-gradient(
+    from 0deg,
+    var(--foreground),
+    transparent 30%,
+    color-mix(in srgb, var(--foreground) 60%, transparent) 55%,
+    transparent 80%,
+    var(--foreground)
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+  animation: avatar-spin 6s linear infinite;
+}
+.avatar-ring--party .avatar-ring__spin {
+  animation-duration: 1.2s;
+}
+@keyframes avatar-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+@keyframes avatar-breathe {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--foreground) 25%, transparent));
+    opacity: 0.6;
+  }
+  50% {
+    filter: drop-shadow(0 0 12px color-mix(in srgb, var(--foreground) 45%, transparent));
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .avatar-ring,
+  .avatar-ring__spin {
+    animation: none !important;
+  }
+}
+
 /* Sparkles-on-text effect (magicui-style) */
 @keyframes sparkle-pop {
   0%,

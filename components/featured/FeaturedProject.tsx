@@ -34,6 +34,7 @@ function FeaturedCard({ project }: { project: Project }) {
   return (
     <Link
       href={`/projects/${project.slug}`}
+      data-say={`Read the ${project.title} case study →`}
       className="group grid h-full overflow-hidden rounded-2xl border transition-colors hover:bg-[var(--accent)] sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]"
     >
       {project.galleryVariant === 'devices' ? (

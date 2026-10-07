@@ -10,6 +10,7 @@ import HelloSplash from "@/components/ui/HelloSplash";
 import PageBackground from "@/components/ui/PageBackground";
 import ConsoleGreeting from "@/components/ui/ConsoleGreeting";
 import TemplateCredit from "@/components/ui/TemplateCredit";
+import CursorFollower from "@/components/ui/CursorFollower";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -55,6 +56,8 @@ export default function RootLayout({
           <ConsoleGreeting />
           {/* Required template credit (see LICENSE) */}
           <TemplateCredit />
+          {/* Desktop: Figma-style "You" cursor with typing hover bubbles */}
+          <CursorFollower />
           {children}
 
           {/* Floating rail, bottom-right: live viewers, Spotify, theme toggle */}

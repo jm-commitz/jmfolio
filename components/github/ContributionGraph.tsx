@@ -31,6 +31,7 @@ export default function ContributionGraph({ weeks }: { weeks: (Day | null)[][] }
   return (
     <>
       <DragScroll
+        data-say="Drag me ↔ or hover a dot"
         dir="rtl"
         className="no-scrollbar overflow-x-auto pb-1"
         onScroll={() => setTip(null)}

@@ -7,6 +7,7 @@ export default function ProjectRow({ project }: { project: Project }) {
   return (
     <Link
       href={`/projects/${project.slug}`}
+      data-say={`Open ${project.title} →`}
       className="group flex w-full items-start gap-3 rounded-xl px-5 py-3 text-left transition-colors hover:bg-[var(--accent)]"
     >
       <ProjectIcon project={project} size={44} interactive className="mt-0.5" />

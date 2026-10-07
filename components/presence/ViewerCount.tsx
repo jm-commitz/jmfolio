@@ -20,7 +20,8 @@ export default function ViewerCount() {
       // Faces stacked top-down in the floating rail, overlapping like an
       // avatar group. Each keeps its own border so the seams stay readable.
       className="flex flex-col items-center"
-      title={`${count === 1 ? '1 person' : `${count} people`} viewing right now`}
+      aria-label={`${count === 1 ? '1 person' : `${count} people`} viewing right now`}
+      data-say={`${count === 1 ? '1 person is' : `${count} people are`} here right now 👀`}
     >
       {faces.map((id, i) => (
         // Each face gets its own surface, matching the theme toggle below.

@@ -35,6 +35,7 @@ export default function Tools() {
               {group.items.map((t) => (
                 <li
                   key={t.name}
+                  data-say={`I use ${t.name}`}
                   className="group inline-flex items-center gap-1.5 rounded-full border bg-[var(--background)] py-1 pl-1.5 pr-2.5 transition-colors hover:bg-[var(--accent)]"
                 >
                   <span className="relative h-4 w-4 shrink-0">

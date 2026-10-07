@@ -83,7 +83,21 @@ export default function SpotifyRail() {
   );
 
   return (
-    <div ref={wrap} data-tour="spotify" className="group relative">
+    <div
+      ref={wrap}
+      data-tour="spotify"
+      // Cursor bubble line (desktop); the hover card below covers keyboard/touch.
+      data-say={
+        playing && track?.title
+          ? `Now playing: ${track.title} — ${track.artist} 🎧`
+          : visitor.playing && visitor.track?.title
+            ? `Playing: ${visitor.track.title} 🎶`
+            : PLAYLIST_URI
+              ? 'Play my playlist 🎧'
+              : 'Nothing playing right now 🎧'
+      }
+      className="group relative"
+    >
       {PLAYLIST_URI ? (
         <button
           type="button"
@@ -128,7 +142,8 @@ export default function SpotifyRail() {
       {!open && (
         <div
           role="tooltip"
-          className="pointer-events-none absolute right-full top-1/2 mr-3 w-56 -translate-y-1/2 translate-x-1 rounded-xl border bg-[var(--background)] px-3 py-2 text-left opacity-0 shadow-lg transition duration-200 group-hover:translate-x-0 group-hover:opacity-100"
+          // .hover-card: hidden on desktop, where the cursor bubble says it instead
+          className="hover-card pointer-events-none absolute right-full top-1/2 mr-3 w-56 -translate-y-1/2 translate-x-1 rounded-xl border bg-[var(--background)] px-3 py-2 text-left opacity-0 shadow-lg transition duration-200 group-hover:translate-x-0 group-hover:opacity-100"
         >
           {playing ? (
             <>

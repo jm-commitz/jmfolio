@@ -41,6 +41,7 @@ export default function FloatingRail({ children }: { children: ReactNode }) {
         <button
           type="button"
           onClick={toggle}
+          data-say={open ? 'Hide quick actions' : 'Show quick actions'}
           aria-expanded={open}
           aria-controls="floating-rail-items"
           aria-label={open ? 'Collapse quick actions' : 'Expand quick actions'}
@@ -56,7 +57,8 @@ export default function FloatingRail({ children }: { children: ReactNode }) {
         {/* Hover label, to the left of the rail like the Spotify card */}
         <span
           role="tooltip"
-          className="pointer-events-none absolute right-full top-1/2 mr-3 -translate-y-1/2 translate-x-1 whitespace-nowrap rounded-lg border bg-[var(--background)] px-2.5 py-1 text-xs font-medium text-[var(--foreground)] opacity-0 shadow-lg transition duration-200 group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:translate-x-0 group-focus-within:opacity-100"
+          // .hover-card: hidden on desktop, where the cursor bubble says it instead
+          className="hover-card pointer-events-none absolute right-full top-1/2 mr-3 -translate-y-1/2 translate-x-1 whitespace-nowrap rounded-lg border bg-[var(--background)] px-2.5 py-1 text-xs font-medium text-[var(--foreground)] opacity-0 shadow-lg transition duration-200 group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:translate-x-0 group-focus-within:opacity-100"
         >
           {open ? 'Hide quick actions' : 'Show quick actions'}
         </span>

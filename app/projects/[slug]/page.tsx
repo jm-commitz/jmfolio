@@ -164,6 +164,7 @@ export default async function ProjectPage({
               </div>
               <a
                 href={project.sourceHref}
+                data-say="Fork it on GitHub 🍴"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[var(--foreground)] px-5 py-2.5 text-sm font-semibold text-[var(--background)] transition-opacity hover:opacity-85"
@@ -393,7 +394,7 @@ function ActionPill({
   const open = `${base} bg-[var(--foreground)] text-[var(--background)] transition-opacity hover:opacity-85`;
   if (asLabel) return <span className={open}>Open</span>;
   return (
-    <a href={href} target="_blank" rel="noreferrer" className={open}>
+    <a href={href} target="_blank" rel="noreferrer" className={open} data-say="Visit the live site ↗">
       Open
     </a>
   );

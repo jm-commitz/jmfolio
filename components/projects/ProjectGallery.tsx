@@ -96,6 +96,7 @@ export default function ProjectGallery({
               <button
                 key={slide.src}
                 data-shot
+                data-say="Click to zoom 🔍"
                 type="button"
                 onClick={() => setLightbox(i)}
                 aria-label={`Open ${title} screenshot ${i + 1}`}
@@ -124,6 +125,7 @@ export default function ProjectGallery({
               <button
                 key={slide.src}
                 data-shot
+                data-say="Click to zoom 🔍"
                 type="button"
                 onClick={() => setLightbox(i)}
                 aria-label={`Open ${title} screenshot ${i + 1}`}

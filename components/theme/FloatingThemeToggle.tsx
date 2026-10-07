@@ -62,6 +62,7 @@ export default function FloatingThemeToggle() {
       ref={button}
       type="button"
       data-tour="theme"
+      data-say={isDark ? 'Lights on? ☀️' : 'Lights off? 🌙'}
       aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
       title={isDark ? 'Light mode' : 'Dark mode'}
       onClick={toggle}

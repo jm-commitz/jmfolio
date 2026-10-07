@@ -34,6 +34,7 @@ export default function StickyAppBar({
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 px-5">
         <Link
           href="/#projects"
+          data-say="Back to all projects"
           className="-ml-1.5 inline-flex items-center gap-0.5 text-[15px] font-medium text-[var(--foreground)] transition-opacity hover:opacity-70"
         >
           <ChevronLeft className="h-5 w-5" />

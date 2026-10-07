@@ -37,6 +37,7 @@ export default function CategoryDropdown({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
+        data-say="Filter by category"
         aria-haspopup="listbox"
         aria-expanded={open}
         className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent)]"

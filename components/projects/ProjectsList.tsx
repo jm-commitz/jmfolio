@@ -64,6 +64,7 @@ export default function ProjectsList() {
           <button
             type="button"
             onClick={() => setVisible((v) => v + STEP)}
+            data-say="Show more projects"
             className="rounded-full border px-5 py-2 text-xs font-medium text-[var(--muted-foreground)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--foreground)]"
           >
             View more ({filtered.length - visible})

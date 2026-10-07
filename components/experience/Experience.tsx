@@ -50,6 +50,7 @@ export default function Experience() {
                 {item.href ? (
                   <a
                     href={item.href}
+                    data-say={item.current ? 'Where I work now 💼' : `Visit ${item.company}`}
                     target="_blank"
                     rel="noreferrer"
                     className="font-semibold text-[var(--foreground)] transition-opacity hover:opacity-70"
@@ -74,6 +75,7 @@ export default function Experience() {
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
+          data-say={expanded ? 'Show less' : 'See my whole journey'}
           className="mt-5 inline-flex items-center gap-1 pl-6 text-xs font-semibold uppercase tracking-widest text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]"
         >
           {expanded ? 'See less' : `See all (${experiences.length})`}

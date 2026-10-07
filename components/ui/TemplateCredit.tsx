@@ -27,6 +27,7 @@ export default function TemplateCredit() {
   return (
     <a
       href={`${REPO}?ref=template`}
+      data-say="Make this site yours 🙌"
       target="_blank"
       rel="noreferrer"
       className="fixed bottom-5 left-5 z-30 inline-flex items-center gap-1.5 rounded-full border bg-[color-mix(in_srgb,var(--background)_80%,transparent)] px-3 py-1.5 text-[11px] font-medium text-[var(--muted-foreground)] shadow-sm backdrop-blur-md transition-colors hover:text-[var(--foreground)]"
