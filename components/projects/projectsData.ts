@@ -25,6 +25,9 @@ export type Project = {
   // 'devices': desktop `gallery` shots in MacBook frames + `mobileGallery` in iPhones.
   galleryVariant?: 'phone' | 'devices';
   mobileGallery?: string[]; // phone screenshots for the 'devices' variant
+  // Show N empty "screenshot coming soon" frames on the detail page instead of
+  // the real media — for projects whose screenshots aren't ready yet.
+  placeholderGallery?: number;
   sourceHref?: string; // public repo — shows a "Use this portfolio" offer on the detail page
   caseStudy?: CaseStudy; // long-form write-up rendered under the features
   featured?: number; // position in the homepage Featured carousel (1 = first)
@@ -272,28 +275,8 @@ export const projects: Project[] = [
     },
   },
   {
-    slug: 'cinemode',
-    title: 'Cinemode',
-    image: '/images/projects/cinemode/screen1.png',
-    tags: ['Streaming', 'PWA', 'Live'],
-    href: 'https://cinemode.fun',
-    description:
-      'A movie streaming web app with the latest releases, free to watch — just skip or close the ads. Installable as a PWA, so it runs like a native app from the home screen. Live at cinemode.fun.',
-    logo: '/images/projects/cinemode/cinemode_pwa.png',
-    gallery: [
-      '/images/projects/cinemode/screen1.png',
-      '/images/projects/cinemode/screen2.png',
-      '/images/projects/cinemode/screen3.png',
-      '/images/projects/cinemode/screen4.png',
-    ],
-    features: [
-      'Latest movie releases, free to stream',
-      'Ad-supported — skip or close the ads to watch',
-      'Installable as a PWA, runs like a native app',
-    ],
-  },
-  {
     slug: 'landing-page-dashboard',
+    placeholderGallery: 3,
     title: 'Landing Page + Dashboard',
     image: '/images/projects/dale.png',
     video: '/images/projects/Dale.mp4',
@@ -307,6 +290,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'omnichannel',
+    placeholderGallery: 3,
     title: 'Omnichannel',
     image: '/images/projects/omnichannel.png',
     video: '/images/omnichannel.mp4',
@@ -319,6 +303,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'inventory-system',
+    placeholderGallery: 3,
     title: 'Inventory System',
     image: '/images/projects/inventory.png',
     video: '/images/projects/mrp.mp4',
@@ -331,6 +316,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'airbnb-clone',
+    placeholderGallery: 3,
     title: 'Airbnb Clone',
     image: '/images/projects/airbnb.png',
     video: '/images/airbnb.mp4',

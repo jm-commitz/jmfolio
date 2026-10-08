@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { ArrowUpRight, Check, Github, Globe, LayoutGrid, Smartphone, UserRound } from 'lucide-react';
 import ProjectIcon from '@/components/projects/ProjectIcon';
 import ProjectGallery from '@/components/projects/ProjectGallery';
+import GalleryPlaceholder from '@/components/projects/GalleryPlaceholder';
 import StickyAppBar from '@/components/projects/appstore/StickyAppBar';
 import ShareButton from '@/components/projects/appstore/ShareButton';
 import ExpandableText from '@/components/projects/appstore/ExpandableText';
@@ -140,14 +141,18 @@ export default async function ProjectPage({
         </div>
 
         <Section title="Preview" first>
-          <ProjectGallery
-            title={project.title}
-            image={project.image}
-            video={project.video}
-            gallery={project.gallery}
-            mobileGallery={project.mobileGallery}
-            variant={project.galleryVariant}
-          />
+          {project.placeholderGallery ? (
+            <GalleryPlaceholder count={project.placeholderGallery} />
+          ) : (
+            <ProjectGallery
+              title={project.title}
+              image={project.image}
+              video={project.video}
+              gallery={project.gallery}
+              mobileGallery={project.mobileGallery}
+              variant={project.galleryVariant}
+            />
+          )}
         </Section>
 
         {/* Open-source offer: visitors can take this project for themselves */}

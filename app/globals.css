@@ -261,23 +261,30 @@ html.custom-cursor [contenteditable='true'] {
   }
 }
 
-/* Sparkles-on-text effect (magicui-style) */
-@keyframes sparkle-pop {
-  0%,
-  100% {
-    opacity: 0;
-    transform: scale(0) rotate(0deg);
+/* Empty screenshot frames (GalleryPlaceholder): a soft skeleton shimmer. */
+.placeholder-shimmer {
+  left: -40%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--foreground) 7%, transparent),
+    transparent
+  );
+  animation: placeholder-shimmer 2.4s ease-in-out infinite;
+}
+@keyframes placeholder-shimmer {
+  0% {
+    left: -40%;
   }
-  50% {
-    opacity: 1;
-    transform: scale(1) rotate(180deg);
+  60%,
+  100% {
+    left: 140%;
   }
 }
-
 @media (prefers-reduced-motion: reduce) {
-  .sparkle-star {
-    animation: none !important;
-    opacity: 0 !important;
+  .placeholder-shimmer {
+    animation: none;
+    display: none;
   }
 }
 

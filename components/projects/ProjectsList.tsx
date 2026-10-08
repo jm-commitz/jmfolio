@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import CategoryDropdown from './CategoryDropdown';
 import ProjectRow from './ProjectRow';
 import { projects } from './projectsData';
@@ -11,6 +11,14 @@ const STEP = 3;
 export default function ProjectsList() {
   const [filter, setFilter] = useState<string>(ALL);
   const [visible, setVisible] = useState(STEP);
+
+  // Arriving via a '‹ Projects' back link (/#projects): scroll here, then drop
+  // the hash so the address bar stays a clean '/'.
+  useEffect(() => {
+    if (window.location.hash !== '#projects') return;
+    document.getElementById('projects')?.scrollIntoView({ block: 'start' });
+    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+  }, []);
 
   // One chip per *primary* (first) tag. Every unique tag would mean 8 chips for
   // 5 projects; matching still tests the full tag list, so "SaaS" catches a
