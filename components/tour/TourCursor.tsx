@@ -23,9 +23,10 @@ const STEPS: Step[] = [
   { id: 'cta', text: 'Follow me on GitHub or send me a message here 💬' },
   { id: 'highlights', text: 'Tap these to get to know me a little better ✨' },
   { id: 'experience', text: "Where I've been working lately 💼" },
+  { id: 'achievements', text: 'A few wins I’m proud of 🏅' },
   { id: 'availability', text: "Need something built? I'm open for work. Grab my CV here 📄" },
   { id: 'recent', text: 'And what I’ve been listening to lately 🎶' },
-  { id: 'featured', text: 'My favorite build 🏆 Tap it to read the full case study.' },
+  { id: 'featured', text: 'Wins and favorite builds 🏆 Tap a card for the full story.' },
   { id: 'projects', text: 'My projects 🚀 Filter by category, or click one for details.' },
   { id: 'github', text: 'My GitHub activity 🔥 Hover a dot or drag to scroll.' },
   { id: 'tools', text: 'The tools and tech I use day to day 🧰' },
@@ -206,7 +207,7 @@ export default function TourCursor() {
   const reduce = useReducedMotion();
   const stepRef = useRef(-1);
 
-  // Start as soon as "hello" finishes drawing — over the splash, before it
+  // Start as soon as "hola" finishes drawing — over the splash, before it
   // fades — so visitors see the tour coming.
   useEffect(() => {
     if (playedThisLoad) return;
@@ -262,7 +263,7 @@ export default function TourCursor() {
       await sleep(0);
 
       if (!document.documentElement.dataset.splashDone) {
-        // Intro over the splash: pop in right after the end of "hello", say a
+        // Intro over the splash: pop in right after the end of "hola", say a
         // tour is coming, then carry on once the splash has faded.
         const helloW = Math.min(window.innerWidth * 0.7, 480);
         setPos({

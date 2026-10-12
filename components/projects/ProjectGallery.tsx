@@ -46,6 +46,8 @@ export default function ProjectGallery({
   // Every project gets at least one slide.
   if (!slides.length) slides.push({ type: 'image', src: image });
 
+  // A 'devices' project with no desktop shots is a phone app (plus a video).
+  const mobileOnly = devices && !gallery?.length;
   const phone = variant === 'phone';
   const [lightbox, setLightbox] = useState<number | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
@@ -173,14 +175,14 @@ export default function ProjectGallery({
 
       {/* Device caption, like the App Store's "iPhone" line */}
       <p className="mt-3 flex items-center gap-1.5 text-xs font-medium text-[var(--muted-foreground)]">
-        {devices ? (
+        {devices && !mobileOnly ? (
           <MonitorSmartphone className="h-3.5 w-3.5" />
-        ) : phone ? (
+        ) : phone || mobileOnly ? (
           <Smartphone className="h-3.5 w-3.5" />
         ) : (
           <Monitor className="h-3.5 w-3.5" />
         )}
-        {devices ? 'Web · Desktop & Mobile' : phone ? 'iPhone & Android' : 'Web'}
+        {mobileOnly || phone ? 'iPhone & Android' : devices ? 'Web · Desktop & Mobile' : 'Web'}
       </p>
 
       {lightbox !== null && (

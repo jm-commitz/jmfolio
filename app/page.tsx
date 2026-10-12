@@ -2,6 +2,7 @@ import Hero from '@/components/hero/Hero';
 import ProfileBar from '@/components/hero/ProfileBar';
 import Highlights from '@/components/highlights/Highlights';
 import Experience from '@/components/experience/Experience';
+import Achievements from '@/components/achievements/Achievements';
 import ProjectsList from '@/components/projects/ProjectsList';
 import Tools from '@/components/tools/Tools';
 import GithubContributions from '@/components/github/GithubContributions';
@@ -30,6 +31,7 @@ export default function Home() {
         <Hero />
         <Highlights />
         <Experience />
+        <Achievements />
         <AvailabilityCard />
         <RecentlyPlayed />
       </ScrollColumn>

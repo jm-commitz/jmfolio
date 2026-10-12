@@ -67,7 +67,7 @@ export default function RootLayout({
             <FloatingThemeToggle />
           </FloatingRail>
 
-          {/* iOS-style "hello" splash, plays on every load */}
+          {/* iOS-style "hola" splash, plays on every load */}
           <HelloSplash />
         </ThemeProvider>
       </body>

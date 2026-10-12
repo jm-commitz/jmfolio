@@ -1,6 +1,6 @@
 # jmfolio — Jaymark Ancheta's portfolio
 
-A developer portfolio that behaves like a product: an iOS-style "hello" splash,
+A developer portfolio that behaves like a product: an iOS-style "hola" splash,
 a guided Figma-style cursor tour, a three-column desktop layout, App Store-style
 project pages with case studies, and live GitHub and Spotify data.
 

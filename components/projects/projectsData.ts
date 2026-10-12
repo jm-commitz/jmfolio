@@ -31,6 +31,18 @@ export type Project = {
   sourceHref?: string; // public repo — shows a "Use this portfolio" offer on the detail page
   caseStudy?: CaseStudy; // long-form write-up rendered under the features
   featured?: number; // position in the homepage Featured carousel (1 = first)
+  links?: { label: string; href: string }[]; // extra rows in the Information table
+  // Team builds: the byline shows `teamName` and a Team section credits each
+  // member with their GitHub avatar.
+  teamName?: string;
+  team?: TeamMember[];
+};
+
+export type TeamMember = {
+  name: string;
+  github: string; // username — avatar and profile link
+  role?: string;
+  me?: boolean; // marks Jaymark in the list
 };
 
 // Only `problem` and `highlights` are required, so a case study can be written
@@ -46,6 +58,91 @@ export type CaseStudy = {
 
 // Video-only projects. `image` is used as the paused-frame poster.
 export const projects: Project[] = [
+  {
+    slug: 'onai',
+    title: 'Onai',
+    image: '/images/projects/onai/poster.jpg',
+    video: '/images/projects/onai/pitch.mp4',
+    logo: '/images/projects/onai/icon.png',
+    tags: ['AI', 'Mobile', 'Offline'],
+    description:
+      'An offline “Mother AI” for the family, built in 24 hours with team 404 Devs at the AppBuildersPH Hackathon 2026. It listens for voice commands, knows who is talking, hands out chores and keeps the house running even when the internet is down.',
+    date: 'October 2026',
+    // Landscape pitch video as a 16:9 slide, then phone screens in iPhone frames.
+    galleryVariant: 'devices',
+    gallery: [],
+    mobileGallery: [1, 2, 3, 4, 5, 6, 7, 8].map((n) => `/images/projects/onai/${n}.jpg`),
+    features: [
+      'Voice commands, like waking a family member up at a set time',
+      'Speaker recognition: tells a parent, a child and a stranger apart',
+      'Assigns chores, tracks points and cheers the kids on',
+      'Alerts the parents when an alarm is ignored',
+      'Greets family members as they arrive and lists what is left to do',
+      'Runs on a laptop at home and keeps working with no internet',
+      'Phones and laptops on the home Wi-Fi join from the browser',
+      'Chat, document Q&A and image questions on a local model',
+    ],
+    caseStudy: {
+      role: 'Developer: AI & voice',
+      timeline: '24 hours · Oct 9–10, 2026',
+      stack: [
+        'Ollama',
+        'Qwen 3.5',
+        'EmbeddingGemma',
+        'NestJS',
+        'Fastify',
+        'Prisma',
+        'PostgreSQL + pgvector',
+        'React',
+        'Vite',
+        'TanStack Query & Router',
+        'shadcn/ui',
+        'Expo',
+        'Docker Compose',
+      ],
+      problem:
+        'A home assistant is only useful if it works when you need it, but cloud assistants go quiet the moment the internet drops, during a power outage or on a weak signal. For a 24-hour local-AI hackathon we built a family assistant that runs entirely on one laptop at home: it hears the household, knows who is speaking and keeps the daily routine going with no connection at all.',
+      numbers: [
+        { value: '24h', label: 'from idea to demo' },
+        { value: '4', label: 'developers on team 404 Devs' },
+        { value: '0', label: 'cloud calls once it is set up' },
+      ],
+      highlights: [
+        {
+          title: 'One laptop is the whole backend',
+          body: 'A single hub machine runs the API, the database and the models. Every other device on the home network opens it in a browser from a LAN address or QR code, so nothing has to be installed on the family’s phones.',
+        },
+        {
+          title: 'Local models sized to the hardware',
+          body: 'Chat runs on Qwen 3.5 through Ollama, with the 2B, 4B or 9B model picked to fit the laptop. Cloud models are switched off, and an admin can change the model from the web app without a restart.',
+        },
+        {
+          title: 'Voice that knows who is talking',
+          body: 'My part of the build: the voice layer. Onai takes spoken commands and recognises the speaker, so a parent, a child and a stranger are each treated differently. Answers can be read back aloud.',
+        },
+        {
+          title: 'Answers from the family’s own documents',
+          body: 'Uploaded PDFs and notes are embedded with EmbeddingGemma and stored in Postgres with pgvector, so Onai can answer questions from them and show its sources.',
+        },
+        {
+          title: 'Actions only after a yes',
+          body: 'The assistant can look things up and propose changes, like adding a chore, but nothing is written until someone confirms. A chatty model never edits the household’s data on its own.',
+        },
+      ],
+    },
+    links: [
+      { label: 'Source', href: 'https://github.com/Cjake28/hackathon-2026' },
+      { label: 'Announcement', href: 'https://www.linkedin.com/posts/jaymark-ancheta-8511b430b_appbuildersph-localai-onai-activity-7514502970231746561-20TN' },
+      { label: 'Certificate', href: '/images/hackathon/certificate.pdf' },
+    ],
+    teamName: '404 Devs',
+    team: [
+      { name: 'Jaymark Ancheta', github: 'jm-commitz', role: 'AI & voice', me: true },
+      { name: 'John Mark Capones', github: 'JohnMarkCapones' },
+      { name: 'Christian Jake Supnet', github: 'Cjake28' },
+      { name: 'Vincent Obenza', github: 'vincentobnza' },
+    ],
+  },
   {
     slug: 'doit',
     title: 'DoIt',
@@ -208,13 +305,13 @@ export const projects: Project[] = [
     sourceHref: 'https://github.com/jm-commitz/jmfolio',
     date: '2026',
     description:
-      'This site: an open-source developer portfolio with a 3-column desktop layout, an iOS-style hello splash, a guided cursor tour, App Store-style project pages and live GitHub and Spotify data.',
+      'This site: an open-source developer portfolio with a 3-column desktop layout, an iOS-style "hola" splash, a guided cursor tour, App Store-style project pages and live GitHub and Spotify data.',
     galleryVariant: 'devices',
     gallery: ['/images/projects/portfolio/2.png', '/images/projects/portfolio/1.png'],
     mobileGallery: ['/images/projects/portfolio/3.png'],
     features: [
       'Three-column desktop layout where each column scrolls on its own',
-      'iOS-style "hello" splash that hands off to the tour',
+      'iOS-style "hola" splash that hands off to the tour',
       'Figma-style guided cursor tour with typing speech bubbles',
       'App Store-style project pages with full case studies',
       'Instagram-style story highlights',
@@ -242,7 +339,7 @@ export const projects: Project[] = [
         'Most developer portfolios are the same template: a hero, a grid of cards and a contact form. They show what you made but nothing about how you build. This one is designed to behave like a product: it greets you, gives you a tour, and its project pages read like App Store listings with real case studies, while staying fast and statically rendered.',
       numbers: [
         { value: '39', label: 'React components' },
-        { value: '13', label: 'guided tour stops' },
+        { value: '14', label: 'guided tour stops' },
         { value: '3', label: 'live data sources: GitHub, Spotify, Supabase' },
         { value: '4', label: 'API routes' },
       ],

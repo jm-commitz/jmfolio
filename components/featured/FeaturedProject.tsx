@@ -1,24 +1,30 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { CSSProperties } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Medal, Trophy } from 'lucide-react';
 import ProjectIcon from '@/components/projects/ProjectIcon';
 import { projects, type Project } from '@/components/projects/projectsData';
+import { achievements, type Achievement } from '@/components/achievements/achievementsData';
 import FeaturedCarousel from './FeaturedCarousel';
 import { DynamicIsland, IPhone, MacBook } from '@/components/projects/DeviceFrame';
 
 // Top of the center column: a carousel with one big card per `featured`
-// project, ordered by its `featured` number: fanned phone screenshots (or a
-// MacBook + iPhone for web projects), pitch, a few stats and a link in.
+// achievement, then per `featured` project, each ordered by its `featured`
+// number: fanned phone screenshots (or a MacBook + iPhone for web projects),
+// pitch, a few stats and a link in.
 export default function FeaturedProject() {
-  const featured = projects
-    .filter((p) => p.featured)
-    .sort((a, b) => (a.featured ?? 0) - (b.featured ?? 0));
-  if (!featured.length) return null;
+  const byOrder = (a: { featured?: number }, b: { featured?: number }) =>
+    (a.featured ?? 0) - (b.featured ?? 0);
+  const wins = achievements.filter((a) => a.featured).sort(byOrder);
+  const featured = projects.filter((p) => p.featured).sort(byOrder);
+  if (!wins.length && !featured.length) return null;
 
   return (
     <section data-tour="featured" className="px-5 pt-8 lg:pt-20">
       <FeaturedCarousel>
+        {wins.map((item) => (
+          <AchievementCard key={item.id} item={item} />
+        ))}
         {featured.map((project) => (
           <FeaturedCard key={project.slug} project={project} />
         ))}
@@ -81,6 +87,102 @@ function FeaturedCard({ project }: { project: Project }) {
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </span>
       </div>
+    </Link>
+  );
+}
+
+
+// An achievement slide: the proof on the left (a site screenshot in a MacBook,
+// or the certificate as a sheet of paper), what it was for on the right.
+// Links to the project's case study when there is one, else to the proof.
+function AchievementCard({ item }: { item: Achievement }) {
+  const Icon = item.kind === 'award' ? Trophy : Medal;
+  const href = item.projectSlug ? `/projects/${item.projectSlug}` : item.href;
+  if (!href) return null;
+  const external = href.startsWith('http');
+  const cta = item.projectSlug ? 'Read case study' : (item.hrefLabel ?? 'View');
+  const className =
+    'group grid h-full overflow-hidden rounded-2xl border transition-colors hover:bg-[var(--accent)] sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]';
+
+  const body = (
+    <>
+      <div className="relative h-60 overflow-hidden bg-[var(--muted)] sm:h-auto sm:min-h-[280px]">
+        {item.imageVariant === 'paper' ? (
+          <div className="absolute inset-x-[9%] top-1/2 -translate-y-1/2 -rotate-3 overflow-hidden rounded-md shadow-xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-[54%] group-hover:rotate-0 group-hover:scale-[1.03]">
+            <Image
+              src={item.image}
+              alt={`${item.title} certificate`}
+              width={1754}
+              height={1241}
+              sizes="(min-width: 1024px) 360px, 80vw"
+              className="h-auto w-full"
+            />
+          </div>
+        ) : (
+          <div className="absolute inset-x-[10%] top-1/2 -translate-y-[56%] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-[60%]">
+            <MacBook src={item.image} sizes="(min-width: 1024px) 360px, 70vw" />
+          </div>
+        )}
+        <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border bg-[var(--background)] px-2.5 py-1 text-[11px] font-semibold text-[var(--foreground)] shadow-sm">
+          <Icon className="h-3.5 w-3.5" />
+          {item.kind === 'award' ? 'Award' : 'Hackathon'}
+        </span>
+      </div>
+
+      <div className="flex flex-col p-5">
+        <div className="flex items-center gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[22%] border bg-[var(--muted)] text-[var(--foreground)]">
+            <Icon className="h-5 w-5" />
+          </span>
+          <div className="min-w-0">
+            <p className="truncate text-lg font-bold tracking-tight text-[var(--foreground)]">
+              {item.title}
+            </p>
+            <p className="truncate text-xs text-[var(--muted-foreground)]">
+              {item.issuer} · {item.date}
+            </p>
+          </div>
+        </div>
+
+        <p className="mt-3 text-sm leading-relaxed text-[var(--muted-foreground)]">
+          {item.description}
+        </p>
+
+        {item.facts && item.facts.length > 0 && (
+          <dl className="mt-4 grid grid-cols-3 gap-2">
+            {item.facts.slice(0, 3).map((f) => (
+              <div key={f.label}>
+                <dt className="sr-only">{f.label}</dt>
+                <dd className="text-xl font-bold tracking-tight text-[var(--foreground)]">
+                  {f.value}
+                </dd>
+                <dd className="line-clamp-2 text-[11px] leading-tight text-[var(--muted-foreground)]">
+                  {f.label}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
+
+        <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-semibold text-[var(--foreground)]">
+          {cta}
+          {external ? (
+            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          ) : (
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          )}
+        </span>
+      </div>
+    </>
+  );
+
+  return external ? (
+    <a href={href} target="_blank" rel="noreferrer" data-say={`${cta} ↗`} className={className}>
+      {body}
+    </a>
+  ) : (
+    <Link href={href} data-say={`${cta} →`} className={className}>
+      {body}
     </Link>
   );
 }

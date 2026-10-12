@@ -5,11 +5,15 @@ Guidance for Claude Code (claude.ai/code) when working in this repository.
 ## Commands
 
 ```bash
-npm run dev      # dev server at localhost:3000
+npm run dev      # dev server at localhost:3000 (webpack: see note below)
+npm run dev:turbo  # same with Turbopack (faster, but see note)
 npm run build    # production build
 npm run lint     # ESLint
 npm run start    # serve the production build
 ```
+
+`dev` uses webpack because on Windows with 360 Total Security, Turbopack's PostCSS
+worker process gets blocked ("Access is denied") and every page 500s until restart.
 
 No test suite. Verify changes with `npx tsc --noEmit`, `npm run lint` and `npm run build`.
 

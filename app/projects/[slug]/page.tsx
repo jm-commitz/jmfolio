@@ -1,15 +1,17 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowUpRight, Check, Github, Globe, LayoutGrid, Smartphone, UserRound } from 'lucide-react';
+import { ArrowUpRight, Check, Github, Globe, LayoutGrid, Smartphone, UserRound, UsersRound } from 'lucide-react';
 import ProjectIcon from '@/components/projects/ProjectIcon';
 import ProjectGallery from '@/components/projects/ProjectGallery';
 import GalleryPlaceholder from '@/components/projects/GalleryPlaceholder';
 import StickyAppBar from '@/components/projects/appstore/StickyAppBar';
 import ShareButton from '@/components/projects/appstore/ShareButton';
 import ExpandableText from '@/components/projects/appstore/ExpandableText';
-import { getProjectBySlug, projects } from '@/components/projects/projectsData';
+import { getProjectBySlug, projects, type TeamMember } from '@/components/projects/projectsData';
+import { githubAvatar } from '@/lib/github';
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -56,10 +58,14 @@ export default async function ProjectPage({
   const cs = project.caseStudy;
   const [category, ...platforms] = project.tags;
   const year = project.date?.match(/\d{4}/)?.[0];
-  const phone = project.galleryVariant === 'phone';
+  const phone =
+    project.galleryVariant === 'phone' ||
+    (project.galleryVariant === 'devices' && !project.gallery?.length);
   // App Store subtitle: the description's first sentence.
   const subtitle = project.description?.split(/(?<=\.)\s/)[0];
   const others = projects.filter((p) => p.slug !== project.slug);
+  const team = project.team ?? [];
+  const byline = project.teamName ?? 'Jaymark Ancheta';
 
   // iOS-style info strip under the header.
   const info: { label: string; value: ReactNode; caption: string }[] = [
@@ -70,7 +76,9 @@ export default async function ProjectPage({
       caption: platforms.length ? platforms.join(', ') : phone ? 'Mobile' : 'Web',
     },
     ...(year ? [{ label: 'Year', value: year, caption: 'Built' }] : []),
-    { label: 'Developer', value: <UserRound className="h-5 w-5" />, caption: 'Jaymark' },
+    team.length
+      ? { label: 'Team', value: <UsersRound className="h-5 w-5" />, caption: `${byline} · ${team.length}` }
+      : { label: 'Developer', value: <UserRound className="h-5 w-5" />, caption: 'Jaymark' },
     ...(cs?.numbers?.slice(0, 3).map((n) => ({ label: 'Stat', value: n.value, caption: n.label })) ??
       []),
   ];
@@ -109,7 +117,7 @@ export default async function ProjectPage({
                 {subtitle}
               </p>
             )}
-            <p className="mt-1 text-xs text-[var(--muted-foreground)] sm:text-sm">Jaymark Ancheta</p>
+            <p className="mt-1 text-xs text-[var(--muted-foreground)] sm:text-sm">{byline}</p>
 
             <div className="mt-auto flex items-center gap-2 pt-3">
               <ActionPill href={project.href} live={isLive} />
@@ -252,9 +260,24 @@ export default async function ProjectPage({
           </>
         )}
 
+        {team.length > 0 && (
+          <Section title="Team">
+            {project.teamName && (
+              <p className="-mt-2 mb-4 text-sm text-[var(--muted-foreground)]">
+                Built together as {project.teamName}.
+              </p>
+            )}
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {team.map((member) => (
+                <TeamCard key={member.github} member={member} />
+              ))}
+            </ul>
+          </Section>
+        )}
+
         <Section title="Information">
           <dl className="divide-y text-sm">
-            <InfoRow label="Developer" value="Jaymark Ancheta" />
+            <InfoRow label={team.length ? 'Team' : 'Developer'} value={byline} />
             {category && <InfoRow label="Category" value={category} />}
             {platforms.length > 0 && <InfoRow label="Platform" value={platforms.join(', ')} />}
             {(cs?.timeline ?? project.date) && (
@@ -277,6 +300,24 @@ export default async function ProjectPage({
                 </dd>
               </div>
             )}
+            {project.links?.map((link) => (
+              <div key={link.label} className="flex items-center justify-between gap-6 py-3">
+                <dt className="text-[var(--muted-foreground)]">{link.label}</dt>
+                <dd className="min-w-0">
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex max-w-full items-center gap-1 font-medium text-[var(--foreground)] hover:underline"
+                  >
+                    <span className="truncate">
+                      {link.href.startsWith('/') ? 'View' : new URL(link.href).hostname.replace(/^www\./, '')}
+                    </span>
+                    <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
+                  </a>
+                </dd>
+              </div>
+            ))}
             {isLive && project.href && (
               <div className="flex items-center justify-between gap-6 py-3">
                 <dt className="text-[var(--muted-foreground)]">Website</dt>
@@ -356,6 +397,48 @@ function Section({
       )}
       {children}
     </section>
+  );
+}
+
+// A teammate: GitHub avatar (loaded unoptimized, see githubAvatar), name and
+// handle, linking to their GitHub profile.
+function TeamCard({ member }: { member: TeamMember }) {
+  return (
+    <li>
+      <a
+        href={`https://github.com/${member.github}`}
+        target="_blank"
+        rel="noreferrer"
+        data-say={member.me ? "That's me 👋" : `Say hi to ${member.name.split(' ')[0]} on GitHub ↗`}
+        className="group flex items-center gap-3 rounded-2xl bg-[var(--muted)] p-3 transition-colors hover:bg-[var(--accent)]"
+      >
+        <Image
+          src={githubAvatar(96, member.github)}
+          alt=""
+          width={48}
+          height={48}
+          unoptimized
+          className="h-12 w-12 shrink-0 rounded-full border bg-[var(--background)]"
+        />
+        <span className="min-w-0 flex-1">
+          <span className="flex items-center gap-2">
+            <span className="truncate text-[15px] font-semibold text-[var(--foreground)]">
+              {member.name}
+            </span>
+            {member.me && (
+              <span className="shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-medium text-[var(--muted-foreground)]">
+                Me
+              </span>
+            )}
+          </span>
+          <span className="block truncate text-xs text-[var(--muted-foreground)]">
+            @{member.github}
+            {member.role && ` · ${member.role}`}
+          </span>
+        </span>
+        <ArrowUpRight className="h-4 w-4 shrink-0 text-[var(--muted-foreground)] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+      </a>
+    </li>
   );
 }
 

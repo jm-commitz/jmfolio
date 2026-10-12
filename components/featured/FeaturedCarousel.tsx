@@ -53,10 +53,10 @@ export default function FeaturedCarousel({ children }: { children: ReactNode }) 
         </h2>
         {many && (
           <div className="flex items-center gap-1.5">
-            <button type="button" onClick={prev} aria-label="Previous featured project" data-say="← Previous project" className={arrow}>
+            <button type="button" onClick={prev} aria-label="Previous featured slide" data-say="← Previous" className={arrow}>
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <button type="button" onClick={next} aria-label="Next featured project" data-say="Next project →" className={arrow}>
+            <button type="button" onClick={next} aria-label="Next featured slide" data-say="Next →" className={arrow}>
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
@@ -86,7 +86,7 @@ export default function FeaturedCarousel({ children }: { children: ReactNode }) 
               key={i}
               type="button"
               onClick={() => embla?.scrollTo(i)}
-              aria-label={`Go to featured project ${i + 1}`}
+              aria-label={`Go to featured slide ${i + 1}`}
               aria-current={selected === i}
               className={`h-1.5 rounded-full transition-all ${
                 selected === i
