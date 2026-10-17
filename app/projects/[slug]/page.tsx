@@ -56,7 +56,8 @@ export default async function ProjectPage({
 
   const isLive = Boolean(project.href?.startsWith('http'));
   const cs = project.caseStudy;
-  const [category, ...platforms] = project.tags;
+  const [category, ...tagPlatforms] = project.tags;
+  const platforms = project.platform ? [project.platform] : tagPlatforms;
   const year = project.date?.match(/\d{4}/)?.[0];
   const phone =
     project.galleryVariant === 'phone' ||
@@ -214,9 +215,11 @@ export default async function ProjectPage({
 
         {cs && (
           <>
-            <Section title="The Problem">
-              <p className="text-[15px] leading-relaxed text-[var(--foreground)]">{cs.problem}</p>
-            </Section>
+            {cs.problem && (
+              <Section title="The Problem">
+                <p className="text-[15px] leading-relaxed text-[var(--foreground)]">{cs.problem}</p>
+              </Section>
+            )}
 
             {cs.numbers && cs.numbers.length > 0 && (
               <Section title="By the Numbers">
@@ -235,7 +238,7 @@ export default async function ProjectPage({
               </Section>
             )}
 
-            {cs.highlights.length > 0 && (
+            {cs.highlights && cs.highlights.length > 0 && (
               <Section title="Under the Hood">
                 <ol className="no-scrollbar -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-1 sm:mx-0 sm:scroll-px-0 sm:px-0">
                   {cs.highlights.map((item, i) => (

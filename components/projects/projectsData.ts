@@ -12,6 +12,7 @@ export type Project = {
   title: string;
   image: string;
   tags: string[];
+  platform?: string; // detail-page Platform; defaults to the tags after the first
   href?: string;
   video?: string; // if set, the grid shows the paused video (first frame) instead of the image
   description?: string;
@@ -45,15 +46,16 @@ export type TeamMember = {
   me?: boolean; // marks Jaymark in the list
 };
 
-// Only `problem` and `highlights` are required, so a case study can be written
-// from what's verifiable (e.g. screenshots) without inventing stats or a stack.
+// Every field is optional, so a case study can be written from what's
+// verifiable (e.g. screenshots) without inventing stats or a stack — or be
+// just a timeline and stack for the Information table.
 export type CaseStudy = {
   role?: string;
   timeline?: string;
   stack?: string[];
-  problem: string;
+  problem?: string;
   numbers?: { value: string; label: string }[];
-  highlights: { title: string; body: string }[];
+  highlights?: { title: string; body: string }[];
 };
 
 // Video-only projects. `image` is used as the paused-frame poster.
@@ -412,17 +414,54 @@ export const projects: Project[] = [
     iconBg: '#0EA5E9',
   },
   {
-    slug: 'airbnb-clone',
-    placeholderGallery: 3,
-    title: 'Airbnb Clone',
-    image: '/images/projects/airbnb.png',
-    video: '/images/airbnb.mp4',
-    tags: ['Template'],
-    href: '#',
-    description: 'A full-featured booking experience with a clean, modern UI.',
-    date: 'January 2025',
+    slug: 'airdnd',
+    title: 'Airdnd',
+    image: '/images/projects/airdnd/landing_1.png',
+    logo: '/images/projects/airdnd/logo.jpg',
+    tags: ['SaaS', 'Booking', 'Live'],
+    platform: 'Web',
+    href: 'https://airdnd.jmancheta.cloud',
+    description:
+      'A white-label booking platform: a branded booking site, an admin dashboard and online payments for rental owners, hotels and property managers.\n\n' +
+      "Airdnd lets rental owners, hotels and property managers take bookings on their own site instead of a marketplace. Each business gets a guest booking website in its own brand and on its own domain. Behind it is an admin dashboard that runs the whole operation. Payments go straight into the business's own PayMongo account, with GCash, Maya, cards and online banking, or bank transfer with receipt upload.\n\n" +
+      "Guests search by date and party size, book packages, apply promo codes, request reschedules and chat with support. On the admin side there's one queue for new bookings, payment checks and guest ID verification. There's also a property timeline, analytics with recurring expenses, and an overview across several locations. Confirmations, receipts, check-in reminders and Telegram alerts go out automatically, and each staff member gets their own role and two-factor sign-in.",
+    date: '2026',
     icon: BedDouble,
     iconBg: '#EF4444',
+    galleryVariant: 'devices',
+    gallery: [
+      '/images/projects/airdnd/landing_1.png',
+      '/images/projects/airdnd/landing_2.png',
+      '/images/projects/airdnd/dashboard_1.png',
+      '/images/projects/airdnd/dashboard_2.png',
+    ],
+    features: [
+      'Branded guest booking site with date and party-size search, bundled packages, promo codes and wishlists',
+      "Online payments through the owner's own PayMongo account (GCash, Maya, cards, online banking), plus bank transfer with receipt upload",
+      'Deposits and balances, with an optional convenience fee',
+      'Admin dashboard: booking queue, guest ID checks, reschedule approvals and a property timeline',
+      'Analytics for revenue, occupancy and collections, with recurring expense templates',
+      'Several locations from one dashboard, with roles, permissions and 2FA per staff member',
+      'Automatic emails, email campaigns and Telegram booking alerts',
+      'Live support chat between guests and the business',
+    ],
+    caseStudy: {
+      timeline: '2025 – Present',
+      stack: [
+        'Next.js 15',
+        'React 19',
+        'TypeScript',
+        'Tailwind CSS 4',
+        'Express 5',
+        'Prisma',
+        'MySQL',
+        'Redis',
+        'TanStack Query',
+        'PayMongo',
+        'Motion',
+        'Cloudflare Pages',
+      ],
+    },
   },
 ];
 

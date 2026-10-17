@@ -35,7 +35,8 @@ export default function ProjectRow({ project }: { project: Project }) {
 
         {project.description && (
           <span className="mt-1.5 block text-[13px] leading-relaxed text-[var(--muted-foreground)]">
-            {project.description}
+            {/* First paragraph only; the detail page shows the rest */}
+            {project.description.split('\n\n')[0]}
           </span>
         )}
       </span>
